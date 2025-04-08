@@ -7,11 +7,29 @@ public static class NewsRequestExtensions
 {
     public static NewsResponse ToResponse(this NewsModel model)
     {
-        return new NewsResponse() { };
+        return new NewsResponse
+        {
+            Id = model.Id,
+            Title = model.Title,
+            Description = model.Description,
+            OriginalLink = model.OriginalLink,
+            PublishDate = model.PublishDate,
+            ReadDate = model.ReadDate,
+            ImageLink = model.ImageLink,
+            Publisher = model.Publisher,
+            PublisherLink = model.PublisherLink,
+        };
     }
     
     public static NewsFilterModel ToModel(this NewsFilterRequest filterRequest)
     {
-        return new NewsFilterModel() { };
+        return new NewsFilterModel
+        {
+            Take = filterRequest.Take,
+            Offset = filterRequest.Offset,
+            OrderBy = filterRequest.OrderBy,
+            OrderDirection = filterRequest.OrderDirection,
+            Keyword = filterRequest.Keyword,
+        };
     }
 }

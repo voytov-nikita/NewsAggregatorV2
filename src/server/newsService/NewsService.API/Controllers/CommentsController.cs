@@ -19,7 +19,7 @@ public class CommentsController: ControllerBase
     }
 
     [HttpGet]
-    public async Task<List<CommentsResponse>> GetMany(CommentsFilterRequest filterRequest)
+    public async Task<List<CommentsResponse>> GetMany([FromQuery] CommentsFilterRequest filterRequest, int newsId)
     {
         CommentsFilterModel filter = filterRequest.ToModel();
 
@@ -33,7 +33,8 @@ public class CommentsController: ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromRoute] int newsId, CommentCreateRequest request)
     {
-        CommentCreateModel model = request.ToModel();
+        CommentCreateModel model = request.ToModel(newsId);
+        
         await _commentsService.CreateAsync(model);
         
         return Ok();
@@ -42,7 +43,7 @@ public class CommentsController: ControllerBase
     [HttpPut("/{commentId:int}")]
     public async Task<IActionResult> Update([FromRoute] int newsId, [FromRoute] int commentId, CommentUpdateRequest request)
     {
-        CommentUpdateModel model = request.ToModel();
+        CommentUpdateModel model = request.ToModel(newsId, commentId);
         
         await _commentsService.UpdateAsync(model);
 

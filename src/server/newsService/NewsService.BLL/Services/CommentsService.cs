@@ -1,27 +1,35 @@
 ﻿using NewsService.BLL.Abstractions;
+using NewsService.DAL.Abstractions;
 using NewsService.Models.Comments;
 
 namespace NewsService.BLL.Services;
 
 public class CommentsService: ICommentsService
 {
-    public Task<CommentsModel[]> GetManyAsync(CommentsFilterModel filter)
+    private readonly ICommentsStore _commentsStore;
+
+    public CommentsService(ICommentsStore commentsStore)
     {
-        throw new NotImplementedException();
+        _commentsStore = commentsStore;
     }
 
-    public Task UpdateAsync(CommentUpdateModel model)
+    public async Task<CommentsModel[]> GetManyAsync(CommentsFilterModel filter)
     {
-        throw new NotImplementedException();
+        return await _commentsStore.GetManyAsync(filter);
     }
 
-    public Task CreateAsync(CommentCreateModel model)
+    public async Task UpdateAsync(CommentUpdateModel model)
     {
-        throw new NotImplementedException();
+        await _commentsStore.UpdateAsync(model);
     }
 
-    public Task RateAsync(int newsId, int commentId, string rateType)
+    public async Task CreateAsync(CommentCreateModel model)
     {
-        throw new NotImplementedException();
+        await _commentsStore.CreateAsync(model);
+    }
+
+    public async Task RateAsync(int newsId, int commentId, string rateType)
+    {
+       await _commentsStore.RateAsync(newsId, commentId, rateType);
     }
 }

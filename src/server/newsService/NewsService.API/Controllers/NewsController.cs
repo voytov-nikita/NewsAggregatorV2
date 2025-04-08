@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NewsService.API.Extensions.News;
 using NewsService.API.Models.News;
+using NewsService.BLL.Abstractions;
 using NewsService.Models.News;
 
 namespace NewsService.API.Controllers;
@@ -9,13 +10,21 @@ namespace NewsService.API.Controllers;
 [Route("api/v1/news")]
 public class NewsController: ControllerBase
 {
-    [HttpGet]
-    public async Task<List<NewsResponse>> GetMany(NewsFilterRequest filterRequest)
+    private readonly INewsService _newsService;
+
+    public NewsController(INewsService newsService)
+    {
+        _newsService = newsService;
+    }
+
+    [HttpGet("")]
+    public async Task<List<NewsResponse>> GetMany([FromQuery] NewsFilterRequest filterRequest)
     {
         NewsFilterModel filter = filterRequest.ToModel();
-        throw new NotImplementedException();
-        NewsModel[] result;
+        NewsModel[] result = await _newsService.GetManyAsync(filter);
 
+        //AddHeaders
+        
         return result.Select(_ => _.ToResponse()).ToList();
     }
 

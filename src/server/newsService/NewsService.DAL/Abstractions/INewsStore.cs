@@ -1,8 +1,8 @@
 ﻿using NewsService.Models.News;
 
-namespace NewsService.BLL.Abstractions;
+namespace NewsService.DAL.Abstractions;
 
-public interface INewsService
+public interface INewsStore
 {
     public Task<NewsModel[]> GetManyAsync(NewsFilterModel filter);
     public Task CreateAsync(NewsCreateModel model);
