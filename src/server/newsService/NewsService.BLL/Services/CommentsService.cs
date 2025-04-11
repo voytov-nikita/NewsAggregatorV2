@@ -32,4 +32,9 @@ public class CommentsService: ICommentsService
     {
        await _commentsStore.RateAsync(newsId, commentId, rateType);
     }
+    
+    public async Task DeleteAsync(int newsId, int commentId)
+    {
+       await _commentsStore.DeleteAsync(newsId, commentId);
+    }
 }

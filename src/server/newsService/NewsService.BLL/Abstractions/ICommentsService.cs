@@ -8,4 +8,5 @@ public interface ICommentsService
     public Task UpdateAsync(CommentUpdateModel model);
     public Task CreateAsync(CommentCreateModel model);
     public Task RateAsync(int newsId, int commentId, string rateType);
+    public Task DeleteAsync(int newsId, int commentId);
 }

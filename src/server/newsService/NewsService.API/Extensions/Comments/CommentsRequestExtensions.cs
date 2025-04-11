@@ -10,10 +10,11 @@ public static class CommentsRequestExtensions
         return new CommentsResponse
         {
             Id = model.Id,
-            CreatorName = model.CreatorName,
-            CreatorGuid = model.CreatorGuid,
+            /*CreatorName = model.CreatorName,
+            CreatorGuid = model.CreatorGuid,*/
             Content = model.Content,
             CreateDate = model.CreateDate,
+            LastModifiedDate = model.LastModifiedDate,
             Likes = model.Likes,
             DisLikes = model.DisLikes,
         };
@@ -25,7 +26,7 @@ public static class CommentsRequestExtensions
         {
             NewsId = newsId,
             CommentId = commentId,
-            CreatorGuid = model.CreatorGuid,
+            /*CreatorGuid = model.CreatorGuid,*/
             Content = model.Content,
         };
     }
@@ -35,7 +36,7 @@ public static class CommentsRequestExtensions
         return new CommentCreateModel
         {
             NewsId = newsId,
-            CreatorGuid = model.CreatorGuid,
+            /*CreatorGuid = model.CreatorGuid,*/
             Content = model.Content,
         };
     }

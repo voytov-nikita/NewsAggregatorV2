@@ -1,6 +1,6 @@
-﻿namespace NewsService.Models.Comments;
+namespace NewsService.DAL.Entities;
 
-public class CommentsModel
+public class CommentEntity
 {
     public int Id { get; set; }
     public int NewsId { get; set; }
@@ -11,5 +11,7 @@ public class CommentsModel
     public DateTime CreateDate { get; set; }
     public DateTime? LastModifiedDate { get; set; }
     public int Likes { get; set; }
-    public int DisLikes { get; set; }
+    public int Dislikes { get; set; }
+    
+    public NewsEntity News { get; set; }
 }

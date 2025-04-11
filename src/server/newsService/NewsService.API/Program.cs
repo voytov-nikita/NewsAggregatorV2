@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NewsService.BLL;
 using NewsService.DAL;
 
@@ -8,7 +9,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
+        
         // Add services to the container.
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
@@ -21,6 +22,8 @@ public class Program
         var app = builder.Build();
 
         app.UseExceptionHandler();
+        
+        ApplyMigrations(app);
         
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -43,5 +46,15 @@ public class Program
 
 
         app.Run();
+    }
+
+    private static void ApplyMigrations(WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            scope.ServiceProvider.GetRequiredService<NewsServiceDbContext>()
+                .Database
+                .Migrate();
+        }
     }
 }

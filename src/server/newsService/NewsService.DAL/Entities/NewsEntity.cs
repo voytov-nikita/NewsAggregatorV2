@@ -1,7 +1,6 @@
-﻿namespace NewsService.Models.News;
+namespace NewsService.DAL.Entities;
 
-
-public class NewsModel
+public class NewsEntity
 {
     public int Id { get; set; }
     public string Title { get; set; }
@@ -12,4 +11,6 @@ public class NewsModel
     public string? ImageLink { get; set; }
     public string Publisher { get; set; }
     public string PublisherLink { get; set; }
+    
+    public ICollection<CommentEntity> Comments { get; set; }
 }
