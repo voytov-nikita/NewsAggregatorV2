@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\NewsService.BLL\NewsService.BLL.csproj" />
+      <ProjectReference Include="..\NewsService.DAL.PostgreSql\NewsService.DAL.PostgreSql.csproj" />
     </ItemGroup>
 
 </Project>

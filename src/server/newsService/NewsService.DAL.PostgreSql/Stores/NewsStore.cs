@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NewsService.DAL.Abstractions;
-using NewsService.DAL.Entities;
+using NewsService.DAL.Abstractions.Stores;
+using NewsService.DAL.PostgreSql.Entities;
 using NewsService.Models.News;
 
-namespace NewsService.DAL.Stores;
+namespace NewsService.DAL.PostgreSql.Stores;
 
 public class NewsStore: INewsStore
 {
@@ -16,6 +16,7 @@ public class NewsStore: INewsStore
 
     public async Task<NewsModel[]> GetManyAsync(NewsFilterModel filter)
     {
+        //Todo: Add filter query
         return await _dbContext.News
             .Skip(filter.Offset)
             .Take(filter.Take).Select(_ => new NewsModel

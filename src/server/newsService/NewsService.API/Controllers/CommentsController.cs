@@ -2,7 +2,9 @@
 using NewsService.API.Extensions.Comments;
 using NewsService.API.Models.Comments;
 using NewsService.BLL.Abstractions;
+using NewsService.BLL.Abstractions.Services;
 using NewsService.Models.Comments;
+using NewsService.Models.Enums;
 
 namespace NewsService.API.Controllers;
 
@@ -53,7 +55,7 @@ public class CommentsController: ControllerBase
     [HttpPut("/{commentId:int}/like")]
     public async Task<IActionResult> Like([FromRoute] int newsId, [FromRoute] int commentId)
     {
-        await _commentsService.RateAsync(newsId, commentId, "Like");
+        await _commentsService.RateAsync(newsId, commentId, RateType.Like);
 
         return Ok();
     }
@@ -61,7 +63,7 @@ public class CommentsController: ControllerBase
     [HttpPut("/{commentId:int}/dislike")]
     public async Task<IActionResult> Dislike([FromRoute] int newsId, [FromRoute] int commentId)
     {
-        await _commentsService.RateAsync(newsId, commentId, "Dislike");
+        await _commentsService.RateAsync(newsId, commentId, RateType.Dislike);
 
         return Ok();
     }

@@ -1,6 +1,8 @@
 ﻿using NewsService.BLL.Abstractions;
-using NewsService.DAL.Abstractions;
+using NewsService.BLL.Abstractions.Services;
+using NewsService.DAL.Abstractions.Stores;
 using NewsService.Models.Comments;
+using NewsService.Models.Enums;
 
 namespace NewsService.BLL.Services;
 
@@ -28,7 +30,7 @@ public class CommentsService: ICommentsService
         await _commentsStore.CreateAsync(model);
     }
 
-    public async Task RateAsync(int newsId, int commentId, string rateType)
+    public async Task RateAsync(int newsId, int commentId, RateType rateType)
     {
        await _commentsStore.RateAsync(newsId, commentId, rateType);
     }

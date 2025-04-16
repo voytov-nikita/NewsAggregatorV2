@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NewsService.DAL.Abstractions;
-using NewsService.DAL.Entities;
+using NewsService.DAL.Abstractions.Stores;
+using NewsService.DAL.PostgreSql.Entities;
 using NewsService.Models.Comments;
+using NewsService.Models.Enums;
 
-namespace NewsService.DAL.Stores;
+namespace NewsService.DAL.PostgreSql.Stores;
 
 public class CommentsStore : ICommentsStore
 {
@@ -31,6 +32,7 @@ public class CommentsStore : ICommentsStore
 
     public async Task UpdateAsync(CommentUpdateModel model)
     {
+        //Todo: Add error handling when NewsId and CommentId not exist
         await _dbContext.Comments.Where(_ => _.NewsId == model.NewsId && _.Id == model.CommentId)
             .ExecuteUpdateAsync(_ =>
                 _.SetProperty(_ => _.Content, model.Content)
@@ -40,6 +42,7 @@ public class CommentsStore : ICommentsStore
 
     public async Task CreateAsync(CommentCreateModel model)
     {
+        //Todo: Add error handling when NewsId not exist
         CommentEntity commentEntity = new CommentEntity()
         {
             NewsId = model.NewsId,
@@ -53,7 +56,7 @@ public class CommentsStore : ICommentsStore
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task RateAsync(int newsId, int commentId, string rateType)
+    public async Task RateAsync(int newsId, int commentId, RateType rateType)
     {
         //Todo: Rate system will be reworked in future
         CommentEntity? comment = await _dbContext.Comments
@@ -67,17 +70,16 @@ public class CommentsStore : ICommentsStore
             throw new ApplicationException("Comment not found");
         }
 
-        if (rateType == "Like")
+        switch (rateType)
         {
-            comment.Likes++;
-        }
-        else if (rateType == "Dislike")
-        {
-            comment.Dislikes++;
-        }
-        else
-        {
-            throw new ArgumentException("Invalid rateType");
+            case RateType.Like:
+                comment.Likes++;
+                break;
+            case RateType.Dislike:
+                comment.Dislikes++;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException( nameof(rateType), $"Unexpected rateType value '{rateType}'");
         }
 
         await _dbContext.SaveChangesAsync();

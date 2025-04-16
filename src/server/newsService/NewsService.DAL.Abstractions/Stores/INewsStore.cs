@@ -1,6 +1,6 @@
 ﻿using NewsService.Models.News;
 
-namespace NewsService.DAL.Abstractions;
+namespace NewsService.DAL.Abstractions.Stores;
 
 public interface INewsStore
 {

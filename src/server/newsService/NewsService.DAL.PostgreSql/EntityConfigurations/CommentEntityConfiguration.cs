@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NewsService.DAL.Entities;
+using NewsService.DAL.PostgreSql.Entities;
 
-namespace NewsService.DAL.EntityConfigurations;
+namespace NewsService.DAL.PostgreSql.EntityConfigurations;
 
 public class CommentEntityConfiguration: IEntityTypeConfiguration<CommentEntity>
 {

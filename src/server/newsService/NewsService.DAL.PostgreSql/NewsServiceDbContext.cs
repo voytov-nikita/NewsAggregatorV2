@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NewsService.DAL.Entities;
+using NewsService.DAL.PostgreSql.Entities;
 
-namespace NewsService.DAL;
+namespace NewsService.DAL.PostgreSql;
 
 public class NewsServiceDbContext(DbContextOptions<NewsServiceDbContext> options) : DbContext(options)
 {

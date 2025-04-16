@@ -1,5 +1,5 @@
 ﻿using NewsService.BLL.Abstractions;
-using NewsService.DAL.Abstractions;
+using NewsService.DAL.Abstractions.Stores;
 using NewsService.Models.News;
 
 namespace NewsService.BLL.Services;

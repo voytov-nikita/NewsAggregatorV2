@@ -1,4 +1,4 @@
-namespace NewsService.DAL.Entities;
+namespace NewsService.DAL.PostgreSql.Entities;
 
 public class CommentEntity
 {

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NewsService.BLL;
 using NewsService.DAL;
+using NewsService.DAL.PostgreSql;
 
 namespace NewsService.API;
 
@@ -17,13 +18,11 @@ public class Program
         
         builder.Services.AddCustomControllers();
         builder.Services.AddBusinessLayer();
-        builder.Services.AddDataAccessLayer();
+        builder.Services.AddDataAccessLayer("Host=localhost; Database=local-news; Username=postgres; Password=Qwerty123$%; Include Error Detail=true");
 
         var app = builder.Build();
 
         app.UseExceptionHandler();
-        
-        ApplyMigrations(app);
         
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -46,15 +45,5 @@ public class Program
 
 
         app.Run();
-    }
-
-    private static void ApplyMigrations(WebApplication app)
-    {
-        using (var scope = app.Services.CreateScope())
-        {
-            scope.ServiceProvider.GetRequiredService<NewsServiceDbContext>()
-                .Database
-                .Migrate();
-        }
     }
 }

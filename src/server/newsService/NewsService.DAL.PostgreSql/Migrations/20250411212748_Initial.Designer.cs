@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NewsService.DAL;
+using NewsService.DAL.PostgreSql;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -25,7 +26,7 @@ namespace NewsService.DAL.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("NewsService.DAL.Entities.CommentEntity", b =>
+            modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.CommentEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +60,7 @@ namespace NewsService.DAL.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("NewsService.DAL.Entities.NewsEntity", b =>
+            modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.NewsEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,9 +102,9 @@ namespace NewsService.DAL.Migrations
                     b.ToTable("News");
                 });
 
-            modelBuilder.Entity("NewsService.DAL.Entities.CommentEntity", b =>
+            modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.CommentEntity", b =>
                 {
-                    b.HasOne("NewsService.DAL.Entities.NewsEntity", "News")
+                    b.HasOne("NewsService.DAL.PostgreSql.Entities.NewsEntity", "News")
                         .WithMany("Comments")
                         .HasForeignKey("NewsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -112,7 +113,7 @@ namespace NewsService.DAL.Migrations
                     b.Navigation("News");
                 });
 
-            modelBuilder.Entity("NewsService.DAL.Entities.NewsEntity", b =>
+            modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.NewsEntity", b =>
                 {
                     b.Navigation("Comments");
                 });

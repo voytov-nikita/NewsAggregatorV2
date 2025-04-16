@@ -6,7 +6,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsService.BLL", "src\serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsService.Models", "src\server\newsService\NewsService.Models\NewsService.Models.csproj", "{71788B5F-BFA9-4AC9-B0C8-569232AC8421}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsService.DAL", "src\server\newsService\NewsService.DAL\NewsService.DAL.csproj", "{0BF16112-8DF8-4005-B8CA-8A87E7A6CBDF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsService.DAL.PostgreSql", "src\server\newsService\NewsService.DAL.PostgreSql\NewsService.DAL.PostgreSql.csproj", "{0BF16112-8DF8-4005-B8CA-8A87E7A6CBDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsService.DAL.Abstractions", "src\server\newsService\NewsService.DAL.Abstractions\NewsService.DAL.Abstractions.csproj", "{9FE3B2F7-3DC7-4AC4-9DED-E108C2BBB5B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +32,9 @@ Global
 		{0BF16112-8DF8-4005-B8CA-8A87E7A6CBDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BF16112-8DF8-4005-B8CA-8A87E7A6CBDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BF16112-8DF8-4005-B8CA-8A87E7A6CBDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FE3B2F7-3DC7-4AC4-9DED-E108C2BBB5B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FE3B2F7-3DC7-4AC4-9DED-E108C2BBB5B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FE3B2F7-3DC7-4AC4-9DED-E108C2BBB5B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FE3B2F7-3DC7-4AC4-9DED-E108C2BBB5B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
