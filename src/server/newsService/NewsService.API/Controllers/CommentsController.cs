@@ -4,7 +4,8 @@ using NewsService.API.Models.Comments;
 using NewsService.BLL.Abstractions;
 using NewsService.BLL.Abstractions.Services;
 using NewsService.Models.Comments;
-using NewsService.Models.Enums;
+using NewsService.Models.Comments.Enums;
+using NewsService.Models.Comments.Models;
 
 namespace NewsService.API.Controllers;
 
@@ -25,7 +26,7 @@ public class CommentsController: ControllerBase
     {
         CommentsFilterModel filter = filterRequest.ToModel();
 
-        CommentsModel[] result = await _commentsService.GetManyAsync(filter);
+        CommentsModel[] result = await _commentsService.GetManyAsync(filter, newsId);
         
         //AddHeaders
         

@@ -1,9 +1,9 @@
-using Common.API.Models;
+using Common.Models;
 using NewsService.Models.News.Enum;
 
-namespace NewsService.API.Models.News;
+namespace NewsService.Models.News.Models;
 
-public class NewsFilterRequest: BaseFilterRequest<NewsOrderField>
+public class NewsFilterModel : BaseFilter<NewsOrderField>
 {
     public int Take { get; set; }
     public int Offset { get; set; }

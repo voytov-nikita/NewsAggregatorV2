@@ -2,7 +2,8 @@
 using NewsService.BLL.Abstractions.Services;
 using NewsService.DAL.Abstractions.Stores;
 using NewsService.Models.Comments;
-using NewsService.Models.Enums;
+using NewsService.Models.Comments.Enums;
+using NewsService.Models.Comments.Models;
 
 namespace NewsService.BLL.Services;
 
@@ -15,9 +16,9 @@ public class CommentsService: ICommentsService
         _commentsStore = commentsStore;
     }
 
-    public async Task<CommentsModel[]> GetManyAsync(CommentsFilterModel filter)
+    public async Task<CommentsModel[]> GetManyAsync(CommentsFilterModel filter, int newsId)
     {
-        return await _commentsStore.GetManyAsync(filter);
+        return await _commentsStore.GetManyAsync(filter, newsId);
     }
 
     public async Task UpdateAsync(CommentUpdateModel model)

@@ -9,7 +9,7 @@ public class NewsResponse
     public string OriginalLink { get; set; }
     public DateTime PublishDate { get; set; }
     public DateTime ReadDate { get; set; }
-    public string ImageLink { get; set; }
+    public string? ImageLink { get; set; }
     public string Publisher { get; set; }
     public string PublisherLink { get; set; }
 }

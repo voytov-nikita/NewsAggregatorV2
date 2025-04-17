@@ -1,4 +1,5 @@
 ﻿using NewsService.Models.News;
+using NewsService.Models.News.Models;
 
 namespace NewsService.DAL.Abstractions.Stores;
 

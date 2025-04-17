@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Common.Models;
+using Microsoft.EntityFrameworkCore;
 using NewsService.DAL.Abstractions.Stores;
 using NewsService.DAL.PostgreSql.Entities;
-using NewsService.Models.News;
+using NewsService.DAL.PostgreSql.Extensions;
+using NewsService.Models.News.Enum;
+using NewsService.Models.News.Models;
 
 namespace NewsService.DAL.PostgreSql.Stores;
 
@@ -16,10 +19,15 @@ public class NewsStore: INewsStore
 
     public async Task<NewsModel[]> GetManyAsync(NewsFilterModel filter)
     {
-        //Todo: Add filter query
-        return await _dbContext.News
-            .Skip(filter.Offset)
-            .Take(filter.Take).Select(_ => new NewsModel
+        IQueryable<NewsEntity> query = _dbContext.News;
+
+        query = ApplyOrdering(query, filter);
+        query = ApplyFiltering(query, filter);
+
+        var pager = new OffsetPagination(filter.Offset, filter.Take);
+        query = query.ApplyPager(pager);
+        
+        return await query.Select(_ => new NewsModel
             {
                 Id = _.Id,
                 Title = _.Title,
@@ -49,4 +57,30 @@ public class NewsStore: INewsStore
         
         await _dbContext.News.AddAsync(newsEntity);
     }
+
+    #region private
+
+    private IQueryable<NewsEntity> ApplyOrdering(IQueryable<NewsEntity> query, NewsFilterModel filter)
+    {
+        query = filter.OrderBy switch
+        {
+            NewsOrderField.Title => query.OrderBy(q => q.Title, filter.OrderDirection),
+            NewsOrderField.PublishDate => query.OrderBy(q => q.PublishDate, filter.OrderDirection),
+            _ => query.OrderBy(q => q.PublishDate, filter.OrderDirection),
+        };
+        
+        return query;
+    }
+    
+    private IQueryable<NewsEntity> ApplyFiltering(IQueryable<NewsEntity> query, NewsFilterModel filter)
+    {
+        if (!string.IsNullOrEmpty(filter.Keyword))
+        {
+            query = query.Where(q => q.Title.Contains(filter.Keyword));
+        }
+        
+        return query;
+    }
+
+    #endregion
 }

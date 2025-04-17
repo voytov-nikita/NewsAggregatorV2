@@ -1,4 +1,5 @@
 ﻿using NewsService.Models.Comments;
+using NewsService.Models.Comments.Models;
 
 namespace NewsService.BLL.Abstractions.Validators;
 

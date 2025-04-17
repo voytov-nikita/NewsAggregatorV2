@@ -1,4 +1,4 @@
-﻿namespace NewsService.Models.Comments;
+﻿namespace NewsService.Models.Comments.Models;
 
 public class CommentsModel
 {

@@ -3,6 +3,7 @@ using NewsService.API.Extensions.News;
 using NewsService.API.Models.News;
 using NewsService.BLL.Abstractions;
 using NewsService.Models.News;
+using NewsService.Models.News.Models;
 
 namespace NewsService.API.Controllers;
 

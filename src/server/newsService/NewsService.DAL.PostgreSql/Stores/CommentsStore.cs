@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Common.Models;
+using Microsoft.EntityFrameworkCore;
 using NewsService.DAL.Abstractions.Stores;
 using NewsService.DAL.PostgreSql.Entities;
-using NewsService.Models.Comments;
-using NewsService.Models.Enums;
+using NewsService.DAL.PostgreSql.Extensions;
+using NewsService.Models.Comments.Enums;
+using NewsService.Models.Comments.Models;
 
 namespace NewsService.DAL.PostgreSql.Stores;
 
@@ -15,11 +17,16 @@ public class CommentsStore : ICommentsStore
         _dbContext = dbContext;
     }
 
-    public async Task<CommentsModel[]> GetManyAsync(CommentsFilterModel filter)
+    public async Task<CommentsModel[]> GetManyAsync(CommentsFilterModel filter, int newsId)
     {
-        return await _dbContext.Comments
-            .Skip(filter.Offset)
-            .Take(filter.Take).Select(_ => new CommentsModel
+        IQueryable<CommentEntity> query = _dbContext.Comments.Where(q => q.NewsId == newsId);
+        query = ApplyOrdering(query, filter);
+        
+        var pager = new OffsetPagination(filter.Offset, filter.Take);
+        
+        query = query.ApplyPager(pager);
+        
+        return await query.Select(_ => new CommentsModel
             {
                 Id = _.Id,
                 Content = _.Content,
@@ -89,4 +96,17 @@ public class CommentsStore : ICommentsStore
     {
         await _dbContext.Comments.Where(_ => _.NewsId == newsId && _.Id == commentId).ExecuteDeleteAsync();
     }
+
+    #region private
+
+    
+    private IQueryable<CommentEntity> ApplyOrdering(IQueryable<CommentEntity> query, CommentsFilterModel filter)
+    {
+        query = query.OrderBy(q => q.CreateDate, filter.OrderDirection);
+        
+        return query;
+    }
+
+
+    #endregion
 }

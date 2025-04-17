@@ -1,5 +1,6 @@
 ﻿using NewsService.API.Models.News;
 using NewsService.Models.News;
+using NewsService.Models.News.Models;
 
 namespace NewsService.API.Extensions.News;
 
