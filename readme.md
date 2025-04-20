@@ -5,7 +5,7 @@ docker run -d -p 5432:5432 --name postgres-news --restart unless-stopped -e POST
 ```
 ## Seq
 ```
-TODO: Add in future
+docker run --name seq-news -d -v d:\news-data\postgresql\seq:/data --restart unless-stopped -e ACCEPT_EULA=Y -p 5341:80 datalust/seq:latest
 ```
 ## Mongo
 ```
