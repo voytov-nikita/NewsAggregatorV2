@@ -1,10 +1,23 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Logger;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace NewsService.API;
+namespace Common.API;
 
-internal static class ServiceCollectionsExtension
+public static class ServiceCollectionsExtension
 {
+
+    public static WebApplicationBuilder ConfigureCommonApiSettings(this WebApplicationBuilder builder)
+    {
+
+        builder.Host.AddLogger();
+        
+        builder.Services.AddCustomControllers();
+        
+        return builder;
+    }
     
     public static IServiceCollection AddCustomControllers(this IServiceCollection services)
     {

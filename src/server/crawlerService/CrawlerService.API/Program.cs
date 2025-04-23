@@ -1,11 +1,6 @@
 using Common.API;
-using Logger;
-using NewsService.API.Settings;
-using NewsService.BLL;
-using NewsService.DAL.PostgreSql;
-using Serilog;
 
-namespace NewsService.API;
+namespace CrawlerService.API;
 
 public class Program
 {
@@ -13,17 +8,18 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        GlobalSettings globalSettings = builder.Configuration.Get<GlobalSettings>();
-        
-        builder.ConfigureCommonApiSettings();
+       // GlobalSettings globalSettings = builder.Configuration.Get<GlobalSettings>();
 
         // Add services to the container.
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi(); // Move to Swagger project
+        builder.ConfigureCommonApiSettings();
+        
+        builder.Services.AddOpenApi();
         builder.Services.AddProblemDetails();
 
-        builder.Services.AddBusinessLayer();
-        builder.Services.AddDataAccessLayer(globalSettings.ConnectionStrings.PostgreSql);
+        builder.Services.AddCustomControllers();
+        //builder.Services.AddBusinessLayer();
+        //builder.Services.AddDataAccessLayer(globalSettings.ConnectionStrings.PostgreSql);
 
         var app = builder.Build();
 
@@ -34,7 +30,7 @@ public class Program
         {
             app.MapOpenApi();
 
-            app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "My API V1"); }); // Move to Swagger project
+            app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "My API V1"); });
         }
 
         app
