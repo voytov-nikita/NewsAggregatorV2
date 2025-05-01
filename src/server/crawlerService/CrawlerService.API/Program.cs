@@ -21,6 +21,7 @@ public class Program
 
         HangfireSettings hangfireSettings = new HangfireSettings()
         {
+            Prefix = "news-hangfire",
             ConnectionString = "mongodb://localhost:27017/news",
         };
         
