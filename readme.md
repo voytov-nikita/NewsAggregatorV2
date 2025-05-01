@@ -9,7 +9,7 @@ docker run -d --name seq-news -p 5341:80 --restart unless-stopped -e ACCEPT_EULA
 ```
 ## Mongo
 ```
-docker run -d --name mongodb-news -p 27017:27017 --restart unless-stopped -v d:\news-data\mongodb:/data/db mongo mongod --replSet rs0
+docker run -d --name mongodb-news -p 27017:27017 --restart unless-stopped -v d:\news-data\mongodb:/data/db mongo
 ```
 ## MessageQueue
 ```

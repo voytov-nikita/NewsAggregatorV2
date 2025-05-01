@@ -25,12 +25,12 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IMongoDatabase>(provider => provider.GetRequiredService<IMongoClient>()
             .GetDatabase(settings.DatabaseName));
         
-        /*services.AddMigration(new MongoMigrationSettings()
+        services.AddMigration(new MongoMigrationSettings()
         {
             ConnectionString = settings.ConnectionString,
             Database = settings.DatabaseName,
-            ClientSettings = MongoClientSettings.FromConnectionString(settings.ConnectionString)
-        });*/
+            //ClientSettings = MongoClientSettings.FromConnectionString(settings.ConnectionString)
+        });
         
         return services;
     }
