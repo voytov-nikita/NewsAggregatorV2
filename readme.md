@@ -1,15 +1,15 @@
 ﻿# Docker setup
 ## PostgreSql
 ```
-docker run -d -p 5432:5432 --name postgres-news --restart unless-stopped -e POSTGRES_PASSWORD=Qwerty123$% -v d:\news-data\postgresql:/var/lib/postgresql/data postgres:17
+docker run -d --name postgres-news -p 5432:5432 --restart unless-stopped -e POSTGRES_PASSWORD=Qwerty123$% -v d:\news-data\postgresql:/var/lib/postgresql/data postgres:17
 ```
 ## Seq
 ```
-docker run --name seq-news -d -v d:\news-data\postgresql\seq:/data --restart unless-stopped -e ACCEPT_EULA=Y -p 5341:80 datalust/seq:latest
+docker run -d --name seq-news -p 5341:80 --restart unless-stopped -e ACCEPT_EULA=Y -v d:\news-data\seq:/data datalust/seq:latest
 ```
 ## Mongo
 ```
-TODO: Add in future
+docker run -d --name mongodb-news -p 27017:27017 --restart unless-stopped -v d:\news-data\mongodb:/data/db mongo mongod --replSet rs0
 ```
 ## MessageQueue
 ```

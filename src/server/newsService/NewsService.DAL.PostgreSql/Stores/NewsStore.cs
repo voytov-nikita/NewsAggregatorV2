@@ -1,4 +1,5 @@
-﻿using Common.Models;
+﻿using Common.Extensions;
+using Common.Models;
 using Microsoft.EntityFrameworkCore;
 using NewsService.DAL.Abstractions.Stores;
 using NewsService.DAL.PostgreSql.Entities;

@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>CrawlerService.Hangfire</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18" />
+      <PackageReference Include="Hangfire.Mongo" Version="1.11.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CrawlerService.BLL\CrawlerService.BLL.csproj" />
+      <ProjectReference Include="..\CrawlerService.Hangfire.Abstractions\CrawlerService.Hangfire.Abstractions.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,4 +1,6 @@
 using Common.API;
+using CrawlerService.DAL;
+using CrawlerService.Hangfire;
 
 namespace CrawlerService.API;
 
@@ -17,9 +19,22 @@ public class Program
         builder.Services.AddOpenApi();
         builder.Services.AddProblemDetails();
 
+        HangfireSettings hangfireSettings = new HangfireSettings()
+        {
+            ConnectionString = "mongodb://localhost:27017/news",
+        };
+        
+        builder.Services.AddHangfireCustomSettings(hangfireSettings);
+        
         builder.Services.AddCustomControllers();
         //builder.Services.AddBusinessLayer();
-        //builder.Services.AddDataAccessLayer(globalSettings.ConnectionStrings.PostgreSql);
+        
+        DatabaseSettings databaseSettings = new DatabaseSettings()
+        {
+            ConnectionString = "mongodb://localhost:27017",
+            DatabaseName = "news",
+        }; 
+        builder.Services.AddDataAccessLayer(databaseSettings);
 
         var app = builder.Build();
 
