@@ -9,7 +9,7 @@ using NewsService.Models.News.Models;
 
 namespace NewsService.DAL.PostgreSql.Stores;
 
-public class NewsStore: INewsStore
+public class NewsStore : INewsStore
 {
     private readonly NewsServiceDbContext _dbContext;
 
@@ -27,19 +27,19 @@ public class NewsStore: INewsStore
 
         var pager = new OffsetPagination(filter.Offset, filter.Take);
         query = query.ApplyPager(pager);
-        
+
         return await query.Select(_ => new NewsModel
-            {
-                Id = _.Id,
-                Title = _.Title,
-                Description = _.Description,
-                OriginalLink = _.OriginalLink,
-                PublishDate = _.PublishDate,
-                ReadDate = _.ReadDate,
-                ImageLink = _.ImageLink,
-                Publisher = _.Publisher,
-                PublisherLink = _.PublisherLink,
-            }).ToArrayAsync();
+        {
+            Id = _.Id,
+            Title = _.Title,
+            Description = _.Description,
+            OriginalLink = _.OriginalLink,
+            PublishDate = _.PublishDate,
+            ReadDate = _.ReadDate,
+            ImageLink = _.ImageLink,
+            Publisher = _.Publisher,
+            PublisherLink = _.PublisherLink,
+        }).ToArrayAsync();
     }
 
     public async Task CreateAsync(NewsCreateModel model)
@@ -50,13 +50,35 @@ public class NewsStore: INewsStore
             Description = model.Description,
             OriginalLink = model.OriginalLink,
             PublishDate = model.PublishDate,
-            ReadDate = DateTime.Now,
+            ReadDate = DateTime.UtcNow,
             ImageLink = model.ImageLink,
             Publisher = model.Publisher,
             PublisherLink = model.PublisherLink,
         };
-        
+
         await _dbContext.News.AddAsync(newsEntity);
+        
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task CreateBulkAsync(NewsCreateModel[] createModels)
+    {
+        NewsEntity[] newsEntities = createModels.Select(model => new NewsEntity
+            {
+                Title = model.Title,
+                Description = model.Description,
+                OriginalLink = model.OriginalLink,
+                PublishDate = model.PublishDate,
+                ReadDate = DateTime.UtcNow,
+                ImageLink = model.ImageLink,
+                Publisher = model.Publisher,
+                PublisherLink = model.PublisherLink,
+            }
+        ).ToArray();
+
+        await _dbContext.News.AddRangeAsync(newsEntities);
+        
+        await _dbContext.SaveChangesAsync();
     }
 
     #region private
@@ -69,17 +91,17 @@ public class NewsStore: INewsStore
             NewsOrderField.PublishDate => query.OrderBy(q => q.PublishDate, filter.OrderDirection),
             _ => query.OrderBy(q => q.PublishDate, filter.OrderDirection),
         };
-        
+
         return query;
     }
-    
+
     private IQueryable<NewsEntity> ApplyFiltering(IQueryable<NewsEntity> query, NewsFilterModel filter)
     {
         if (!string.IsNullOrEmpty(filter.Keyword))
         {
             query = query.Where(q => q.Title.Contains(filter.Keyword));
         }
-        
+
         return query;
     }
 

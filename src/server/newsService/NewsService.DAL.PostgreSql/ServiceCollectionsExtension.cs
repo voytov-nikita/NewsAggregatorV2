@@ -15,7 +15,7 @@ public static class ServiceCollectionsExtension
             .UseNpgsql(connectionString, optionsBuilder => optionsBuilder.EnableRetryOnFailure())
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
             .EnableSensitiveDataLogging());
-
+        
         services.AddTransient<IStartupFilter, MigrationsFilter>();
             
         services.AddTransient<INewsStore, NewsStore>();

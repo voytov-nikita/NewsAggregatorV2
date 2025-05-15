@@ -1,4 +1,5 @@
 ﻿using NewsService.BLL.Abstractions;
+using NewsService.BLL.Abstractions.Services;
 using NewsService.DAL.Abstractions.Stores;
 using NewsService.Models.News;
 using NewsService.Models.News.Models;
@@ -21,5 +22,9 @@ public class NewsService: INewsService
     public async Task CreateAsync(NewsCreateModel model)
     {
         await _store.CreateAsync(model);
+    }
+    public async Task CreateBulkAsync(NewsCreateModel[] model)
+    {
+        await _store.CreateBulkAsync(model);
     }
 }

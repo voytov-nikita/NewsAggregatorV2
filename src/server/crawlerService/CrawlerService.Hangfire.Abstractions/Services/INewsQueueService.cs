@@ -1,8 +1,8 @@
-using CrawlerService.Hangfire.Models;
+using CrawlerService.Models.Models;
 
 namespace CrawlerService.Hangfire.Abstractions.Services;
 
 public interface INewsQueueService
 {
-    Task AddManyToQueueAsync(RawNews[] data);
+    Task AddManyToQueueAsync(ParsedNews[] data);
 }

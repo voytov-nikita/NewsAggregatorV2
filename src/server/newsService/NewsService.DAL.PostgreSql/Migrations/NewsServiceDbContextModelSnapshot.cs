@@ -3,13 +3,12 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NewsService.DAL;
 using NewsService.DAL.PostgreSql;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace NewsService.DAL.Migrations
+namespace NewsService.DAL.PostgreSql.Migrations
 {
     [DbContext(typeof(NewsServiceDbContext))]
     partial class NewsServiceDbContextModelSnapshot : ModelSnapshot
@@ -18,6 +17,7 @@ namespace NewsService.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("newsService")
                 .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -26,23 +26,20 @@ namespace NewsService.DAL.Migrations
             modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.CommentEntity", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Dislikes")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Likes")
                         .HasColumnType("integer");
@@ -52,9 +49,7 @@ namespace NewsService.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NewsId");
-
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", "newsService");
                 });
 
             modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.NewsEntity", b =>
@@ -66,7 +61,6 @@ namespace NewsService.DAL.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ImageLink")
@@ -77,7 +71,7 @@ namespace NewsService.DAL.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("PublishDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Publisher")
                         .IsRequired()
@@ -88,7 +82,7 @@ namespace NewsService.DAL.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("ReadDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -96,14 +90,14 @@ namespace NewsService.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("News");
+                    b.ToTable("News", "newsService");
                 });
 
             modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.CommentEntity", b =>
                 {
                     b.HasOne("NewsService.DAL.PostgreSql.Entities.NewsEntity", "News")
                         .WithMany("Comments")
-                        .HasForeignKey("NewsId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

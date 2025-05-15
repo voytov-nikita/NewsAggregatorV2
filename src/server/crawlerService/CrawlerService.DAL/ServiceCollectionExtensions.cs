@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CrawlerService.DAL.Stores;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Mongo.Migration.Startup;
@@ -31,6 +32,8 @@ public static class ServiceCollectionExtensions
             Database = settings.DatabaseName,
             //ClientSettings = MongoClientSettings.FromConnectionString(settings.ConnectionString)
         });
+        
+        services.AddTransient<NewsStore>();
         
         return services;
     }

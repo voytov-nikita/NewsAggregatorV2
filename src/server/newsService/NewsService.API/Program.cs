@@ -1,5 +1,8 @@
 using Common.API;
 using Logger;
+using MessageQueue;
+using MessageQueue.Settings;
+using NewsService.API.Services;
 using NewsService.API.Settings;
 using NewsService.BLL;
 using NewsService.DAL.PostgreSql;
@@ -24,9 +27,18 @@ public class Program
 
         builder.Services.AddBusinessLayer();
         builder.Services.AddDataAccessLayer(globalSettings.ConnectionStrings.PostgreSql);
-
+        
+        var messageQueueSettings = new MessageQueueSettings
+        {
+            ServerAddress = new Uri("amqp://localhost"),
+            QueueName = "news-queue",
+        };
+        
+        builder.Services.AddNewsServiceConsumers(messageQueueSettings);
+        builder.Services.AddHostedService<NewsProcessor>();
+        
         var app = builder.Build();
-
+        
         app.UseExceptionHandler();
 
         // Configure the HTTP request pipeline.

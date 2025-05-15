@@ -20,7 +20,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlerService.Models", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlerService.Hangfire.Abstractions", "src\server\crawlerService\CrawlerService.Hangfire.Abstractions\CrawlerService.Hangfire.Abstractions.csproj", "{ED653C49-59E5-4CAF-806A-674D2D1357E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlerService.Hangfire.Models", "src\server\crawlerService\CrawlerService.Hangfire.Models\CrawlerService.Hangfire.Models.csproj", "{943E0333-665C-40BF-AAD1-B700434A181D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageQueue", "src\server\common\MessageQueue\MessageQueue.csproj", "{D86673C4-8CE0-4C61-A85B-15763EDC3E82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,14 +64,15 @@ Global
 		{ED653C49-59E5-4CAF-806A-674D2D1357E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED653C49-59E5-4CAF-806A-674D2D1357E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED653C49-59E5-4CAF-806A-674D2D1357E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{943E0333-665C-40BF-AAD1-B700434A181D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{943E0333-665C-40BF-AAD1-B700434A181D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{943E0333-665C-40BF-AAD1-B700434A181D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{943E0333-665C-40BF-AAD1-B700434A181D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D86673C4-8CE0-4C61-A85B-15763EDC3E82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D86673C4-8CE0-4C61-A85B-15763EDC3E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D86673C4-8CE0-4C61-A85B-15763EDC3E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D86673C4-8CE0-4C61-A85B-15763EDC3E82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F9DF9BD9-27B8-408B-A8C8-28595C38A868} = {84FAE25B-C643-42E9-869E-A40E21EE6037}
 		{EA240E2D-571E-4027-A867-8BF3174817F6} = {84FAE25B-C643-42E9-869E-A40E21EE6037}
 		{9C2F1931-3D4B-426A-B1A3-68379793ABD2} = {84FAE25B-C643-42E9-869E-A40E21EE6037}
+		{D86673C4-8CE0-4C61-A85B-15763EDC3E82} = {84FAE25B-C643-42E9-869E-A40E21EE6037}
 	EndGlobalSection
 EndGlobal

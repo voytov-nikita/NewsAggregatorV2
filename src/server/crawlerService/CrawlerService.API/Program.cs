@@ -1,6 +1,9 @@
 using Common.API;
+using CrawlerService.BLL;
 using CrawlerService.DAL;
 using CrawlerService.Hangfire;
+using MessageQueue;
+using MessageQueue.Settings;
 
 namespace CrawlerService.API;
 
@@ -28,7 +31,15 @@ public class Program
         builder.Services.AddHangfireCustomSettings(hangfireSettings);
         
         builder.Services.AddCustomControllers();
-        //builder.Services.AddBusinessLayer();
+        builder.Services.AddBusinessLayer();
+
+        var messageQueueSettings = new MessageQueueSettings
+        {
+            ServerAddress = new Uri("amqp://localhost"),
+            QueueName = "news-queue",
+        };
+        
+        builder.Services.AddNewsServiceProducers(messageQueueSettings);
         
         DatabaseSettings databaseSettings = new DatabaseSettings()
         {

@@ -29,11 +29,14 @@ public static class ServiceCollectionExtensions
                     }))
             .AddHangfireServer();
 
+        collection.AddHttpClient();
+
         collection.AddTransient<INewsDownloaderService, NewsDownloaderService>();
         collection.AddTransient<INewsParserService, NewsParserService>();
         collection.AddTransient<INewsQueueService, NewsQueueService>();
-        collection.AddTransient<INewsUniquenessService, NewsUniquenessService>();
         collection.AddTransient<INewsValidationService, NewsValidationService>();
+        collection.AddTransient<INewsUniquenessService, NewsUniquenessService>();
+        
         collection.AddHostedService<HangfireSchedulerBackgroundService>();
 
         return collection;

@@ -1,8 +1,8 @@
-using CrawlerService.Hangfire.Models;
+using CrawlerService.Models.Models;
 
 namespace CrawlerService.Hangfire.Abstractions.Services;
 
 public interface INewsValidationService
 {
-    Task ValidateAsync(RawNews[] data);
+    Task ValidateAsync(ParsedNews[] data);
 }

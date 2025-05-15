@@ -27,4 +27,8 @@
       <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="9.103.8" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>

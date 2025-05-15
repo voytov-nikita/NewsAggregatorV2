@@ -1,10 +1,7 @@
-﻿using MongoDB.Bson;
+﻿namespace CrawlerService.Models.Models;
 
-namespace CrawlerService.DAL.Entities;
-
-public class LastReadNewsEntity
+public class ParsedNews
 {
-    public ObjectId Id { get; set; }
     public string Title { get; set; }
     public string? Description { get; set; }
     public string OriginalLink { get; set; }
@@ -13,5 +10,5 @@ public class LastReadNewsEntity
     public string PublisherName { get; set; }
     public string PublisherLink { get; set; }
     public string PublisherGuid { get; set; }
-    public string CustomGuid { get; set; }
+    public string CompositeGuid { get; set; }
 }

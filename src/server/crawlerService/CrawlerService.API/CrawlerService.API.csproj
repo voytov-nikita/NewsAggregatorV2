@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\common\Common.API\Common.API.csproj" />
+      <ProjectReference Include="..\..\common\MessageQueue\MessageQueue.csproj" />
       <ProjectReference Include="..\CrawlerService.BLL\CrawlerService.BLL.csproj" />
       <ProjectReference Include="..\CrawlerService.Hangfire\CrawlerService.Hangfire.csproj" />
     </ItemGroup>

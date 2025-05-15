@@ -1,12 +1,12 @@
 using CrawlerService.Hangfire.Abstractions.Services;
-using CrawlerService.Hangfire.Models;
+using CrawlerService.Models.Models;
 
 namespace CrawlerService.Hangfire.Services;
 
 class NewsValidationService : INewsValidationService
 {
-    public Task ValidateAsync(RawNews[] data)
+    public async Task ValidateAsync(ParsedNews[] data)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Validating");
     }
 }

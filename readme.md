@@ -13,5 +13,5 @@ docker run -d --name mongodb-news -p 27017:27017 --restart unless-stopped -v d:\
 ```
 ## MessageQueue
 ```
-TODO: Add in future
+docker run -d --name lavinmq-news -p 15672:15672 -p 5672:5672 -v d:\news-data\lavinmq:/tmp/amqp --restart unless-stopped cloudamqp/lavinmq
 ```

@@ -2,6 +2,7 @@
 using NewsService.API.Extensions.News;
 using NewsService.API.Models.News;
 using NewsService.BLL.Abstractions;
+using NewsService.BLL.Abstractions.Services;
 using NewsService.Models.News;
 using NewsService.Models.News.Models;
 
