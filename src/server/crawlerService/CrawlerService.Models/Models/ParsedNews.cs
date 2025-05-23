@@ -11,4 +11,5 @@ public class ParsedNews
     public string PublisherLink { get; set; }
     public string PublisherGuid { get; set; }
     public string CompositeGuid { get; set; }
+    public string Guid { get; set; }
 }

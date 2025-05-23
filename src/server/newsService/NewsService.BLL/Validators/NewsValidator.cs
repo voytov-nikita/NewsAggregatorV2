@@ -32,5 +32,18 @@ public class NewsValidator: INewsValidator
         {
             throw new ArgumentException("PublisherLink cannot be empty");
         }
+        
+        if (string.IsNullOrEmpty(model.Guid))
+        {
+            throw new ArgumentException("Guid cannot be empty");
+        }
+    }
+    
+    public void ValidateBulk(NewsCreateModel[] models)
+    {
+        foreach (var model in models)
+        {
+            Validate(model);
+        }
     }
 }

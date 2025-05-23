@@ -35,10 +35,11 @@ public class NewsStore : INewsStore
             Description = _.Description,
             OriginalLink = _.OriginalLink,
             PublishDate = _.PublishDate,
-            ReadDate = _.ReadDate,
+            ReadDate = _.CreateDate,
             ImageLink = _.ImageLink,
             Publisher = _.Publisher,
             PublisherLink = _.PublisherLink,
+            Guid = _.Guid,
         }).ToArrayAsync();
     }
 
@@ -50,34 +51,37 @@ public class NewsStore : INewsStore
             Description = model.Description,
             OriginalLink = model.OriginalLink,
             PublishDate = model.PublishDate,
-            ReadDate = DateTime.UtcNow,
+            CreateDate = DateTime.UtcNow,
             ImageLink = model.ImageLink,
             Publisher = model.Publisher,
             PublisherLink = model.PublisherLink,
+            Guid = model.Guid
         };
 
         await _dbContext.News.AddAsync(newsEntity);
-        
+
         await _dbContext.SaveChangesAsync();
     }
 
     public async Task CreateBulkAsync(NewsCreateModel[] createModels)
     {
+        //Todo: Add handling for duplicates
         NewsEntity[] newsEntities = createModels.Select(model => new NewsEntity
             {
                 Title = model.Title,
                 Description = model.Description,
                 OriginalLink = model.OriginalLink,
                 PublishDate = model.PublishDate,
-                ReadDate = DateTime.UtcNow,
+                CreateDate = DateTime.UtcNow,
                 ImageLink = model.ImageLink,
                 Publisher = model.Publisher,
                 PublisherLink = model.PublisherLink,
+                Guid = model.Guid
             }
         ).ToArray();
 
         await _dbContext.News.AddRangeAsync(newsEntities);
-        
+
         await _dbContext.SaveChangesAsync();
     }
 

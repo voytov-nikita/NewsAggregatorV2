@@ -27,7 +27,8 @@ public class NewsStore
             PublisherName = _.PublisherName,
             PublisherLink = _.PublisherLink,
             PublisherGuid = _.PublisherGuid,
-            CustomGuid = _.CompositeGuid
+            CompositeGuid = _.CompositeGuid,
+            Guid = _.Guid,
         }).ToArray();
 
         FilterDefinition<LastReadNewsEntity> filter = Builders<LastReadNewsEntity>.Filter.Where(x => x.PublisherName == publisherName);
@@ -40,7 +41,7 @@ public class NewsStore
     {
         var res = await _database.GetCollection<LastReadNewsEntity>(LastReadNewsCollectionName)
             .Find(_ =>
-                customGuids.Contains(_.CustomGuid)
+                customGuids.Contains(_.CompositeGuid)
             ).ToListAsync();
         
         //Todo: replace ParsedNews on LastReadNewsModel
@@ -54,7 +55,8 @@ public class NewsStore
             PublisherName = _.PublisherName,
             PublisherLink = _.PublisherLink,
             PublisherGuid = _.PublisherGuid,
-            CompositeGuid = _.CustomGuid
+            CompositeGuid = _.CompositeGuid,
+            Guid = _.Guid
         }).ToList();
     }
 }

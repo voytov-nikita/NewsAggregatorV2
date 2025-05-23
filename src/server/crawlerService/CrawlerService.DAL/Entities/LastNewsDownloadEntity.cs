@@ -13,5 +13,6 @@ public class LastReadNewsEntity
     public string PublisherName { get; set; }
     public string PublisherLink { get; set; }
     public string PublisherGuid { get; set; }
-    public string CustomGuid { get; set; }
+    public string CompositeGuid { get; set; }
+    public string Guid { get; set; }
 }

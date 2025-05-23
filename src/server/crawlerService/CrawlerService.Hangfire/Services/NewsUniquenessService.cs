@@ -1,3 +1,4 @@
+using Common.Const;
 using CrawlerService.BLL.Services;
 using CrawlerService.Hangfire.Abstractions.Services;
 using CrawlerService.Models.Models;
@@ -27,7 +28,7 @@ class NewsUniquenessService : INewsUniquenessService
         //In case of absence last read news
         if (!lastReadNews.Any())
         {
-            await _newsService.UpdateLastReadNewsAsync(data, "Pravda");
+            await _newsService.UpdateLastReadNewsAsync(data, Publishers.Pravda);
             _backgroundJobClient.Enqueue<INewsQueueService>(service => service.AddManyToQueueAsync(data));
         }
         else
@@ -38,15 +39,15 @@ class NewsUniquenessService : INewsUniquenessService
 
             if (hasChanges)
             {
-                //Todo: move to const "Pravda"
                 ParsedNews[] a = data.Where(_ => !lastReadCustomGuides.Contains(_.CompositeGuid)).ToArray();
                 
-                await _newsService.UpdateLastReadNewsAsync(data, "Pravda");
+                await _newsService.UpdateLastReadNewsAsync(data, Publishers.Pravda);
                 _backgroundJobClient.Enqueue<INewsQueueService>(service => service.AddManyToQueueAsync(a));
             }
         }
         
         Console.WriteLine("Checking complete");
+        Console.WriteLine("``````````````````````");
         
     }
 }

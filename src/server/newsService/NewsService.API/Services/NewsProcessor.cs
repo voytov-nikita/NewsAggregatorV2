@@ -35,6 +35,7 @@ public class NewsProcessor : BackgroundService
 
     private async Task Process(NewsQueueModel[] messageModel)
     {
+        //Todo: Console.WriteLine replace with Logger
         Console.WriteLine("Processing message...");
         if (messageModel.Length != 0)
         {
@@ -48,31 +49,24 @@ public class NewsProcessor : BackgroundService
                 PublishDate = _.PublishDate,
                 Publisher = _.PublisherName,
                 PublisherLink = _.PublisherLink,
+                Guid = _.Guid,
             }).ToArray();
             
             //Workaround
             using IServiceScope scope = _serviceScopeFactory.CreateScope();
-
             INewsService newsService = scope.ServiceProvider.GetRequiredService<INewsService>();
             
             await newsService.CreateBulkAsync(createModels);
             
             Console.WriteLine("------------=======-------------");
-            Console.WriteLine(messageModel.Length + " new News " + DateTime.UtcNow);
+            Console.WriteLine($"{messageModel.Length} new News were added ({DateTime.Now})");
             Console.WriteLine("------------=======-------------");
-            foreach (var model in messageModel)
-            {
-                Console.OutputEncoding = Encoding.UTF8;
-                Console.WriteLine("Title ---------------------------");
-                Console.WriteLine(model.Title);
-                Console.WriteLine("CompositeGuid ----------------------------");
-                Console.WriteLine(model.CompositeGuid);
-                Console.WriteLine("--------------------------------");
-            }
         }
         else
         {
+            Console.WriteLine("------------=======-------------");
             Console.WriteLine("No new news were added");
+            Console.WriteLine("------------=======-------------");
         }
         Console.WriteLine("****************************");
     }

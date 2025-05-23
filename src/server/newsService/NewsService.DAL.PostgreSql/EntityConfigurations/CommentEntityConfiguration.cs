@@ -4,16 +4,16 @@ using NewsService.DAL.PostgreSql.Entities;
 
 namespace NewsService.DAL.PostgreSql.EntityConfigurations;
 
-public class CommentEntityConfiguration: IEntityTypeConfiguration<CommentEntity>
+
+public class CommentEntityConfiguration : IEntityTypeConfiguration<CommentEntity>
 {
-    
     public void Configure(EntityTypeBuilder<CommentEntity> builder)
     {
-        builder.ToTable("NewsComments");
+        builder.ToTable("Comments");
         
         builder.HasKey(x => x.Id);
-        
-        builder.Property(x => x.LastModifiedDate)
+
+        builder.Property(_ => _.LastModifiedDate)
             .IsRequired(false);
     }
-}
+};

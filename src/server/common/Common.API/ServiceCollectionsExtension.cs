@@ -24,7 +24,7 @@ public static class ServiceCollectionsExtension
         services
             .AddControllers(options =>
             {
-                //TODO: SergeyV - Wait till AuthorizeFilter will be added to release version
+                //TODO Wait till AuthorizeFilter will be added to release version
                 //https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/1295
                 //options.Filters.Add(new AuthorizeFilter());
             })

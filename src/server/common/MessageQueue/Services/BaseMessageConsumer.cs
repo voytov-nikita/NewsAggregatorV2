@@ -70,8 +70,7 @@ public abstract class BaseMessageConsumer<TModel>: IDisposable
 		{
 			OriginalQueue = queueName,
 			OrigimalMeggage = deliveryEventArgs.Body.ToArray(),
-
-			//TODO: SergeyV - Workaround. For the release 2.3 remove this fiels and write errors to the logger
+			
 			ExceptionTypeName = exception.GetType()
 				.FullName,
 			ExceptionMessage = exception.Message

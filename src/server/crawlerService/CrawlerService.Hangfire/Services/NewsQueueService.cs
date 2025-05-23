@@ -28,11 +28,12 @@ class NewsQueueService : INewsQueueService
             PublisherName = x.PublisherName,
             PublisherLink = x.PublisherLink,
             PublisherGuid = x.PublisherGuid,
-            CompositeGuid = x.CompositeGuid,
+            Guid = x.Guid,
         }).ToArray();
         
         _producer.Publish(a);
         
         Console.WriteLine("Adding complete");
+        Console.WriteLine("``````````````````````");
     }
 }

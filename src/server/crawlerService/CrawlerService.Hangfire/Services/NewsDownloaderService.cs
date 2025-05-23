@@ -18,7 +18,9 @@ public class NewsDownloaderService: INewsDownloaderService
     public async Task GetNewsAsync()
     {
         //replace with Logger
-        Console.WriteLine("Crawling...");
+        Console.WriteLine("**********************");
+        Console.WriteLine($"Crawling...  ({DateTime.Now})");
+        
         
         HttpClient client = _httpClientFactory.CreateClient();
         
@@ -27,10 +29,13 @@ public class NewsDownloaderService: INewsDownloaderService
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         Encoding.GetEncoding("windows-1254");
         
-        var res = await response.Content.ReadAsByteArrayAsync();
-        Console.WriteLine("Crawling complete");
+        byte[] res = await response.Content.ReadAsByteArrayAsync();
 
         _backgroundJobClient.Enqueue<INewsParserService>(service => service.ParseAsync(res));
+        
+        
+        Console.WriteLine("Crawling complete");
+        Console.WriteLine("``````````````````````");
     }
     
 }
