@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CrawlerService.Models\CrawlerService.Models.csproj" />
+      <ProjectReference Include="..\CrawlerService.DAL.Abstractions\CrawlerService.DAL.Abstractions.csproj" />
     </ItemGroup>
 
     <ItemGroup>

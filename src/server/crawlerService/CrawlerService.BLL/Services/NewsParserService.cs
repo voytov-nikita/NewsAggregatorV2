@@ -1,26 +1,25 @@
 using System.Xml;
 using Common.Const;
-using CrawlerService.Hangfire.Abstractions.Services;
+using CrawlerService.BLL.Abstractions.Services;
 using CrawlerService.Models.Models;
-using Hangfire;
 
-namespace CrawlerService.Hangfire.Services;
+namespace CrawlerService.BLL.Services;
 
 class NewsParserService : INewsParserService
 {
-    private readonly IBackgroundJobClient _backgroundJobClient;
+    private readonly IPostponedJobRunner _postponedJobRunner;
 
-    public NewsParserService(IBackgroundJobClient backgroundJobClient)
+    public NewsParserService(IPostponedJobRunner postponedJobRunner)
     {
-        _backgroundJobClient = backgroundJobClient;
+        _postponedJobRunner = postponedJobRunner;
     }
-    
+
     public async Task ParseAsync(byte[] data)
     {
         Console.WriteLine("Parsing...");
-        
+
         XmlDocument doc = new XmlDocument();
-        
+
         var stream = new MemoryStream(data);
         try
         {
@@ -31,18 +30,20 @@ class NewsParserService : INewsParserService
             Console.WriteLine("Parsing Error:");
             Console.WriteLine(e.Message);
         }
-        
-        List<ParsedNews> parsedNews = [];
 
+        List<ParsedNews> parsedNews = [];
+        
         foreach (XmlNode item in doc.GetElementsByTagName("item"))
         {
             ParsedNews parsedNew = ToParsedNew(item);
-            
+
             parsedNews.Add(parsedNew);
         }
-        
-        _backgroundJobClient.Enqueue<INewsUniquenessService>(service => service.IsUniqueBulkAsync(parsedNews.ToArray()));
-        
+
+        ParsedNews[] newsArray = parsedNews.ToArray();
+
+        _postponedJobRunner.Enqueue<INewsService>(service => service.SaveUniqueNewsAsync(newsArray));
+
         Console.WriteLine("Parsing complete");
         Console.WriteLine("``````````````````````");
     }
@@ -62,7 +63,7 @@ class NewsParserService : INewsParserService
             PublisherGuid = item["guid"]?.InnerText,
             //Create custom guid to check uniqueness
             Guid = item["guid"]?.InnerText,
-            CompositeGuid = Publishers.Pravda + item["guid"]?.InnerText
+            GlobalUniqueId = Publishers.Pravda + item["guid"]?.InnerText
         };
     }
 }

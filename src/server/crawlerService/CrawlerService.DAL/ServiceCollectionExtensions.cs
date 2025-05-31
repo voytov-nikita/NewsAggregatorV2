@@ -1,4 +1,5 @@
-﻿using CrawlerService.DAL.Stores;
+﻿using CrawlerService.DAL.Abstractions.Stores;
+using CrawlerService.DAL.Stores;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -33,7 +34,7 @@ public static class ServiceCollectionExtensions
             //ClientSettings = MongoClientSettings.FromConnectionString(settings.ConnectionString)
         });
         
-        services.AddTransient<NewsStore>();
+        services.AddTransient<INewsStore, NewsStore>();
         
         return services;
     }

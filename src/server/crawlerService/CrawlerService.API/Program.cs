@@ -21,17 +21,12 @@ public class Program
         
         builder.Services.AddOpenApi();
         builder.Services.AddProblemDetails();
-
-        HangfireSettings hangfireSettings = new HangfireSettings()
-        {
-            Prefix = "news-hangfire",
-            ConnectionString = "mongodb://localhost:27017/news",
-        };
         
-        builder.Services.AddHangfireCustomSettings(hangfireSettings);
         
         builder.Services.AddCustomControllers();
         builder.Services.AddBusinessLayer();
+        
+        builder.Services.AddHttpClient();
 
         var messageQueueSettings = new MessageQueueSettings
         {
@@ -48,6 +43,15 @@ public class Program
         }; 
         builder.Services.AddDataAccessLayer(databaseSettings);
 
+        
+
+        HangfireSettings hangfireSettings = new HangfireSettings()
+        {
+            Prefix = "news-hangfire",
+            ConnectionString = "mongodb://localhost:27017/news",
+        };
+        builder.Services.AddHangfireCustomSettings(hangfireSettings);
+        
         var app = builder.Build();
 
         app.UseExceptionHandler();

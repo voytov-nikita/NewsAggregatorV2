@@ -1,6 +1,6 @@
 using CrawlerService.Models.Models;
 
-namespace CrawlerService.Hangfire.Abstractions.Services;
+namespace CrawlerService.BLL.Abstractions.Services;
 
 public interface INewsQueueService
 {

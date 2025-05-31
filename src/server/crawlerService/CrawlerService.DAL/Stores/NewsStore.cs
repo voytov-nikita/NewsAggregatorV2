@@ -1,12 +1,13 @@
-﻿using CrawlerService.DAL.Entities;
+﻿using CrawlerService.DAL.Abstractions.Stores;
+using CrawlerService.DAL.Entities;
 using CrawlerService.Models.Models;
 using MongoDB.Driver;
 
 namespace CrawlerService.DAL.Stores;
 
-public class NewsStore
+internal class NewsStore : INewsStore
 {
-    private const string LastReadNewsCollectionName = "lastReadNews";
+    internal const string RawNewsCollectionName = "rawNews";
     private readonly IMongoDatabase _database;
 
     public NewsStore(IMongoDatabase database)
@@ -14,49 +15,27 @@ public class NewsStore
         _database = database;
     }
 
-    public async Task UpdateLastReadNewsAsync(ParsedNews[] parsedNews, string publisherName)
+    public async Task InsertAsync(ParsedNews[] parsedNews)
     {
-        var collection = _database.GetCollection<LastReadNewsEntity>(LastReadNewsCollectionName);
-        LastReadNewsEntity[] lastReadNewsEntities = parsedNews.Select(_ => new LastReadNewsEntity
+        var collection = _database.GetCollection<RawNewsEntity>(RawNewsCollectionName);
+
+        RawNewsEntity[] lastReadNewsEntities = parsedNews.Select(_ => new RawNewsEntity
         {
-            Title = _.Title,
-            Description = _.Description,
-            OriginalLink = _.OriginalLink,
-            ImageLink = _.ImageLink,
-            PublishDate = _.PublishDate,
-            PublisherName = _.PublisherName,
-            PublisherLink = _.PublisherLink,
-            PublisherGuid = _.PublisherGuid,
-            CompositeGuid = _.CompositeGuid,
-            Guid = _.Guid,
+            GlobalUniqueId = _.GlobalUniqueId,
         }).ToArray();
 
-        FilterDefinition<LastReadNewsEntity> filter = Builders<LastReadNewsEntity>.Filter.Where(x => x.PublisherName == publisherName);
-        //Todo: Make it through transaction
-        await collection.DeleteManyAsync(filter);
         await collection.InsertManyAsync(lastReadNewsEntities);
     }
 
-    public async Task<List<ParsedNews>> GetLastReadNewsAsync(string[] customGuids)
+    public async Task<string[]> ExcludeExistedAsync(string[] globalUniqueIds)
     {
-        var res = await _database.GetCollection<LastReadNewsEntity>(LastReadNewsCollectionName)
+        List<RawNewsEntity> res = await _database.GetCollection<RawNewsEntity>(RawNewsCollectionName)
             .Find(_ =>
-                customGuids.Contains(_.CompositeGuid)
+                globalUniqueIds.Contains(_.GlobalUniqueId)
             ).ToListAsync();
-        
-        //Todo: replace ParsedNews on LastReadNewsModel
-        return res.Select(_ => new ParsedNews
-        {
-            Title = _.Title,
-            Description = _.Description,
-            OriginalLink = _.OriginalLink,
-            ImageLink = _.ImageLink,
-            PublishDate = _.PublishDate,
-            PublisherName = _.PublisherName,
-            PublisherLink = _.PublisherLink,
-            PublisherGuid = _.PublisherGuid,
-            CompositeGuid = _.CompositeGuid,
-            Guid = _.Guid
-        }).ToList();
+
+        return globalUniqueIds
+            .Except(res.Select(_ => _.GlobalUniqueId))
+            .ToArray();
     }
 }

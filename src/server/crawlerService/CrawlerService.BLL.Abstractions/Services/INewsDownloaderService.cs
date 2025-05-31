@@ -1,4 +1,4 @@
-namespace CrawlerService.Hangfire.Abstractions.Services;
+namespace CrawlerService.BLL.Abstractions.Services;
 
 public interface INewsDownloaderService
 {

@@ -1,4 +1,4 @@
-﻿using CrawlerService.Hangfire.Abstractions.Services;
+﻿using CrawlerService.BLL.Abstractions.Services;
 using CrawlerService.Hangfire.Services;
 using Hangfire;
 using Hangfire.Mongo;
@@ -29,14 +29,8 @@ public static class ServiceCollectionExtensions
                     }))
             .AddHangfireServer();
 
-        collection.AddHttpClient();
+        collection.AddTransient<IPostponedJobRunner, PostponedJobRunner>();
 
-        collection.AddTransient<INewsDownloaderService, NewsDownloaderService>();
-        collection.AddTransient<INewsParserService, NewsParserService>();
-        collection.AddTransient<INewsQueueService, NewsQueueService>();
-        collection.AddTransient<INewsValidationService, NewsValidationService>();
-        collection.AddTransient<INewsUniquenessService, NewsUniquenessService>();
-        
         collection.AddHostedService<HangfireSchedulerBackgroundService>();
 
         return collection;
