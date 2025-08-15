@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CA4D1DC6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlerService.DAL.IntegrationTests", "tests\crawlerService\CrawlerService.DAL.IntegrationTests\CrawlerService.DAL.IntegrationTests.csproj", "{11FD508A-9FD6-4A8E-BD3B-04B4903A9731}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlerService.BLL.Tests", "tests\crawlerService\CrawlerService.BLL.Tests\CrawlerService.BLL.Tests.csproj", "{D1D77B17-6AFB-4B0C-B26F-86A1D99E5D2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,10 @@ Global
 		{11FD508A-9FD6-4A8E-BD3B-04B4903A9731}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11FD508A-9FD6-4A8E-BD3B-04B4903A9731}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11FD508A-9FD6-4A8E-BD3B-04B4903A9731}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1D77B17-6AFB-4B0C-B26F-86A1D99E5D2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1D77B17-6AFB-4B0C-B26F-86A1D99E5D2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1D77B17-6AFB-4B0C-B26F-86A1D99E5D2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1D77B17-6AFB-4B0C-B26F-86A1D99E5D2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F9DF9BD9-27B8-408B-A8C8-28595C38A868} = {84FAE25B-C643-42E9-869E-A40E21EE6037}
@@ -89,5 +95,6 @@ Global
 		{9C2F1931-3D4B-426A-B1A3-68379793ABD2} = {84FAE25B-C643-42E9-869E-A40E21EE6037}
 		{D86673C4-8CE0-4C61-A85B-15763EDC3E82} = {84FAE25B-C643-42E9-869E-A40E21EE6037}
 		{11FD508A-9FD6-4A8E-BD3B-04B4903A9731} = {CA4D1DC6-EAAD-4968-95DA-4973CA546051}
+		{D1D77B17-6AFB-4B0C-B26F-86A1D99E5D2D} = {CA4D1DC6-EAAD-4968-95DA-4973CA546051}
 	EndGlobalSection
 EndGlobal

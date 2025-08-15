@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NewsService.BLL.Abstractions\NewsService.BLL.Abstractions.csproj" />
       <ProjectReference Include="..\NewsService.DAL.Abstractions\NewsService.DAL.Abstractions.csproj" />
     </ItemGroup>
 
