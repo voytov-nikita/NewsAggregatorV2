@@ -4,6 +4,7 @@ using NewsService.Models.Comments.Models;
 
 namespace NewsService.BLL.Validators;
 
+//Todo: rework outdated validator
 public class CommentsValidator: ICommentsValidator
 {
     private readonly List<string> rateOptions = ["Like", "Dislike"];

@@ -32,8 +32,16 @@ class NewsParserService : INewsParserService
         }
 
         List<ParsedNews> parsedNews = [];
+
+        XmlNodeList elementsByTagName = doc.GetElementsByTagName("item");
         
-        foreach (XmlNode item in doc.GetElementsByTagName("item"))
+        if (elementsByTagName.Count == 0)
+        {
+            Console.WriteLine("No news items found in the feed.");
+            return;
+        }
+        
+        foreach (XmlNode item in elementsByTagName)
         {
             ParsedNews parsedNew = ToParsedNew(item);
 
