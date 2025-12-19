@@ -1,0 +1,46 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Mongo.Migration.Startup;
+using Mongo.Migration.Startup.DotNetCore;
+using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
+using NotificationService.DAL.Abstractions.Stores;
+using NotificationService.DAL.Stores;
+
+namespace NotificationService.DAL;
+
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddDataAccessLayer(this IServiceCollection services, DatabaseSettings settings)
+    {
+        MongoClientSettings clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.ConnectionString));
+
+        services.AddSingleton<IMongoClient>(_ =>
+        {
+#if DEBUG
+            clientSettings.LoggingSettings = new LoggingSettings(_.GetService<ILoggerFactory>());
+#endif
+            return new MongoClient(clientSettings);
+        });
+        services.AddTransient<IMongoDatabase>(provider => provider.GetRequiredService<IMongoClient>()
+            .GetDatabase(settings.DatabaseName));
+        
+        services.AddMigration(new MongoMigrationSettings()
+        {
+            ConnectionString = settings.ConnectionString,
+            Database = settings.DatabaseName,
+            //ClientSettings = MongoClientSettings.FromConnectionString(settings.ConnectionString)
+        });
+
+        services.AddTransient<IWebhooksStore, WebhooksStore>();
+        
+        return services;
+    }
+}
+
+public class DatabaseSettings
+{
+    public string ConnectionString { get; init; } = null!;
+
+    public string DatabaseName { get; init; } = null!;
+}

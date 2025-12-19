@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NotificationService.BLL.Abstractions\NotificationService.BLL.Abstractions.csproj" />
+      <ProjectReference Include="..\NotificationService.DAL.Abstractions\NotificationService.DAL.Abstractions.csproj" />
+    </ItemGroup>
+
+</Project>

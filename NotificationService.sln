@@ -1,0 +1,77 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.API", "src\server\notificationService\NotificationService.API\NotificationService.API.csproj", "{FC460D77-22B6-46EE-879E-B7FE8F20F0C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.BLL", "src\server\notificationService\NotificationService.BLL\NotificationService.BLL.csproj", "{D8B0583D-35AD-41DE-B176-936CDEA3D440}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.DAL", "src\server\notificationService\NotificationService.DAL\NotificationService.DAL.csproj", "{0A49D834-4991-462E-B5C1-AADDA39895C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.Models", "src\server\notificationService\NotificationService.Models\NotificationService.Models.csproj", "{5CDEA0CB-A4A4-46AC-93A0-2E6EE09BC1EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.API.Models", "src\server\notificationService\NotificationService.API.Models\NotificationService.API.Models.csproj", "{624BED28-4159-41B7-9CF1-5851A0BECDA5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{C8965BBD-33C7-4008-8604-210337E9745C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.API", "src\server\common\Common.API\Common.API.csproj", "{E9B1AD44-22A3-4D8C-932D-8EE5DFD9ADA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "src\server\common\Common\Common.csproj", "{B2D467EC-B80A-4085-AD69-7BFB746BF571}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "src\server\common\Logger\Logger.csproj", "{21468F0F-6C3A-4C10-AC38-3687485205F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.BLL.Abstractions", "src\server\notificationService\NotificationService.BLL.Abstractions\NotificationService.BLL.Abstractions.csproj", "{C1356F81-7F71-4AFF-9265-6F1813097230}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.DAL.Abstractions", "src\server\notificationService\NotificationService.DAL.Abstractions\NotificationService.DAL.Abstractions.csproj", "{99769139-FADB-4B99-A936-2455ABF183BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC460D77-22B6-46EE-879E-B7FE8F20F0C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC460D77-22B6-46EE-879E-B7FE8F20F0C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC460D77-22B6-46EE-879E-B7FE8F20F0C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC460D77-22B6-46EE-879E-B7FE8F20F0C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8B0583D-35AD-41DE-B176-936CDEA3D440}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8B0583D-35AD-41DE-B176-936CDEA3D440}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8B0583D-35AD-41DE-B176-936CDEA3D440}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8B0583D-35AD-41DE-B176-936CDEA3D440}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A49D834-4991-462E-B5C1-AADDA39895C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A49D834-4991-462E-B5C1-AADDA39895C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A49D834-4991-462E-B5C1-AADDA39895C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A49D834-4991-462E-B5C1-AADDA39895C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CDEA0CB-A4A4-46AC-93A0-2E6EE09BC1EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CDEA0CB-A4A4-46AC-93A0-2E6EE09BC1EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CDEA0CB-A4A4-46AC-93A0-2E6EE09BC1EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CDEA0CB-A4A4-46AC-93A0-2E6EE09BC1EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{624BED28-4159-41B7-9CF1-5851A0BECDA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{624BED28-4159-41B7-9CF1-5851A0BECDA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{624BED28-4159-41B7-9CF1-5851A0BECDA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{624BED28-4159-41B7-9CF1-5851A0BECDA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9B1AD44-22A3-4D8C-932D-8EE5DFD9ADA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9B1AD44-22A3-4D8C-932D-8EE5DFD9ADA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9B1AD44-22A3-4D8C-932D-8EE5DFD9ADA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9B1AD44-22A3-4D8C-932D-8EE5DFD9ADA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2D467EC-B80A-4085-AD69-7BFB746BF571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2D467EC-B80A-4085-AD69-7BFB746BF571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2D467EC-B80A-4085-AD69-7BFB746BF571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2D467EC-B80A-4085-AD69-7BFB746BF571}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21468F0F-6C3A-4C10-AC38-3687485205F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21468F0F-6C3A-4C10-AC38-3687485205F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21468F0F-6C3A-4C10-AC38-3687485205F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21468F0F-6C3A-4C10-AC38-3687485205F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1356F81-7F71-4AFF-9265-6F1813097230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1356F81-7F71-4AFF-9265-6F1813097230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1356F81-7F71-4AFF-9265-6F1813097230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1356F81-7F71-4AFF-9265-6F1813097230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99769139-FADB-4B99-A936-2455ABF183BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99769139-FADB-4B99-A936-2455ABF183BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99769139-FADB-4B99-A936-2455ABF183BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99769139-FADB-4B99-A936-2455ABF183BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E9B1AD44-22A3-4D8C-932D-8EE5DFD9ADA7} = {C8965BBD-33C7-4008-8604-210337E9745C}
+		{B2D467EC-B80A-4085-AD69-7BFB746BF571} = {C8965BBD-33C7-4008-8604-210337E9745C}
+		{21468F0F-6C3A-4C10-AC38-3687485205F2} = {C8965BBD-33C7-4008-8604-210337E9745C}
+	EndGlobalSection
+EndGlobal

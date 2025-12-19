@@ -17,11 +17,11 @@ public class NewsDownloaderService: INewsDownloaderService
 
     public async Task GetNewsAsync()
     {
-        //replace with Logger
+        //Todo: replace with Logger
         Console.WriteLine("**********************");
         Console.WriteLine($"Crawling...  ({DateTime.Now})");
 
-
+        
         HttpClient client = _httpClientFactory.CreateClient();
 
         HttpResponseMessage response = await client.GetAsync("https://www.pravda.com.ua/rss/");

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>NotificationService</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\common\Common.API\Common.API.csproj" />
+      <ProjectReference Include="..\NotificationService.BLL\NotificationService.BLL.csproj" />
+      <ProjectReference Include="..\NotificationService.DAL\NotificationService.DAL.csproj" />
+    </ItemGroup>
+    
+</Project>
