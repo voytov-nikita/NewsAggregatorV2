@@ -3,7 +3,9 @@ using MessageQueue.Constants;
 using MessageQueue.Services;
 using MessageQueue.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly;
+using Polly.Registry;
 using Polly.Retry;
 using RabbitMQ.Client.Exceptions;
 
@@ -31,6 +33,29 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+
+    public static IServiceCollection AddWebhooksConsumer(this IServiceCollection services, MessageQueueSettings settings)
+    {
+        services.AddSingleton(settings);
+
+        services.AddTransient<IWebhooksConsumer, WebhooksConsumer>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddWebhooksProducer(this IServiceCollection services, MessageQueueSettings settings)
+    {
+        AddResiliencePipelineRabbitMq(services);
+
+        services.AddTransient<IWebhooksProducer>(sp =>
+        {
+            var pipelineProvider = sp.GetRequiredService<ResiliencePipelineProvider<string>>();
+            var logger = sp.GetRequiredService<ILogger<WebhooksProducer>>();
+            return new WebhooksProducer(settings, pipelineProvider, logger);
+        });
+
+        return services;
+    }
 
     public static void AddResiliencePipelineRabbitMq(this IServiceCollection services)
     {

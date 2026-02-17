@@ -1,7 +1,5 @@
-﻿using System.Text;
-using MessageQueue.Abstractions;
+﻿using MessageQueue.Abstractions;
 using MessageQueue.Models;
-using NewsService.BLL.Abstractions;
 using NewsService.BLL.Abstractions.Services;
 using NewsService.Models.News.Models;
 
@@ -57,7 +55,19 @@ public class NewsProcessor : BackgroundService
             INewsService newsService = scope.ServiceProvider.GetRequiredService<INewsService>();
             
             await newsService.CreateBulkAsync(createModels);
-            
+
+            IWebhooksProducer producer = scope.ServiceProvider.GetRequiredService<IWebhooksProducer>();
+
+            var webhookMessages = new[]
+            {
+                new WebhooksQueueModel
+                {
+                    Action = "news.created",
+                    Data = createModels
+                }
+            };
+            producer.Publish(webhookMessages);
+
             Console.WriteLine("------------=======-------------");
             Console.WriteLine($"{messageModel.Length} new News were added ({DateTime.Now})");
             Console.WriteLine("------------=======-------------");

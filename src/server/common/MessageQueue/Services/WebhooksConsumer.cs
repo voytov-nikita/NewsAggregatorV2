@@ -4,9 +4,9 @@ using MessageQueue.Settings;
 
 namespace MessageQueue.Services;
 
-public class NewsConsumer: BaseMessageConsumer<NewsQueueModel[]>, INewsConsumer
+public class WebhooksConsumer: BaseMessageConsumer<WebhooksQueueModel[]>, IWebhooksConsumer
 {
-    public NewsConsumer(MessageQueueSettings settings)
+    public WebhooksConsumer(MessageQueueSettings settings)
         : base(settings.ServerAddress, settings.QueueName)
     {
     }

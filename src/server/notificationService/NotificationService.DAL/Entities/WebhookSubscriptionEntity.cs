@@ -2,7 +2,7 @@
 
 namespace NotificationService.DAL.Entities;
 
-public class WebhookEntity
+public class WebhookSubscriptionEntity
 {
     public ObjectId Id { get; set; }
     public string Url { get; set; }

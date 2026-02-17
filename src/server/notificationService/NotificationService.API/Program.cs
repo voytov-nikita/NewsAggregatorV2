@@ -1,9 +1,12 @@
 ﻿using Common.API;
+using MessageQueue;
+using MessageQueue.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NotificationService.BLL;
 using NotificationService.DAL;
+using NotificationService.Services;
 
 namespace NotificationService;
 
@@ -27,6 +30,8 @@ public class Program
         builder.Services.AddBusinessLayer();
         
         builder.Services.AddHttpClient();
+
+        builder.Services.AddTransient<IWebhookDispatcher, WebhookDispatcher>();
         
         //Todo: move to appsettings
         DatabaseSettings databaseSettings = new DatabaseSettings()
@@ -35,7 +40,16 @@ public class Program
             DatabaseName = "notificationService",
         }; 
         builder.Services.AddDataAccessLayer(databaseSettings);
-        
+
+        //Todo: move to appsettings
+        var webhooksQueueSettings = new MessageQueueSettings
+        {
+            ServerAddress = new Uri("amqp://localhost"),
+            QueueName = "webhooks-queue",
+        };
+        builder.Services.AddWebhooksConsumer(webhooksQueueSettings);
+        builder.Services.AddHostedService<WebhooksProcessor>();
+
         var app = builder.Build();
 
         app.UseExceptionHandler();

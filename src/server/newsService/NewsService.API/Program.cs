@@ -35,6 +35,14 @@ public class Program
         };
         
         builder.Services.AddNewsServiceConsumers(messageQueueSettings);
+
+        var webhooksQueueSettings = new MessageQueueSettings
+        {
+            ServerAddress = new Uri("amqp://localhost"),
+            QueueName = "webhooks-queue",
+        };
+        builder.Services.AddWebhooksProducer(webhooksQueueSettings);
+
         builder.Services.AddHostedService<NewsProcessor>();
         
         var app = builder.Build();

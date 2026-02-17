@@ -32,7 +32,7 @@ public static class ServiceCollectionExtensions
             //ClientSettings = MongoClientSettings.FromConnectionString(settings.ConnectionString)
         });
 
-        services.AddTransient<IWebhooksStore, WebhooksStore>();
+        services.AddTransient<IWebhookSubscriptionsStore, WebhookSubscriptionsStore>();
         
         return services;
     }

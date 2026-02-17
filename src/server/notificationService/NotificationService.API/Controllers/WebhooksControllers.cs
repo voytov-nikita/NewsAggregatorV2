@@ -3,19 +3,21 @@ using NotificationService.BLL.Abstractions.Services;
 
 namespace NotificationService.Controllers;
 
+[ApiController]
+[Route("api/v1/webhooks")]
 public class WebhooksControllers: ControllerBase
 {
-    private readonly IWebhooksServices _service;
+    private readonly IWebhookSubscriptionsServices _service;
 
-    public WebhooksControllers(IWebhooksServices service)
+    public WebhooksControllers(IWebhookSubscriptionsServices service)
     {
         _service = service;
     }
 
-    [HttpPost("webhooks")]
-    public async Task AddWebhook([FromBody] WebhookCreateRequest request)
+    [HttpPost]
+    public async Task Subscribe([FromBody] WebhookCreateRequest request)
     {
-        await _service.AddAsync(request.Url, request.Action);
+        await _service.AddAsync(request.Url, request.Event);
     }
     
 }
@@ -23,5 +25,5 @@ public class WebhooksControllers: ControllerBase
 public class WebhookCreateRequest
 {
     public string Url { get; set; }
-    public string Action { get; set; }
+    public string Event { get; set; }
 }
