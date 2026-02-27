@@ -1,0 +1,108 @@
+<header class="masthead">
+  <div class="masthead-top">
+    <h1 class="publication-name">Новости дня</h1>
+    <div class="masthead-right">
+      <a [routerLink]="navigation.getSettingsRoute()" class="icon-button">&#9881;</a>
+      <div class="user-circle"></div>
+    </div>
+  </div>
+  <nav class="breadcrumbs">
+    <a [routerLink]="navigation.getNewsListRoute()">Главная</a>
+    <span>/</span>
+    <span>{{ article().category }}</span>
+    <span>/</span>
+    <span>Статья</span>
+  </nav>
+</header>
+
+<div class="content-wrapper">
+  <article class="article-main">
+    <div class="article-header">
+      <div class="article-meta">
+        <span class="source-badge">{{ article().source }}</span>
+        <span class="meta-item">&#128214; {{ article().readTime }}</span>
+        <span class="meta-item">{{ article().timestamp }}</span>
+      </div>
+      <h1 class="article-title">{{ article().title }}</h1>
+    </div>
+
+    <div class="article-image"></div>
+
+    <div class="article-body">
+      @for (p of article().paragraphs; track $index) {
+        <p>{{ p }}</p>
+      }
+    </div>
+
+    <div class="interaction-bar">
+      <div class="rating-group">
+        <button class="rate-btn like">&#128077; Нравится</button>
+        <button class="rate-btn dislike">&#128078; Не нравится</button>
+        <span class="rating-score">+{{ article().rating }}</span>
+      </div>
+      <div class="share-group">
+        <button class="share-icon">&#120143;</button>
+        <button class="share-icon">f</button>
+        <button class="share-icon">&#9992;</button>
+        <button class="share-icon">&#9993;</button>
+      </div>
+    </div>
+
+    <div class="source-box">
+      <div class="source-label">Источник:</div>
+      <a href="#" class="source-link">{{ article().sourceUrl }} &rarr;</a>
+    </div>
+
+    <section class="comments-section">
+      <h2 class="comments-header">Комментарии ({{ comments().length }})</h2>
+
+      <div class="comment-input">
+        <textarea
+          class="comment-textarea"
+          placeholder="Ваш комментарий..."
+          [value]="commentText()"
+          (input)="onCommentInput($event)"
+        ></textarea>
+        <button class="comment-submit">Опубликовать</button>
+      </div>
+
+      @for (comment of comments(); track comment.author) {
+        <div class="comment">
+          <div class="comment-top">
+            <span class="comment-author">{{ comment.author }}</span>
+            <span class="comment-time">{{ comment.time }}</span>
+          </div>
+          <div class="comment-text">{{ comment.text }}</div>
+          <div class="comment-actions">
+            <button class="comment-btn">&#128077; {{ comment.likes }}</button>
+            <button class="comment-btn">&#128078; {{ comment.dislikes }}</button>
+            <button class="comment-btn">Ответить</button>
+          </div>
+        </div>
+      }
+    </section>
+  </article>
+
+  <aside class="content-sidebar">
+    <div class="sidebar-widget">
+      <h3 class="widget-title">Теги</h3>
+      <div class="tags-cloud">
+        @for (tag of tags(); track tag) {
+          <span class="tag-item">{{ tag }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="sidebar-widget">
+      <h3 class="widget-title">Похожие новости</h3>
+      <div class="related-list">
+        @for (related of relatedArticles(); track related.title) {
+          <a [routerLink]="navigation.getNewsDetailRoute(related.id)" class="related-mini">
+            <div class="related-mini-source">{{ related.source }}</div>
+            <div class="related-mini-title">{{ related.title }}</div>
+          </a>
+        }
+      </div>
+    </div>
+  </aside>
+</div>

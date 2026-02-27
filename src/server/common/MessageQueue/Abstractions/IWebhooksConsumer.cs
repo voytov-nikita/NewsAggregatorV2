@@ -2,7 +2,7 @@
 
 namespace MessageQueue.Abstractions;
 
-public interface INewsConsumer: IMessageConsumer<NewsQueueModel[]>
+public interface IWebhooksConsumer: IMessageConsumer<WebhooksQueueModel[]>
 {
-    
+
 }

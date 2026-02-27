@@ -1,0 +1,307 @@
+<header class="masthead">
+  <div class="masthead-top">
+    <h1 class="publication-name">Настройки</h1>
+    <div class="masthead-right">
+      <a [routerLink]="navigation.getNewsListRoute()" class="icon-button">&#9881;</a>
+      <div class="user-circle"></div>
+    </div>
+  </div>
+</header>
+
+<div class="settings-container">
+  <h2 class="page-title">Настройки профиля</h2>
+
+  <div class="tabs">
+    <button
+      class="tab"
+      [class.active]="activeTab() === 'profile'"
+      (click)="switchTab('profile')"
+    >Профиль</button>
+    <button
+      class="tab"
+      [class.active]="activeTab() === 'integrations'"
+      (click)="switchTab('integrations')"
+    >Интеграции</button>
+    <button
+      class="tab"
+      [class.active]="activeTab() === 'notifications'"
+      (click)="switchTab('notifications')"
+    >Уведомления</button>
+    <button
+      class="tab"
+      [class.active]="activeTab() === 'stats'"
+      (click)="switchTab('stats')"
+    >Статистика</button>
+  </div>
+
+  <!-- Profile Tab -->
+  @if (activeTab() === 'profile') {
+    <div class="tab-content">
+      <div class="form-section">
+        <h3 class="section-title">Основная информация</h3>
+
+        <div class="avatar-section">
+          <div class="avatar-preview"></div>
+          <div class="avatar-controls">
+            <div class="form-label">Аватар профиля</div>
+            <p class="form-help">Рекомендуемый размер: 400x400px, формат JPG или PNG</p>
+            <div class="avatar-buttons">
+              <button class="btn btn-primary">Загрузить новый</button>
+              <button class="btn">Удалить</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Имя пользователя</label>
+          <input type="text" class="form-input" value="Александр Петров" placeholder="Введите имя" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" value="aleksandr.petrov@example.com" placeholder="email@example.com" />
+          <p class="form-help">На этот адрес будут приходить уведомления</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">О себе</label>
+          <textarea class="form-input" rows="4" placeholder="Расскажите о себе..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Любимые категории</h3>
+        <p class="form-help categories-help">Выберите категории, которые вас интересуют больше всего</p>
+
+        <div class="categories-grid">
+          @for (cat of categories(); track cat.name; let i = $index) {
+            <div
+              class="category-card"
+              [class.selected]="cat.selected"
+              (click)="toggleCategory(i)"
+            >
+              <div class="category-icon">{{ cat.icon }}</div>
+              <div class="category-name">{{ cat.name }}</div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Настройки приватности</h3>
+
+        @for (setting of privacySettings(); track setting.title; let i = $index) {
+          <div class="notification-row">
+            <div>
+              <div class="notification-title">{{ setting.title }}</div>
+              <div class="form-help">{{ setting.description }}</div>
+            </div>
+            <div
+              class="toggle-switch"
+              [class.active]="setting.active"
+              (click)="togglePrivacy(i)"
+            >
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="actions-bar">
+        <button class="btn btn-primary">Сохранить изменения</button>
+        <button class="btn">Отменить</button>
+      </div>
+    </div>
+  }
+
+  <!-- Integrations Tab -->
+  @if (activeTab() === 'integrations') {
+    <div class="tab-content">
+      <div class="form-section">
+        <h3 class="section-title">Webhook интеграция</h3>
+        <p class="form-help webhook-help">Получайте уведомления о новых новостях через webhook</p>
+
+        <div class="form-group">
+          <label class="form-label">Webhook URL</label>
+          <input type="url" class="form-input" placeholder="https://your-server.com/webhook" value="https://api.myserver.com/news-webhook" />
+          <p class="form-help">POST запрос будет отправлен на этот URL при появлении новых новостей</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Secret Token (опционально)</label>
+          <input type="password" class="form-input" placeholder="Введите секретный токен" />
+          <p class="form-help">Для проверки подлинности запросов</p>
+        </div>
+
+        <div class="notification-row webhook-toggle">
+          <div>
+            <div class="notification-title">Активировать webhook</div>
+            <div class="form-help">Включить отправку уведомлений</div>
+          </div>
+          <div
+            class="toggle-switch"
+            [class.active]="webhookActive()"
+            (click)="webhookActive.set(!webhookActive())"
+          >
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Email уведомления</h3>
+
+        <div class="form-group">
+          <label class="form-label">Email для уведомлений</label>
+          <input type="email" class="form-input" value="aleksandr.petrov@example.com" />
+        </div>
+
+        <div class="notification-row">
+          <div>
+            <div class="notification-title">Дневной дайджест</div>
+            <div class="form-help">Ежедневная сводка новостей в 9:00</div>
+          </div>
+          <div
+            class="toggle-switch"
+            [class.active]="dailyDigest()"
+            (click)="dailyDigest.set(!dailyDigest())"
+          >
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+
+        <div class="notification-row">
+          <div>
+            <div class="notification-title">Недельный обзор</div>
+            <div class="form-help">Сводка за неделю каждый понедельник</div>
+          </div>
+          <div
+            class="toggle-switch"
+            [class.active]="weeklyReview()"
+            (click)="weeklyReview.set(!weeklyReview())"
+          >
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Telegram бот</h3>
+
+        <div class="integration-item">
+          <div class="integration-header">
+            <div class="integration-title">NewsAggregator Bot</div>
+            <span class="status-badge inactive">Не подключен</span>
+          </div>
+          <p class="integration-description">
+            Получайте уведомления о важных новостях прямо в Telegram
+          </p>
+          <div class="integration-actions">
+            <button class="btn btn-primary">Подключить бота</button>
+            <button class="btn">Инструкция</button>
+          </div>
+        </div>
+
+        <p class="form-help bot-commands">
+          &#128241; Команды бота: /start, /subscribe, /unsubscribe, /settings
+        </p>
+      </div>
+
+      <div class="actions-bar">
+        <button class="btn btn-primary">Сохранить настройки</button>
+        <button class="btn">Тест webhook</button>
+      </div>
+    </div>
+  }
+
+  <!-- Notifications Tab -->
+  @if (activeTab() === 'notifications') {
+    <div class="tab-content">
+      <div class="form-section">
+        <h3 class="section-title">Настройки уведомлений</h3>
+
+        @for (setting of notificationSettings(); track setting.title; let i = $index) {
+          <div class="notification-row">
+            <div>
+              <div class="notification-title">{{ setting.title }}</div>
+              <div class="form-help">{{ setting.description }}</div>
+            </div>
+            <div
+              class="toggle-switch"
+              [class.active]="setting.active"
+              (click)="toggleNotification(i)"
+            >
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Время уведомлений</h3>
+
+        <div class="form-group">
+          <label class="form-label">Не беспокоить с</label>
+          <div class="time-range">
+            <input type="time" class="form-input" value="22:00" />
+            <input type="time" class="form-input" value="08:00" />
+          </div>
+          <p class="form-help">Уведомления не будут приходить в это время</p>
+        </div>
+      </div>
+
+      <div class="actions-bar">
+        <button class="btn btn-primary">Сохранить настройки</button>
+      </div>
+    </div>
+  }
+
+  <!-- Stats Tab -->
+  @if (activeTab() === 'stats') {
+    <div class="tab-content">
+      <div class="form-section">
+        <h3 class="section-title">Статистика чтения</h3>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">{{ stats().articlesRead }}</div>
+            <div class="stat-label">Прочитано статей</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{{ stats().saved }}</div>
+            <div class="stat-label">Сохранено</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{{ stats().comments }}</div>
+            <div class="stat-label">Комментариев</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">Любимые источники</h3>
+
+        @for (source of favoriteSources(); track source.name) {
+          <div class="integration-item">
+            <div class="source-stat">
+              <div>
+                <div class="source-stat-name">{{ source.name }}</div>
+                <div class="form-help">{{ source.articles }}</div>
+              </div>
+              <div class="source-stat-percentage">{{ source.percentage }}</div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">История активности</h3>
+        <p class="form-help">Последние 30 дней активности</p>
+
+        <div class="activity-chart-placeholder">
+          [График активности]
+        </div>
+      </div>
+    </div>
+  }
+</div>

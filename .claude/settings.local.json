@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build:*)",
+      "Bash(dotnet run:*)",
+      "Bash(findstr:*)",
+      "Bash(git -C \"P:/MyProjects/NewsAggregatorV2\" log --oneline -20)",
+      "Bash(git -C \"P:/MyProjects/NewsAggregatorV2\" branch -a)",
+      "Bash(git -C \"P:/MyProjects/NewsAggregatorV2\" remote -v)",
+      "Bash(git -C \"P:/MyProjects/NewsAggregatorV2\" status)",
+      "Bash(npx ng:*)"
+    ]
+  }
+}

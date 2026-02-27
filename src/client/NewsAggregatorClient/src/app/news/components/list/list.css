@@ -1,0 +1,221 @@
+:host {
+  display: block;
+}
+
+/* Masthead */
+.masthead {
+  background: var(--paper);
+  border-bottom: 3px double var(--ink);
+  padding: 2rem 3rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(10px);
+}
+
+.masthead-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.publication-name {
+  font-family: 'Crimson Pro', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.masthead-right {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.icon-button {
+  width: 38px;
+  height: 38px;
+  border: 2px solid var(--ink);
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.icon-button:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.user-circle {
+  width: 42px;
+  height: 42px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.user-circle:hover {
+  transform: scale(1.05);
+}
+
+.dateline {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  color: var(--ink-light);
+  font-style: italic;
+}
+
+/* Content */
+.content-area {
+  padding: 2.5rem 3rem;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.search-field {
+  flex: 1;
+  padding: 0.9rem 1.25rem;
+  border: 2px solid var(--line);
+  background: white;
+  font-family: 'Libre Franklin', sans-serif;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.search-field:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: var(--highlight);
+}
+
+.filter-control {
+  padding: 0.9rem 2rem;
+  border: 2px solid var(--ink);
+  background: white;
+  font-family: 'Libre Franklin', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filter-control:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* Articles */
+.articles {
+  display: flex;
+  flex-direction: column;
+}
+
+.article {
+  display: flex;
+  gap: 1.75rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--line);
+  transition: all 0.3s ease;
+}
+
+.article:hover {
+  background: var(--highlight);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
+.article-thumb {
+  width: 180px;
+  min-width: 180px;
+  height: 130px;
+  border: 1px solid var(--line);
+  object-fit: cover;
+}
+
+.article-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.article-head {
+  display: flex;
+  gap: 1.5rem;
+  align-items: baseline;
+}
+
+.source-badge {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.timestamp {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  font-style: italic;
+}
+
+.article-headline {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.article-controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}
+
+.control-btn {
+  padding: 0.65rem 1.5rem;
+  border: 2px solid var(--ink);
+  background: white;
+  font-family: 'Libre Franklin', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.control-btn.primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.control-btn.primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.control-btn.secondary:hover {
+  background: var(--paper);
+}
