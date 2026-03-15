@@ -26,47 +26,6 @@ docs/Solution/              Architecture docs and diagrams
 
 Each backend service has its own solution file at the repo root: `NewsService.sln`, `CrawlerService.sln`, `NotificationService.sln`.
 
-## Build & Run Commands
-
-### Backend (.NET)
-
-```bash
-# Build a specific service
-dotnet build NewsService.sln
-dotnet build CrawlerService.sln
-dotnet build NotificationService.sln
-
-# Run a service (from its API directory)
-dotnet run --project src/server/newsService/NewsService.API
-dotnet run --project src/server/crawlerService/CrawlerService.API
-dotnet run --project src/server/notificationService/NotificationService.API
-```
-
-### Frontend (Angular)
-
-```bash
-cd src/client/NewsAggregatorClient
-npm install
-npm start          # dev server at localhost:4200
-npm run build      # production build
-npm test           # run tests (Vitest)
-```
-
-### Running Tests
-
-```bash
-# All tests for a service
-dotnet test NewsService.sln
-dotnet test CrawlerService.sln
-
-# Single test project
-dotnet test tests/newsService/NewsService.BLL.Tests
-dotnet test tests/crawlerService/CrawlerService.BLL.Tests
-
-# Single test by name
-dotnet test tests/newsService/NewsService.BLL.Tests --filter "FullyQualifiedName~TestMethodName"
-```
-
 ## Infrastructure (Docker)
 
 Services depend on: PostgreSQL (port 5432), MongoDB (port 27017), LavinMQ/RabbitMQ (ports 5672/15672), Seq logging (port 5341). See `readme.md` for docker run commands.
@@ -86,6 +45,24 @@ builder.Services.AddNewsServiceConsumers(queueSettings);
 
 **Testing stack**: xUnit + Moq + AutoFixture + FluentAssertions. Angular uses Vitest + Jsdom.
 
-## Angular Client Structure
+## Angular Client
 
-NgModule-based architecture (not standalone components). Feature modules: `NewsModule`, `SettingsModule`, `LayoutModule`, `SharedModule`. Shared models/enums/services live in `src/app/shared/`. Prettier is configured in `package.json` (100 char width, single quotes, angular HTML parser).
+Angular 21 SPA, NgModule-based architecture. Details in [`src/client/NewsAggregatorClient/CLAUDE.md`](src/client/NewsAggregatorClient/CLAUDE.md).
+
+## Available Skills
+
+- **create-migration**: `.claude/skills/create-migration.md`
+  Use when in need to create EF Core migrations for any service with PostgreSQL DAL. Accepts migration name and optional service name.
+- **create-integration-test**: `.claude/skills/create-integration-test.md`
+  Placeholder for integration test creation (DAL stores, API controllers). Not yet implemented — skips and logs.
+- **create-unit-test**: `.claude/skills/create-unit-test.md`
+  Create or update a unit test file for a source file. Accepts file path and optional method name.
+- **up-to-date-tests**: `.claude/skills/up-to-date-tests.md`
+  Verify test coverage is up-to-date for a service. Checks BLL services, validators, extensions, mappers, DAL stores, and API controllers against existing tests. Accepts service name. 
+
+
+# Important — MUST follow without being asked
+
+ALWAYS update this CLAUDE.md immediately after any change that affects architecture, models, commands, environments, or deployment — without waiting for the user to ask. Keep additions concise and to the point: one fact per line, no redundant context.
+
+If asked to review CLAUDE.md for accuracy, read the current state of the project and update any outdated information.

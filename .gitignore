@@ -100,3 +100,4 @@ scripts/PrintServiceApi.bat
 .qodo
 *.drawio.svg.bkp
 *.drawio.svg.dtmp
+/.claude/settings.local.json
