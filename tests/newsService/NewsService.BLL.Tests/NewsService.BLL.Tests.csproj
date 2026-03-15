@@ -30,6 +30,8 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\src\server\newsService\NewsService.BLL\NewsService.BLL.csproj" />
       <ProjectReference Include="..\..\..\src\server\newsService\NewsService.DAL.Abstractions\NewsService.DAL.Abstractions.csproj" />
+      <ProjectReference Include="..\..\..\src\server\newsService\NewsService.API\NewsService.API.csproj" />
+      <ProjectReference Include="..\..\..\src\server\newsService\NewsService.DAL.PostgreSql\NewsService.DAL.PostgreSql.csproj" />
     </ItemGroup>
 
 </Project>
