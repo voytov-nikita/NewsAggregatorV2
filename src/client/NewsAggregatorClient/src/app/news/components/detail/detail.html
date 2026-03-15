@@ -1,18 +1,15 @@
 <header class="masthead">
   <div class="masthead-top">
-    <h1 class="publication-name">Новости дня</h1>
+    <nav class="breadcrumb">
+      <a [routerLink]="navigation.getNewsListRoute()" class="breadcrumb-link">Новости</a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-current">{{ article().category }}</span>
+    </nav>
     <div class="masthead-right">
       <a [routerLink]="navigation.getSettingsRoute()" class="icon-button">&#9881;</a>
       <div class="user-circle"></div>
     </div>
   </div>
-  <nav class="breadcrumbs">
-    <a [routerLink]="navigation.getNewsListRoute()">Главная</a>
-    <span>/</span>
-    <span>{{ article().category }}</span>
-    <span>/</span>
-    <span>Статья</span>
-  </nav>
 </header>
 
 <div class="content-wrapper">

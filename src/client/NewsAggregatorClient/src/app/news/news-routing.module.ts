@@ -6,6 +6,7 @@ const routes: Routes = [
   {
     path: '',
     component: NewsList,
+    data: { pageTitle: 'Все новости' },
   },
 ];
 

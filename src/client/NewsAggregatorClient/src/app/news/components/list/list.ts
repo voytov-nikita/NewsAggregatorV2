@@ -24,6 +24,17 @@ export class NewsList implements OnInit {
   protected readonly searchQuery = signal('');
   protected readonly articles = signal<NewsResponse[]>([]);
 
+  protected readonly isFilterOpen = signal(false);
+  protected readonly orderBy = signal(NewsOrderField.PublishDate);
+  protected readonly orderDirection = signal(OrderDirection.Descending);
+
+  protected readonly sortOptions = [
+    { label: 'Сначала новые', field: NewsOrderField.PublishDate, direction: OrderDirection.Descending },
+    { label: 'Сначала старые', field: NewsOrderField.PublishDate, direction: OrderDirection.Ascending },
+    { label: 'По названию А-Я', field: NewsOrderField.Title, direction: OrderDirection.Ascending },
+    { label: 'По названию Я-А', field: NewsOrderField.Title, direction: OrderDirection.Descending },
+  ];
+
   private _onSearch$ = new Subject<string>();
 
   constructor(protected readonly navigation: NavigationService) {
@@ -67,6 +78,18 @@ export class NewsList implements OnInit {
     this.loadArticles();
   }
 
+  protected toggleFilter(): void {
+    this.isFilterOpen.update((v) => !v);
+  }
+
+  protected applySorting(field: NewsOrderField, direction: OrderDirection): void {
+    this.orderBy.set(field);
+    this.orderDirection.set(direction);
+    this.isFilterOpen.set(false);
+    this.currentPage.set(1);
+    this.loadArticles();
+  }
+
   private loadArticles(): void {
     const keyword = this.searchQuery() || undefined;
     const filter = this.buildFilter(keyword);
@@ -86,8 +109,8 @@ export class NewsList implements OnInit {
       take: this.pageSize(),
       offset: (this.currentPage() - 1) * this.pageSize(),
       keyword,
-      orderBy: NewsOrderField.PublishDate,
-      orderDirection: OrderDirection.Descending,
+      orderBy: this.orderBy(),
+      orderDirection: this.orderDirection(),
     };
   }
 }

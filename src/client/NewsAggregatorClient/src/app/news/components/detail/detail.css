@@ -17,15 +17,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
 }
 
-.publication-name {
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.breadcrumb-logo {
   font-family: 'Crimson Pro', serif;
-  font-size: 2.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: var(--ink);
+}
+
+.breadcrumb-logo:hover {
+  color: var(--accent);
+}
+
+.breadcrumb-separator {
+  color: var(--ink-light);
+}
+
+.breadcrumb-current {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink-light);
 }
 
 .masthead-right {
@@ -69,21 +89,13 @@
   transform: scale(1.05);
 }
 
-/* Breadcrumbs */
-.breadcrumbs {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  font-size: 0.9rem;
+.breadcrumb-link {
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--ink-light);
 }
 
-.breadcrumbs a {
-  color: var(--ink-light);
-  text-decoration: none;
-}
-
-.breadcrumbs a:hover {
+.breadcrumb-link:hover {
   color: var(--accent);
 }
 

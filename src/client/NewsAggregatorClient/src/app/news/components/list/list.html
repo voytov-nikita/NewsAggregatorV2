@@ -1,6 +1,6 @@
 <header class="masthead">
   <div class="masthead-top">
-    <h1 class="publication-name">Новости дня</h1>
+    <span class="breadcrumb-current">Новости дня</span>
     <div class="masthead-right">
       <a [routerLink]="navigation.getSettingsRoute()" class="icon-button">&#9881;</a>
       <div class="user-circle"></div>
@@ -17,7 +17,27 @@
       [value]="searchQuery()"
       (input)="onSearchInput($any($event.target).value)"
     />
-    <button class="filter-control">Фильтры &#9660;</button>
+    <div class="filter-wrapper">
+      <button class="filter-control" (click)="toggleFilter()">
+        Фильтры &#9660;
+      </button>
+      @if (isFilterOpen()) {
+        <div class="filter-popup">
+          <div class="filter-popup-header">Сортировка</div>
+          <div class="filter-options">
+            @for (option of sortOptions; track option.label) {
+              <button
+                class="filter-option"
+                [class.active]="orderBy() === option.field && orderDirection() === option.direction"
+                (click)="applySorting(option.field, option.direction)"
+              >
+                {{ option.label }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
   </div>
 
   <div class="articles">

@@ -11,6 +11,10 @@
 
 /* Sidebar */
 .sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
   background: var(--ink);
   color: var(--paper);
   padding: 2rem 1.5rem;
