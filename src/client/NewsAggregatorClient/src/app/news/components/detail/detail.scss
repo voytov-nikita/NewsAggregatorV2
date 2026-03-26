@@ -2,103 +2,6 @@
   display: block;
 }
 
-/* Masthead */
-.masthead {
-  background: var(--paper);
-  border-bottom: 3px double var(--ink);
-  padding: 2rem 3rem;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(10px);
-}
-
-.masthead-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.breadcrumb-logo {
-  font-family: 'Crimson Pro', serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--ink);
-}
-
-.breadcrumb-logo:hover {
-  color: var(--accent);
-}
-
-.breadcrumb-separator {
-  color: var(--ink-light);
-}
-
-.breadcrumb-current {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--ink-light);
-}
-
-.masthead-right {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.icon-button {
-  width: 38px;
-  height: 38px;
-  border: 2px solid var(--ink);
-  background: transparent;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  font-size: 1rem;
-  text-decoration: none;
-  color: var(--ink);
-}
-
-.icon-button:hover {
-  background: var(--ink);
-  color: var(--paper);
-}
-
-.user-circle {
-  width: 42px;
-  height: 42px;
-  border: 2px solid var(--ink);
-  border-radius: 50%;
-  background: var(--accent);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.user-circle:hover {
-  transform: scale(1.05);
-}
-
-.breadcrumb-link {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--ink-light);
-}
-
-.breadcrumb-link:hover {
-  color: var(--accent);
-}
-
 /* Content Layout */
 .content-wrapper {
   display: grid;
@@ -124,14 +27,6 @@
   align-items: center;
   margin-bottom: 1rem;
   flex-wrap: wrap;
-}
-
-.source-badge {
-  font-family: 'Crimson Pro', serif;
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--accent);
 }
 
 .meta-item {
@@ -184,31 +79,6 @@
   align-items: center;
 }
 
-.rate-btn {
-  padding: 0.6rem 1.25rem;
-  border: 2px solid var(--ink);
-  background: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.rate-btn.like:hover {
-  background: var(--green);
-  color: white;
-  border-color: var(--green);
-}
-
-.rate-btn.dislike:hover {
-  background: var(--red);
-  color: white;
-  border-color: var(--red);
-}
-
 .rating-score {
   font-weight: 700;
   color: var(--ink-light);
@@ -217,23 +87,6 @@
 .share-group {
   display: flex;
   gap: 0.5rem;
-}
-
-.share-icon {
-  width: 36px;
-  height: 36px;
-  border: 2px solid var(--ink);
-  background: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.share-icon:hover {
-  background: var(--ink);
-  color: var(--paper);
 }
 
 /* Original Source */
@@ -280,32 +133,8 @@
 .comment-textarea {
   width: 100%;
   min-height: 100px;
-  padding: 1rem;
-  border: 2px solid var(--line);
-  font-family: 'Libre Franklin', sans-serif;
   resize: vertical;
   margin-bottom: 0.75rem;
-}
-
-.comment-textarea:focus {
-  outline: none;
-  border-color: var(--ink);
-  background: var(--highlight);
-}
-
-.comment-submit {
-  padding: 0.7rem 1.75rem;
-  border: 2px solid var(--ink);
-  background: var(--ink);
-  color: var(--paper);
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'Libre Franklin', sans-serif;
-}
-
-.comment-submit:hover {
-  background: var(--accent);
-  border-color: var(--accent);
 }
 
 .comment {
@@ -342,17 +171,6 @@
   gap: 0.75rem;
 }
 
-.comment-btn {
-  padding: 0.35rem 0.85rem;
-  border: 1px solid var(--line);
-  background: transparent;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.comment-btn:hover {
-  background: var(--paper);
-}
 
 /* Content Sidebar */
 .content-sidebar {
@@ -380,19 +198,6 @@
   gap: 0.5rem;
 }
 
-.tag-item {
-  padding: 0.4rem 0.9rem;
-  border: 1px solid var(--line);
-  background: white;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tag-item:hover {
-  background: var(--highlight);
-  border-color: var(--ink);
-}
 
 .related-list {
   display: flex;

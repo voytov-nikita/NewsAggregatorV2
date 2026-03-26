@@ -1,0 +1,39 @@
+// Color palette
+$paper: #f9f7f3;
+$ink: #1e1e1e;
+$ink-light: #5a5a5a;
+$accent: #d4574d;
+$line: #d8d4cc;
+$highlight: #fff8e1;
+$green: #4a7c59;
+$red: #c44536;
+$success: #4a7c59;
+
+// Typography
+$font-heading: 'Crimson Pro', serif;
+$font-body: 'Libre Franklin', sans-serif;
+
+// Spacing
+$content-padding: 3rem;
+$masthead-padding: 2rem 3rem;
+
+// Borders
+$border-standard: 2px solid $line;
+$border-ink: 2px solid $ink;
+$border-double: 3px double $ink;
+
+// Transitions
+$transition-fast: all 0.2s ease;
+$transition-medium: all 0.3s ease;
+
+:root {
+  --paper: #{$paper};
+  --ink: #{$ink};
+  --ink-light: #{$ink-light};
+  --accent: #{$accent};
+  --line: #{$line};
+  --highlight: #{$highlight};
+  --green: #{$green};
+  --red: #{$red};
+  --success: #{$success};
+}

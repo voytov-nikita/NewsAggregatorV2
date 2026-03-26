@@ -1,0 +1,72 @@
+@use '../general/variables' as *;
+
+.icon-button {
+  width: 38px;
+  height: 38px;
+  border: $border-ink;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: $transition-fast;
+  font-size: 1rem;
+  text-decoration: none;
+  color: $ink;
+}
+
+.icon-button:hover {
+  background: $ink;
+  color: $paper;
+}
+
+.control-btn {
+  padding: 0.65rem 1.5rem;
+  border: $border-ink;
+  background: white;
+  font-family: $font-body;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition-fast;
+}
+
+.control-btn.primary {
+  background: $ink;
+  color: $paper;
+}
+
+.control-btn.primary:hover {
+  background: $accent;
+  border-color: $accent;
+}
+
+.control-btn.secondary:hover {
+  background: $paper;
+}
+
+.btn {
+  padding: 0.7rem 1.5rem;
+  border: $border-ink;
+  background: white;
+  font-family: $font-body;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition-fast;
+  font-size: 0.9rem;
+}
+
+.btn-primary {
+  background: $ink;
+  color: $paper;
+}
+
+.btn-primary:hover {
+  background: $accent;
+  border-color: $accent;
+}
+
+.btn:hover {
+  background: $paper;
+}

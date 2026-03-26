@@ -1,0 +1,119 @@
+@use 'variables' as *;
+
+:root {
+  // Primary = ink
+  --p-primary-color: #{$ink};
+  --p-primary-hover-color: #{$accent};
+  --p-primary-active-color: #{$accent};
+  --p-primary-contrast-color: #{$paper};
+
+  // Surfaces = paper palette
+  --p-surface-0: #ffffff;
+  --p-surface-50: #{$paper};
+  --p-surface-100: #f0ede7;
+  --p-surface-200: #{$line};
+  --p-surface-ground: #{$paper};
+  --p-surface-section: #{$paper};
+  --p-surface-card: #ffffff;
+  --p-surface-overlay: #ffffff;
+  --p-surface-border: #{$line};
+
+  // Text
+  --p-text-color: #{$ink};
+  --p-text-muted-color: #{$ink-light};
+
+  // Typography
+  --p-font-family: #{$font-body};
+
+  // Focus
+  --p-focus-ring-color: #{$accent};
+
+  // Sharp corners for newspaper aesthetic
+  --p-button-border-radius: 0;
+  --p-tag-border-radius: 0;
+  --p-chip-border-radius: 0;
+  --p-inputtext-border-radius: 0;
+  --p-textarea-border-radius: 0;
+  --p-toggleswitch-border-radius: 14px;
+  --p-paginator-border-radius: 0;
+  --p-popover-border-radius: 0;
+  --p-avatar-border-radius: 50%;
+  --p-tab-active-border-color: #{$ink};
+}
+
+// Component-level overrides
+.p-button {
+  font-family: $font-body;
+  font-weight: 600;
+  border-width: 2px;
+}
+
+.p-tag {
+  font-family: $font-heading;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.p-paginator {
+  background: transparent;
+  border: none;
+  border-top: $border-ink;
+}
+
+.p-tab {
+  font-family: $font-body;
+  font-weight: 600;
+}
+
+.p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-slider {
+  background: $success;
+}
+
+.p-inputtext {
+  border-width: 2px;
+  border-color: $line;
+
+  &:focus {
+    border-color: $ink;
+    background: $highlight;
+    box-shadow: none;
+  }
+}
+
+.p-textarea {
+  border-width: 2px;
+  border-color: $line;
+
+  &:focus {
+    border-color: $ink;
+    background: $highlight;
+    box-shadow: none;
+  }
+}
+
+.p-breadcrumb {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: $font-heading;
+}
+
+.p-avatar {
+  border: 2px solid $ink;
+  background: $accent;
+}
+
+.p-chip {
+  border: 1px solid $line;
+  background: white;
+  font-size: 0.85rem;
+}
+
+.p-popover {
+  border: $border-ink;
+}
+
+.p-menu {
+  border: none;
+  padding: 0;
+}

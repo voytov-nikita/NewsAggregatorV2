@@ -1,0 +1,64 @@
+@use '../general/variables' as *;
+
+.notification-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  border: $border-standard;
+  background: white;
+  margin-bottom: 1rem;
+
+  p-toggleswitch {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.notification-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.integration-item {
+  padding: 1.5rem;
+  border: $border-standard;
+  background: white;
+  margin-bottom: 1rem;
+}
+
+.integration-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.integration-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.integration-description {
+  margin-bottom: 1rem;
+  color: $ink-light;
+}
+
+.integration-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.status-badge {
+  padding: 0.4rem 1rem;
+  border: 2px solid $success;
+  background: white;
+  color: $success;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge.inactive {
+  border-color: $ink-light;
+  color: $ink-light;
+}

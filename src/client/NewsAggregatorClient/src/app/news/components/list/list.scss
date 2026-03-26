@@ -1,0 +1,94 @@
+:host {
+  display: block;
+}
+
+/* Content */
+.content-area {
+  padding: 2.5rem 3rem;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+
+  ::ng-deep p-button {
+    display: flex;
+
+    .filter-btn {
+      height: 100%;
+      border: 2px solid var(--line);
+      background: white;
+      color: var(--ink-light);
+
+      &:hover {
+        border-color: var(--ink);
+        color: var(--ink);
+        background: var(--highlight);
+      }
+    }
+  }
+}
+
+/* Articles */
+.articles {
+  display: flex;
+  flex-direction: column;
+}
+
+.article {
+  display: flex;
+  gap: 1.75rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--line);
+  transition: all 0.3s ease;
+}
+
+.article:hover {
+  background: var(--highlight);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
+.article-thumb {
+  width: 180px;
+  min-width: 180px;
+  height: 130px;
+  border: 1px solid var(--line);
+  object-fit: cover;
+}
+
+.article-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.article-head {
+  display: flex;
+  gap: 1.5rem;
+  align-items: baseline;
+}
+
+.article-headline {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.article-controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}

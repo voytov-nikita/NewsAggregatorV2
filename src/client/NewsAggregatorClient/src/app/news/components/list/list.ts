@@ -1,6 +1,7 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, finalize, Subject, switchMap, tap } from 'rxjs';
+import { MenuItem } from 'primeng/api';
 import { NavigationService } from '@shared/services';
 import { NewsResponse, NewsFilterRequest } from '@shared/models';
 import { NewsOrderField, OrderDirection } from '@shared/enums';
@@ -10,7 +11,7 @@ import { NewsService } from '../../services/news.service';
   standalone: false,
   selector: 'app-news-list',
   templateUrl: './list.html',
-  styleUrl: './list.css',
+  styleUrl: './list.scss',
 })
 export class NewsList implements OnInit {
   private destroyRef = inject(DestroyRef);
@@ -24,16 +25,26 @@ export class NewsList implements OnInit {
   protected readonly searchQuery = signal('');
   protected readonly articles = signal<NewsResponse[]>([]);
 
-  protected readonly isFilterOpen = signal(false);
   protected readonly orderBy = signal(NewsOrderField.PublishDate);
   protected readonly orderDirection = signal(OrderDirection.Descending);
 
-  protected readonly sortOptions = [
+  private readonly sortOptions = [
     { label: 'Сначала новые', field: NewsOrderField.PublishDate, direction: OrderDirection.Descending },
     { label: 'Сначала старые', field: NewsOrderField.PublishDate, direction: OrderDirection.Ascending },
     { label: 'По названию А-Я', field: NewsOrderField.Title, direction: OrderDirection.Ascending },
     { label: 'По названию Я-А', field: NewsOrderField.Title, direction: OrderDirection.Descending },
   ];
+
+  protected readonly sortMenuItems = computed<MenuItem[]>(() =>
+    this.sortOptions.map((opt) => ({
+      label: opt.label,
+      icon:
+        this.orderBy() === opt.field && this.orderDirection() === opt.direction
+          ? 'pi pi-check'
+          : undefined,
+      command: () => this.applySorting(opt.field, opt.direction),
+    })),
+  );
 
   private _onSearch$ = new Subject<string>();
 
@@ -41,19 +52,17 @@ export class NewsList implements OnInit {
     this._onSearch$
       .pipe(
         debounceTime(300),
-        tap(_ => {
+        tap((_) => {
           this.currentPage.set(1);
           this.isLoading.set(true);
         }),
-        switchMap(keyword => {
+        switchMap((keyword) => {
           const filter = this.buildFilter(keyword || undefined);
-          return this.newsService.getMany(filter).pipe(
-            finalize(() => this.isLoading.set(false)),
-          );
+          return this.newsService.getMany(filter).pipe(finalize(() => this.isLoading.set(false)));
         }),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(articles => this.articles.set(articles));
+      .subscribe((articles) => this.articles.set(articles));
   }
 
   public ngOnInit(): void {
@@ -78,14 +87,9 @@ export class NewsList implements OnInit {
     this.loadArticles();
   }
 
-  protected toggleFilter(): void {
-    this.isFilterOpen.update((v) => !v);
-  }
-
-  protected applySorting(field: NewsOrderField, direction: OrderDirection): void {
+  private applySorting(field: NewsOrderField, direction: OrderDirection): void {
     this.orderBy.set(field);
     this.orderDirection.set(direction);
-    this.isFilterOpen.set(false);
     this.currentPage.set(1);
     this.loadArticles();
   }
@@ -101,7 +105,7 @@ export class NewsList implements OnInit {
         finalize(() => this.isLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(articles => this.articles.set(articles));
+      .subscribe((articles) => this.articles.set(articles));
   }
 
   private buildFilter(keyword?: string): NewsFilterRequest {

@@ -19,7 +19,7 @@ All commands run from `src/client/NewsAggregatorClient/`.
 - **AppModule** — Root module. Imports `LayoutModule`, `SharedModule`, sets up routing.
 - **NewsModule** (lazy) — News list and detail views. Own services: `NewsService`, `CommentsService`.
 - **SettingsModule** (lazy) — Settings page.
-- **SharedModule** — Reusable components (`Pager`), models, enums, `NavigationService`.
+- **SharedModule** — Reusable components (`Pager`), models, enums, `NavigationService`. Imports/exports PrimeNG modules and `FormsModule`.
 - **LayoutModule** — `AuthorizedLayout` component (page shell with navigation).
 
 ### Path Aliases (tsconfig.json)
@@ -42,7 +42,16 @@ Vitest 4.0.8 + jsdom. Tests use Angular `TestBed`. Test files: `*.spec.ts`.
 
 ### Styling
 
-CSS custom properties for theming. Fonts: Crimson Pro (serif headings), Libre Franklin (sans-serif body). Accent color: `#d4574d`.
+SCSS + PrimeNG 19 (Aura theme). CSS cascade layers: `@layer app-styles, primeng` (declared in `src/assets/css/layers.css`).
+
+**SCSS structure:**
+- `src/assets/scss/general/` — `_variables.scss`, `_mixins.scss`, `_base.scss`, `_primeng-overrides.scss`
+- `src/assets/scss/common/` — `_masthead.scss`, `_breadcrumb.scss`, `_buttons.scss`, `_controls.scss`, `_forms.scss`, `_cards.scss`
+- `src/styles.scss` — entry point, imports all partials via `@use`
+
+**PrimeNG setup:** Configured in `app.module.ts` via `providePrimeNG()` with Aura preset, `darkModeSelector: 'none'`, CSS layer `primeng`. PrimeNG modules (Button, InputText, Textarea, ToggleSwitch, Popover, Menu, Paginator, Tag, Chip, Avatar, Breadcrumb, Tabs) are imported/exported through `SharedModule`.
+
+**Theme:** CSS custom properties for newspaper aesthetic. Fonts: Crimson Pro (serif headings), Libre Franklin (sans-serif body). Accent color: `#d4574d`. Sharp corners (`border-radius: 0`) on most components except toggles and avatars. Component files use `.scss` extension.
 
 ## Backend
 

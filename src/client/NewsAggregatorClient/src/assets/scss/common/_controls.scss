@@ -1,0 +1,30 @@
+@use '../general/variables' as *;
+
+.user-circle {
+  width: 42px;
+  height: 42px;
+  border: $border-ink;
+  border-radius: 50%;
+  background: $accent;
+  cursor: pointer;
+  transition: $transition-fast;
+}
+
+.user-circle:hover {
+  transform: scale(1.05);
+}
+
+.source-badge {
+  font-family: $font-heading;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: $accent;
+  letter-spacing: 0.08em;
+}
+
+.timestamp {
+  font-size: 0.85rem;
+  color: $ink-light;
+  font-style: italic;
+}

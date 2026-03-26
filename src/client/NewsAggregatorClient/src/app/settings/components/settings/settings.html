@@ -16,22 +16,30 @@
       class="tab"
       [class.active]="activeTab() === 'profile'"
       (click)="switchTab('profile')"
-    >Профиль</button>
+    >
+      Профиль
+    </button>
     <button
       class="tab"
       [class.active]="activeTab() === 'integrations'"
       (click)="switchTab('integrations')"
-    >Интеграции</button>
+    >
+      Интеграции
+    </button>
     <button
       class="tab"
       [class.active]="activeTab() === 'notifications'"
       (click)="switchTab('notifications')"
-    >Уведомления</button>
+    >
+      Уведомления
+    </button>
     <button
       class="tab"
       [class.active]="activeTab() === 'stats'"
       (click)="switchTab('stats')"
-    >Статистика</button>
+    >
+      Статистика
+    </button>
   </div>
 
   <!-- Profile Tab -->
@@ -46,32 +54,34 @@
             <div class="form-label">Аватар профиля</div>
             <p class="form-help">Рекомендуемый размер: 400x400px, формат JPG или PNG</p>
             <div class="avatar-buttons">
-              <button class="btn btn-primary">Загрузить новый</button>
-              <button class="btn">Удалить</button>
+              <p-button label="Загрузить новый" />
+              <p-button label="Удалить" [outlined]="true" severity="secondary" />
             </div>
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label">Имя пользователя</label>
-          <input type="text" class="form-input" value="Александр Петров" placeholder="Введите имя" />
+          <input pInputText type="text" class="form-input" value="Александр Петров" placeholder="Введите имя" />
         </div>
 
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input type="email" class="form-input" value="aleksandr.petrov@example.com" placeholder="email@example.com" />
+          <input pInputText type="email" class="form-input" value="aleksandr.petrov@example.com" placeholder="email@example.com" />
           <p class="form-help">На этот адрес будут приходить уведомления</p>
         </div>
 
         <div class="form-group">
           <label class="form-label">О себе</label>
-          <textarea class="form-input" rows="4" placeholder="Расскажите о себе..."></textarea>
+          <textarea pTextarea class="form-input" rows="4" placeholder="Расскажите о себе..."></textarea>
         </div>
       </div>
 
       <div class="form-section">
         <h3 class="section-title">Любимые категории</h3>
-        <p class="form-help categories-help">Выберите категории, которые вас интересуют больше всего</p>
+        <p class="form-help categories-help">
+          Выберите категории, которые вас интересуют больше всего
+        </p>
 
         <div class="categories-grid">
           @for (cat of categories(); track cat.name; let i = $index) {
@@ -96,20 +106,17 @@
               <div class="notification-title">{{ setting.title }}</div>
               <div class="form-help">{{ setting.description }}</div>
             </div>
-            <div
-              class="toggle-switch"
-              [class.active]="setting.active"
-              (click)="togglePrivacy(i)"
-            >
-              <div class="toggle-knob"></div>
-            </div>
+            <p-toggleswitch
+              [ngModel]="setting.active"
+              (ngModelChange)="togglePrivacy(i)"
+            />
           </div>
         }
       </div>
 
       <div class="actions-bar">
-        <button class="btn btn-primary">Сохранить изменения</button>
-        <button class="btn">Отменить</button>
+        <p-button label="Сохранить изменения" />
+        <p-button label="Отменить" [outlined]="true" severity="secondary" />
       </div>
     </div>
   }
@@ -119,17 +126,32 @@
     <div class="tab-content">
       <div class="form-section">
         <h3 class="section-title">Webhook интеграция</h3>
-        <p class="form-help webhook-help">Получайте уведомления о новых новостях через webhook</p>
+        <p class="form-help webhook-help">
+          Получайте уведомления о новых новостях через webhook
+        </p>
 
         <div class="form-group">
           <label class="form-label">Webhook URL</label>
-          <input type="url" class="form-input" placeholder="https://your-server.com/webhook" value="https://api.myserver.com/news-webhook" />
-          <p class="form-help">POST запрос будет отправлен на этот URL при появлении новых новостей</p>
+          <input
+            pInputText
+            type="url"
+            class="form-input"
+            placeholder="https://your-server.com/webhook"
+            value="https://api.myserver.com/news-webhook"
+          />
+          <p class="form-help">
+            POST запрос будет отправлен на этот URL при появлении новых новостей
+          </p>
         </div>
 
         <div class="form-group">
           <label class="form-label">Secret Token (опционально)</label>
-          <input type="password" class="form-input" placeholder="Введите секретный токен" />
+          <input
+            pInputText
+            type="password"
+            class="form-input"
+            placeholder="Введите секретный токен"
+          />
           <p class="form-help">Для проверки подлинности запросов</p>
         </div>
 
@@ -138,13 +160,10 @@
             <div class="notification-title">Активировать webhook</div>
             <div class="form-help">Включить отправку уведомлений</div>
           </div>
-          <div
-            class="toggle-switch"
-            [class.active]="webhookActive()"
-            (click)="webhookActive.set(!webhookActive())"
-          >
-            <div class="toggle-knob"></div>
-          </div>
+          <p-toggleswitch
+            [ngModel]="webhookActive()"
+            (ngModelChange)="webhookActive.set($event)"
+          />
         </div>
       </div>
 
@@ -153,7 +172,12 @@
 
         <div class="form-group">
           <label class="form-label">Email для уведомлений</label>
-          <input type="email" class="form-input" value="aleksandr.petrov@example.com" />
+          <input
+            pInputText
+            type="email"
+            class="form-input"
+            value="aleksandr.petrov@example.com"
+          />
         </div>
 
         <div class="notification-row">
@@ -161,13 +185,10 @@
             <div class="notification-title">Дневной дайджест</div>
             <div class="form-help">Ежедневная сводка новостей в 9:00</div>
           </div>
-          <div
-            class="toggle-switch"
-            [class.active]="dailyDigest()"
-            (click)="dailyDigest.set(!dailyDigest())"
-          >
-            <div class="toggle-knob"></div>
-          </div>
+          <p-toggleswitch
+            [ngModel]="dailyDigest()"
+            (ngModelChange)="dailyDigest.set($event)"
+          />
         </div>
 
         <div class="notification-row">
@@ -175,13 +196,10 @@
             <div class="notification-title">Недельный обзор</div>
             <div class="form-help">Сводка за неделю каждый понедельник</div>
           </div>
-          <div
-            class="toggle-switch"
-            [class.active]="weeklyReview()"
-            (click)="weeklyReview.set(!weeklyReview())"
-          >
-            <div class="toggle-knob"></div>
-          </div>
+          <p-toggleswitch
+            [ngModel]="weeklyReview()"
+            (ngModelChange)="weeklyReview.set($event)"
+          />
         </div>
       </div>
 
@@ -197,8 +215,8 @@
             Получайте уведомления о важных новостях прямо в Telegram
           </p>
           <div class="integration-actions">
-            <button class="btn btn-primary">Подключить бота</button>
-            <button class="btn">Инструкция</button>
+            <p-button label="Подключить бота" />
+            <p-button label="Инструкция" [outlined]="true" severity="secondary" />
           </div>
         </div>
 
@@ -208,8 +226,8 @@
       </div>
 
       <div class="actions-bar">
-        <button class="btn btn-primary">Сохранить настройки</button>
-        <button class="btn">Тест webhook</button>
+        <p-button label="Сохранить настройки" />
+        <p-button label="Тест webhook" [outlined]="true" severity="secondary" />
       </div>
     </div>
   }
@@ -226,13 +244,10 @@
               <div class="notification-title">{{ setting.title }}</div>
               <div class="form-help">{{ setting.description }}</div>
             </div>
-            <div
-              class="toggle-switch"
-              [class.active]="setting.active"
-              (click)="toggleNotification(i)"
-            >
-              <div class="toggle-knob"></div>
-            </div>
+            <p-toggleswitch
+              [ngModel]="setting.active"
+              (ngModelChange)="toggleNotification(i)"
+            />
           </div>
         }
       </div>
@@ -243,15 +258,15 @@
         <div class="form-group">
           <label class="form-label">Не беспокоить с</label>
           <div class="time-range">
-            <input type="time" class="form-input" value="22:00" />
-            <input type="time" class="form-input" value="08:00" />
+            <input pInputText type="time" class="form-input" value="22:00" />
+            <input pInputText type="time" class="form-input" value="08:00" />
           </div>
           <p class="form-help">Уведомления не будут приходить в это время</p>
         </div>
       </div>
 
       <div class="actions-bar">
-        <button class="btn btn-primary">Сохранить настройки</button>
+        <p-button label="Сохранить настройки" />
       </div>
     </div>
   }
@@ -298,9 +313,7 @@
         <h3 class="section-title">История активности</h3>
         <p class="form-help">Последние 30 дней активности</p>
 
-        <div class="activity-chart-placeholder">
-          [График активности]
-        </div>
+        <div class="activity-chart-placeholder">[График активности]</div>
       </div>
     </div>
   }

@@ -33,15 +33,15 @@
 
     <div class="interaction-bar">
       <div class="rating-group">
-        <button class="rate-btn like">&#128077; Нравится</button>
-        <button class="rate-btn dislike">&#128078; Не нравится</button>
+        <p-button label="&#128077; Нравится" [outlined]="true" severity="success" styleClass="rate-btn" />
+        <p-button label="&#128078; Не нравится" [outlined]="true" severity="danger" styleClass="rate-btn" />
         <span class="rating-score">+{{ article().rating }}</span>
       </div>
       <div class="share-group">
-        <button class="share-icon">&#120143;</button>
-        <button class="share-icon">f</button>
-        <button class="share-icon">&#9992;</button>
-        <button class="share-icon">&#9993;</button>
+        <p-button label="&#120143;" [outlined]="true" severity="secondary" styleClass="share-btn" />
+        <p-button label="f" [outlined]="true" severity="secondary" styleClass="share-btn" />
+        <p-button label="&#9992;" [outlined]="true" severity="secondary" styleClass="share-btn" />
+        <p-button label="&#9993;" [outlined]="true" severity="secondary" styleClass="share-btn" />
       </div>
     </div>
 
@@ -55,12 +55,13 @@
 
       <div class="comment-input">
         <textarea
+          pTextarea
           class="comment-textarea"
           placeholder="Ваш комментарий..."
           [value]="commentText()"
           (input)="onCommentInput($event)"
         ></textarea>
-        <button class="comment-submit">Опубликовать</button>
+        <p-button label="Опубликовать" styleClass="comment-submit" />
       </div>
 
       @for (comment of comments(); track comment.author) {
@@ -71,9 +72,9 @@
           </div>
           <div class="comment-text">{{ comment.text }}</div>
           <div class="comment-actions">
-            <button class="comment-btn">&#128077; {{ comment.likes }}</button>
-            <button class="comment-btn">&#128078; {{ comment.dislikes }}</button>
-            <button class="comment-btn">Ответить</button>
+            <p-button label="&#128077; {{ comment.likes }}" [text]="true" severity="secondary" size="small" />
+            <p-button label="&#128078; {{ comment.dislikes }}" [text]="true" severity="secondary" size="small" />
+            <p-button label="Ответить" [text]="true" severity="secondary" size="small" />
           </div>
         </div>
       }
@@ -85,7 +86,7 @@
       <h3 class="widget-title">Теги</h3>
       <div class="tags-cloud">
         @for (tag of tags(); track tag) {
-          <span class="tag-item">{{ tag }}</span>
+          <p-chip [label]="tag" />
         }
       </div>
     </div>

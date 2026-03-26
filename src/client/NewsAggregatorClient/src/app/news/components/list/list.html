@@ -12,32 +12,22 @@
   <div class="toolbar">
     <input
       type="text"
+      pInputText
       class="search-field"
       placeholder="Поиск новостей..."
       [value]="searchQuery()"
       (input)="onSearchInput($any($event.target).value)"
     />
-    <div class="filter-wrapper">
-      <button class="filter-control" (click)="toggleFilter()">
-        Фильтры &#9660;
-      </button>
-      @if (isFilterOpen()) {
-        <div class="filter-popup">
-          <div class="filter-popup-header">Сортировка</div>
-          <div class="filter-options">
-            @for (option of sortOptions; track option.label) {
-              <button
-                class="filter-option"
-                [class.active]="orderBy() === option.field && orderDirection() === option.direction"
-                (click)="applySorting(option.field, option.direction)"
-              >
-                {{ option.label }}
-              </button>
-            }
-          </div>
-        </div>
-      }
-    </div>
+    <p-button
+      icon="pi pi-filter"
+      [outlined]="true"
+      severity="secondary"
+      styleClass="filter-btn"
+      (onClick)="filterPopover.toggle($event)"
+    />
+    <p-popover #filterPopover>
+      <p-menu [model]="sortMenuItems()" />
+    </p-popover>
   </div>
 
   <div class="articles">
@@ -49,11 +39,13 @@
         <div class="article-body">
           <div class="article-head">
             <span class="source-badge">{{ article.publisher }}</span>
-            <span class="timestamp">{{ article.publishDate | date:'dd.MM.yyyy HH:mm' }}</span>
+            <span class="timestamp">{{ article.publishDate | date: 'dd.MM.yyyy HH:mm' }}</span>
           </div>
           <h2 class="article-headline">{{ article.title }}</h2>
           <div class="article-controls">
-            <a class="control-btn primary" [href]="article.originalLink" target="_blank">Читать далее</a>
+            <a class="control-btn primary" [href]="article.originalLink" target="_blank"
+              >Читать далее</a
+            >
             <button class="control-btn secondary">&#9733; Сохранить</button>
           </div>
         </div>

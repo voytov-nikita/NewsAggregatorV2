@@ -23,7 +23,7 @@ interface StatSource {
   standalone: false,
   selector: 'app-settings',
   templateUrl: './settings.html',
-  styleUrl: './settings.css',
+  styleUrl: './settings.scss',
 })
 export class Settings {
   constructor(protected readonly navigation: NavigationService) {}

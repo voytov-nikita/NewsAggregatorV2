@@ -1,27 +1,7 @@
-<div class="pager">
-  <div class="take-control">
-    <span class="take-label">Показывать по</span>
-    <input
-      type="number"
-      class="take-input"
-      min="1"
-      max="100"
-      [value]="take()"
-      (change)="onTakeInput($event)"
-    />
-  </div>
-
-  <nav class="page-nav">
-    <button class="page-number" (click)="setPage(currentPage() - 1)">&#8592;</button>
-    @for (page of pages(); track page) {
-      <button
-        class="page-number"
-        [class.current]="page === currentPage()"
-        (click)="setPage(page)"
-      >{{ page }}</button>
-    }
-    <button class="page-number" (click)="setPage(currentPage() + 1)">&#8594;</button>
-  </nav>
-
-  <span class="page-info">Стр. {{ currentPage() }} из {{ totalPages() }}</span>
-</div>
+<p-paginator
+  [rows]="take()"
+  [totalRecords]="totalPages() * take()"
+  [first]="(currentPage() - 1) * take()"
+  [rowsPerPageOptions]="[5, 10, 25, 50]"
+  (onPageChange)="onPaginatorChange($event)"
+/>

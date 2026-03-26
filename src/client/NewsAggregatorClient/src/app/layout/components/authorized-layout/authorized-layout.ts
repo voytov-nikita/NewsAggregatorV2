@@ -5,7 +5,7 @@ import { NavigationService } from '@shared/services';
   standalone: false,
   selector: 'app-authorized-layout',
   templateUrl: './authorized-layout.html',
-  styleUrl: './authorized-layout.css',
+  styleUrl: './authorized-layout.scss',
 })
 export class AuthorizedLayout {
   constructor(protected readonly navigation: NavigationService) {}

@@ -1,0 +1,51 @@
+@use '../general/variables' as *;
+
+.form-group {
+  margin-bottom: 1.75rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: $border-standard;
+  background: white;
+  font-family: $font-body;
+  font-size: 0.95rem;
+  transition: $transition-fast;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: $ink;
+  background: $highlight;
+}
+
+.form-help {
+  font-size: 0.85rem;
+  color: $ink-light;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.search-field {
+  flex: 1;
+  padding: 0.9rem 1.25rem;
+  border: $border-standard;
+  background: white;
+  font-family: $font-body;
+  font-size: 0.95rem;
+  transition: $transition-fast;
+}
+
+.search-field:focus {
+  outline: none;
+  border-color: $ink;
+  background: $highlight;
+}

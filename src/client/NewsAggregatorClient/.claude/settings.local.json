@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npx ng build)",
       "Bash(npm install:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(cd:*)"
     ]
   }
 }

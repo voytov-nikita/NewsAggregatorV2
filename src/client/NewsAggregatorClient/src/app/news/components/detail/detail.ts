@@ -19,7 +19,7 @@ interface RelatedArticle {
   standalone: false,
   selector: 'app-news-detail',
   templateUrl: './detail.html',
-  styleUrl: './detail.css',
+  styleUrl: './detail.scss',
 })
 export class NewsDetail {
   constructor(protected readonly navigation: NavigationService) {}
