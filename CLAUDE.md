@@ -41,7 +41,9 @@ builder.Services.AddDataAccessLayer(connectionString);
 builder.Services.AddNewsServiceConsumers(queueSettings);
 ```
 
-**Message queue abstraction**: `IMessageProducer` / `IMessageConsumer` in `Common/MessageQueue/` with Polly resilience policies. Queue names: `news-queue`, `webhooks-queue`.
+**Message queue abstraction**: `IMessageProducer` / `IMessageConsumer` in `Common/MessageQueue/` with Polly resilience policies. Queue names: `news-queue`, `webhooks-queue`, `webhook-triggered`.
+
+**Webhook dispatch flow**: `IWebhookDispatcher.Dispatch<T>(eventType, data)` → `webhooks-queue` → `WebhooksProcessor` (subscription lookup) → `webhook-triggered` queue → `WebhookTriggeredProcessor` (HTTP delivery via `IWebhookDeliveryService`).
 
 **Testing stack**: xUnit + Moq + AutoFixture + FluentAssertions. Angular uses Vitest + Jsdom.
 

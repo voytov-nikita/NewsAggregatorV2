@@ -56,17 +56,8 @@ public class NewsProcessor : BackgroundService
             
             await newsService.CreateBulkAsync(createModels);
 
-            IWebhooksProducer producer = scope.ServiceProvider.GetRequiredService<IWebhooksProducer>();
-
-            var webhookMessages = new[]
-            {
-                new WebhooksQueueModel
-                {
-                    Action = "news.created",
-                    Data = createModels
-                }
-            };
-            producer.Publish(webhookMessages);
+            IWebhookDispatcher webhookDispatcher = scope.ServiceProvider.GetRequiredService<IWebhookDispatcher>();
+            webhookDispatcher.Dispatch("news.created", createModels);
 
             Console.WriteLine("------------=======-------------");
             Console.WriteLine($"{messageModel.Length} new News were added ({DateTime.Now})");

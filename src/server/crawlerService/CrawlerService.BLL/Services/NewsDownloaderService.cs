@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Microsoft.Extensions.Http;
 using CrawlerService.BLL.Abstractions.Services;
 
 namespace CrawlerService.BLL.Services;

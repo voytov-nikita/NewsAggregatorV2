@@ -52,7 +52,7 @@ public class Program
             ServerAddress = new Uri("amqp://localhost"),
             QueueName = "webhooks-queue",
         };
-        builder.Services.AddWebhooksProducer(webhooksQueueSettings);
+        builder.Services.AddWebhookDispatcher(webhooksQueueSettings);
 
         builder.Services.AddHostedService<NewsProcessor>();
         

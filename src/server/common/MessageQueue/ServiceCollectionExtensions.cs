@@ -57,6 +57,37 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection AddWebhookDispatcher(this IServiceCollection services, MessageQueueSettings settings)
+    {
+        services.AddWebhooksProducer(settings);
+        services.AddTransient<IWebhookDispatcher, Services.WebhookDispatcher>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddWebhookTriggeredProducer(this IServiceCollection services, MessageQueueSettings settings)
+    {
+        AddResiliencePipelineRabbitMq(services);
+
+        services.AddTransient<IWebhookTriggeredProducer>(sp =>
+        {
+            var pipelineProvider = sp.GetRequiredService<ResiliencePipelineProvider<string>>();
+            var logger = sp.GetRequiredService<ILogger<WebhookTriggeredProducer>>();
+            return new WebhookTriggeredProducer(settings, pipelineProvider, logger);
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddWebhookTriggeredConsumer(this IServiceCollection services, MessageQueueSettings settings)
+    {
+        services.AddSingleton(settings);
+
+        services.AddTransient<IWebhookTriggeredConsumer, WebhookTriggeredConsumer>();
+
+        return services;
+    }
+
     public static void AddResiliencePipelineRabbitMq(this IServiceCollection services)
     {
         services.AddResiliencePipeline(MessageQueuePipelineConstants.ResiliencePipelineRabbitMq, configure =>

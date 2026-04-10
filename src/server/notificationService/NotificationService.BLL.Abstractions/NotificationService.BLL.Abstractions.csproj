@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\NotificationService.Models\NotificationService.Models.csproj" />
+    </ItemGroup>
+
 </Project>

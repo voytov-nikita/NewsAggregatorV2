@@ -33,7 +33,8 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddTransient<IWebhookSubscriptionsStore, WebhookSubscriptionsStore>();
-        
+        services.AddTransient<IWebhookDeliveryAttemptStore, WebhookDeliveryAttemptStore>();
+
         return services;
     }
 }

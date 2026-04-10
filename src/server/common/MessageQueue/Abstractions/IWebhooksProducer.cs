@@ -2,7 +2,7 @@
 
 namespace MessageQueue.Abstractions;
 
-public interface IWebhooksProducer: IMessageProducer<WebhooksQueueModel[]>
+public interface IWebhooksProducer: IMessageProducer<WebhooksQueueModel>
 {
 
 }

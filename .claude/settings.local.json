@@ -8,7 +8,8 @@
       "Bash(git -C \"P:/MyProjects/NewsAggregatorV2\" branch -a)",
       "Bash(git -C \"P:/MyProjects/NewsAggregatorV2\" remote -v)",
       "Bash(git -C \"P:/MyProjects/NewsAggregatorV2\" status)",
-      "Bash(npx ng:*)"
+      "Bash(npx ng:*)",
+      "Bash(xargs grep:*)"
     ]
   }
 }

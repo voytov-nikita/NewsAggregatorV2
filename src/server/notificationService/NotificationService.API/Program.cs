@@ -31,7 +31,7 @@ public class Program
         
         builder.Services.AddHttpClient();
 
-        builder.Services.AddTransient<IWebhookDispatcher, WebhookDispatcher>();
+        builder.Services.AddTransient<IWebhookDeliveryService, WebhookDeliveryService>();
         
         //Todo: move to appsettings
         DatabaseSettings databaseSettings = new DatabaseSettings()
@@ -49,6 +49,16 @@ public class Program
         };
         builder.Services.AddWebhooksConsumer(webhooksQueueSettings);
         builder.Services.AddHostedService<WebhooksProcessor>();
+
+        //Todo: move to appsettings
+        var webhookTriggeredQueueSettings = new MessageQueueSettings
+        {
+            ServerAddress = new Uri("amqp://localhost"),
+            QueueName = "webhook-triggered",
+        };
+        builder.Services.AddWebhookTriggeredProducer(webhookTriggeredQueueSettings);
+        builder.Services.AddWebhookTriggeredConsumer(webhookTriggeredQueueSettings);
+        builder.Services.AddHostedService<WebhookTriggeredProcessor>();
 
         var app = builder.Build();
 

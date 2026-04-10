@@ -4,7 +4,7 @@ using MessageQueue.Settings;
 
 namespace MessageQueue.Services;
 
-public class WebhooksConsumer: BaseMessageConsumer<WebhooksQueueModel[]>, IWebhooksConsumer
+public class WebhooksConsumer: BaseMessageConsumer<WebhooksQueueModel>, IWebhooksConsumer
 {
     public WebhooksConsumer(MessageQueueSettings settings)
         : base(settings.ServerAddress, settings.QueueName)

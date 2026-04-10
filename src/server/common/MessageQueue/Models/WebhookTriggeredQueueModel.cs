@@ -1,9 +1,9 @@
-namespace NotificationService.Models.Webhooks;
+namespace MessageQueue.Models;
 
-public class WebhookDispatchModel
+public class WebhookTriggeredQueueModel
 {
     public required string Url { get; set; }
     public required string SubscriptionId { get; set; }
-    public object? Payload { get; set; }
     public string EventType { get; set; }
+    public object? Data { get; set; }
 }

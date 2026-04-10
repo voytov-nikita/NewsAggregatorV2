@@ -9,7 +9,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddBusinessLayer(this IServiceCollection services)
     {
         services.AddTransient<IWebhookSubscriptionsServices, WebhookSubscriptionServices>();
-        
+        services.AddTransient<IWebhookDeliveryAttemptService, WebhookDeliveryAttemptService>();
+
         return services;
     }
 }

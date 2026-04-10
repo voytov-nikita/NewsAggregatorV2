@@ -2,6 +2,6 @@
 
 public class WebhooksQueueModel
 {
-    public string Action { get; set; }
+    public string EventType { get; set; }
     public object? Data { get; set; }
 }
