@@ -1,5 +1,5 @@
-﻿using System.Text;
 using CrawlerService.BLL.Abstractions.Services;
+using Microsoft.Extensions.Logging;
 
 namespace CrawlerService.BLL.Services;
 
@@ -7,34 +7,30 @@ public class NewsDownloaderService: INewsDownloaderService
 {
     private readonly IPostponedJobRunner _postponedJobRunner;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<NewsDownloaderService> _logger;
 
-    public NewsDownloaderService(IPostponedJobRunner postponedJobRunner, IHttpClientFactory httpClientFactory)
+    public NewsDownloaderService(
+        IPostponedJobRunner postponedJobRunner,
+        IHttpClientFactory httpClientFactory,
+        ILogger<NewsDownloaderService> logger)
     {
         _postponedJobRunner = postponedJobRunner;
         _httpClientFactory = httpClientFactory;
+        _logger = logger;
     }
 
     public async Task GetNewsAsync()
     {
-        //Todo: replace with Logger
-        Console.WriteLine("**********************");
-        Console.WriteLine($"Crawling...  ({DateTime.Now})");
+        _logger.LogInformation("Crawling started");
 
-        
         HttpClient client = _httpClientFactory.CreateClient();
 
         HttpResponseMessage response = await client.GetAsync("https://www.pravda.com.ua/rss/");
-
-        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        Encoding.GetEncoding("windows-1254");
 
         byte[] res = await response.Content.ReadAsByteArrayAsync();
 
         _postponedJobRunner.Enqueue<INewsParserService>(service => service.ParseAsync(res));
 
-
-        Console.WriteLine("Crawling complete");
-        Console.WriteLine("``````````````````````");
+        _logger.LogInformation("Crawling complete");
     }
-
 }

@@ -2,21 +2,24 @@ using System.Xml;
 using Common.Const;
 using CrawlerService.BLL.Abstractions.Services;
 using CrawlerService.Models.Models;
+using Microsoft.Extensions.Logging;
 
 namespace CrawlerService.BLL.Services;
 
 class NewsParserService : INewsParserService
 {
     private readonly IPostponedJobRunner _postponedJobRunner;
+    private readonly ILogger<NewsParserService> _logger;
 
-    public NewsParserService(IPostponedJobRunner postponedJobRunner)
+    public NewsParserService(IPostponedJobRunner postponedJobRunner, ILogger<NewsParserService> logger)
     {
         _postponedJobRunner = postponedJobRunner;
+        _logger = logger;
     }
 
     public async Task ParseAsync(byte[] data)
     {
-        Console.WriteLine("Parsing...");
+        _logger.LogInformation("Parsing started");
 
         XmlDocument doc = new XmlDocument();
 
@@ -27,20 +30,20 @@ class NewsParserService : INewsParserService
         }
         catch (Exception e)
         {
-            Console.WriteLine("Parsing Error:");
-            Console.WriteLine(e.Message);
+            _logger.LogError(e, "Failed to parse RSS feed");
+            return;
         }
 
         List<ParsedNews> parsedNews = [];
 
         XmlNodeList elementsByTagName = doc.GetElementsByTagName("item");
-        
+
         if (elementsByTagName.Count == 0)
         {
-            Console.WriteLine("No news items found in the feed.");
+            _logger.LogWarning("No news items found in the feed");
             return;
         }
-        
+
         foreach (XmlNode item in elementsByTagName)
         {
             ParsedNews parsedNew = ToParsedNew(item);
@@ -52,8 +55,7 @@ class NewsParserService : INewsParserService
 
         _postponedJobRunner.Enqueue<INewsService>(service => service.SaveUniqueNewsAsync(newsArray));
 
-        Console.WriteLine("Parsing complete");
-        Console.WriteLine("``````````````````````");
+        _logger.LogInformation("Parsing complete: {Count} items", newsArray.Length);
     }
 
     private static ParsedNews ToParsedNew(XmlNode item)

@@ -5,6 +5,7 @@ using CrawlerService.BLL.Services;
 using CrawlerService.DAL.Abstractions.Stores;
 using CrawlerService.Models.Models;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -21,7 +22,8 @@ public class NewsServiceTests
     {
         _sut = new NewsService(
             _newsStoreMock.Object,
-            _postponedJobRunnerMock.Object
+            _postponedJobRunnerMock.Object,
+            NullLogger<NewsService>.Instance
         );
     }
 

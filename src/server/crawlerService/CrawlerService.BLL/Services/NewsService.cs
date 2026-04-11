@@ -1,6 +1,7 @@
 ﻿using CrawlerService.BLL.Abstractions.Services;
 using CrawlerService.DAL.Abstractions.Stores;
 using CrawlerService.Models.Models;
+using Microsoft.Extensions.Logging;
 
 namespace CrawlerService.BLL.Services;
 
@@ -8,11 +9,13 @@ internal class NewsService : INewsService
 {
     private readonly INewsStore _newsStore;
     private readonly IPostponedJobRunner _postponedJobRunner;
+    private readonly ILogger<NewsService> _logger;
 
-    public NewsService(INewsStore newsStore, IPostponedJobRunner postponedJobRunner)
+    public NewsService(INewsStore newsStore, IPostponedJobRunner postponedJobRunner, ILogger<NewsService> logger)
     {
         _newsStore = newsStore;
         _postponedJobRunner = postponedJobRunner;
+        _logger = logger;
     }
 
     public async Task SaveUniqueNewsAsync(ParsedNews[] parsedNews)
@@ -38,7 +41,7 @@ internal class NewsService : INewsService
         }
         else
         {
-            Console.WriteLine("All news already exists in the database. No new news to save.");
+            _logger.LogInformation("All news already exists in the database. No new news to save");
         }
         
     }

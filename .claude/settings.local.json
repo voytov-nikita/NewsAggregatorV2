@@ -9,7 +9,12 @@
       "Bash(git -C \"P:/MyProjects/NewsAggregatorV2\" remote -v)",
       "Bash(git -C \"P:/MyProjects/NewsAggregatorV2\" status)",
       "Bash(npx ng:*)",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Read(//p/MyProjects/**)",
+      "Bash(find /p -maxdepth 4 -type d -name \"Portal.DAL\")",
+      "Read(//p//**)",
+      "Read(//c/Users/voyto/**)",
+      "Bash(dotnet test:*)"
     ]
   }
 }
