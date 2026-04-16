@@ -5,6 +5,7 @@ using CrawlerService.Models.Models;
 using FluentAssertions;
 using MessageQueue.Abstractions;
 using MessageQueue.Models;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -19,7 +20,8 @@ public class NewsQueueServiceTests
     public NewsQueueServiceTests()
     {
         _sut = new NewsQueueService(
-            _newsProducerMock.Object
+            _newsProducerMock.Object,
+            NullLogger<NewsQueueService>.Instance
         );
     }
 

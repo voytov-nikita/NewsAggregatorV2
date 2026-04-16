@@ -8,11 +8,16 @@ public class WebhookTriggeredProcessor : BackgroundService
 {
     private readonly IWebhookTriggeredConsumer _consumer;
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ILogger<WebhookTriggeredProcessor> _logger;
 
-    public WebhookTriggeredProcessor(IWebhookTriggeredConsumer consumer, IServiceScopeFactory serviceScopeFactory)
+    public WebhookTriggeredProcessor(
+        IWebhookTriggeredConsumer consumer,
+        IServiceScopeFactory serviceScopeFactory,
+        ILogger<WebhookTriggeredProcessor> logger)
     {
         _consumer = consumer;
         _serviceScopeFactory = serviceScopeFactory;
+        _logger = logger;
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -23,7 +28,7 @@ public class WebhookTriggeredProcessor : BackgroundService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            _logger.LogError(e, "Failed to subscribe to webhook-triggered queue");
             throw;
         }
 

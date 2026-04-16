@@ -14,7 +14,7 @@ News aggregator with a microservices backend (.NET 9 / C#) and an Angular 21 fro
 ## Repository Layout
 
 ```
-src/server/common/          Shared libraries (Common, Common.API, Logger, MessageQueue)
+src/server/common/          Shared libraries (Common, Common.API, Logger, API.Logger, MessageQueue)
 src/server/newsService/     NewsService.API / .BLL / .DAL.PostgreSql / .Models
 src/server/crawlerService/  CrawlerService.API / .BLL / .DAL / .Hangfire / .Models
 src/server/notificationService/  NotificationService.API / .BLL / .DAL / .Models
@@ -46,6 +46,8 @@ builder.Services.AddNewsServiceConsumers(queueSettings);
 **Webhook dispatch flow**: `IWebhookDispatcher.Dispatch<T>(eventType, data)` → `webhooks-queue` → `WebhooksProcessor` (subscription lookup) → `webhook-triggered` queue → `WebhookTriggeredProcessor` (HTTP delivery via `IWebhookDeliveryService`).
 
 **Testing stack**: xUnit + Moq + AutoFixture + FluentAssertions. Angular uses Vitest + Jsdom.
+
+**Logging**: Serilog in `common/Logger` (configured via `serilogsettings.{env}.json`), API-specific wiring in `common/API.Logger`. All services ship to Seq (`http://localhost:5341`) and Console. `ConfigureCommonApiSettings()` calls `builder.UseLogger()`. Runtime log level is controlled by `ILogLevelService` (bound to `$controlSwitch`).
 
 ## Angular Client
 

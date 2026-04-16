@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
@@ -8,12 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Extensions\" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <ProjectReference Include="..\API.Logger\API.Logger.csproj" />
       <ProjectReference Include="..\Common\Common.csproj" />
-      <ProjectReference Include="..\Logger\Logger.csproj" />
     </ItemGroup>
 
     <ItemGroup>

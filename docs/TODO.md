@@ -62,15 +62,17 @@ add a frontend for managing sources without touching code or the database direct
 
 ## Infrastructure
 
-### Centralized logging
+### Migrate logging from Seq to Grafana Loki
 
-Currently logs go only to the console via Serilog. Stand up a log aggregation stack
-and wire all services to ship logs there.
-
-**Under consideration:** Grafana Loki + Promtail — scales well and integrates with
-Grafana dashboards if metrics are added later. Other options can be evaluated too.
+Currently all services ship logs to Seq (single-node, `http://localhost:5341`) via Serilog.
+Seq is convenient for dev, but as the stack grows consider migrating to Grafana Loki +
+Promtail for better integration with metrics/traces and long-term retention.
 
 **Scope:**
-- Run in docker-compose alongside Postgres/Mongo/LavinMQ
-- Configure Serilog sinks in all services
-- Document connection settings in `readme.md`
+- Run Loki + Promtail + Grafana in docker-compose alongside the existing stack
+- Add `Serilog.Sinks.Grafana.Loki` to the shared `Logger` project or keep both sinks
+  behind configuration
+- Structured fields: `ServiceName`, `SourceId`, `CorrelationId` — propagate correlation
+  id through RabbitMQ headers and restore on consumer side
+- Dashboards: errors per service, crawl latency, news throughput
+- Document connection settings and default credentials in `readme.md`

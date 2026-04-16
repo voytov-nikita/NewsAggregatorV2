@@ -14,7 +14,8 @@
       "Bash(find /p -maxdepth 4 -type d -name \"Portal.DAL\")",
       "Read(//p//**)",
       "Read(//c/Users/voyto/**)",
-      "Bash(dotnet test:*)"
+      "Bash(dotnet test:*)",
+      "Bash(dotnet sln *)"
     ]
   }
 }

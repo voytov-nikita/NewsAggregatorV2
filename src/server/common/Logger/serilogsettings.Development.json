@@ -1,0 +1,10 @@
+{
+    "Serilog": {
+        "LevelSwitches": {
+            "controlSwitch": "Information"
+        },
+        "Properties": {
+            "ApplicationProfile": "Development"
+        }
+    }
+}

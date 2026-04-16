@@ -2,28 +2,30 @@ using CrawlerService.BLL.Abstractions.Services;
 using CrawlerService.Models.Models;
 using MessageQueue.Abstractions;
 using MessageQueue.Models;
+using Microsoft.Extensions.Logging;
 
 namespace CrawlerService.BLL.Services;
 
 internal class NewsQueueService : INewsQueueService
 {
     private readonly INewsProducer _producer;
+    private readonly ILogger<NewsQueueService> _logger;
 
-    public NewsQueueService(INewsProducer producer)
+    public NewsQueueService(INewsProducer producer, ILogger<NewsQueueService> logger)
     {
         _producer = producer;
+        _logger = logger;
     }
 
-    public async Task AddManyToQueueAsync(ParsedNews[] data)
+    public Task AddManyToQueueAsync(ParsedNews[] data)
     {
         if (data.Length == 0)
         {
-            Console.WriteLine("No news to add to the queue.");
-            return;
+            _logger.LogInformation("No news to add to the queue");
+            return Task.CompletedTask;
         }
-        Console.WriteLine("Adding to the queue");
-        Console.WriteLine($"Count: {data.Length}");
-        NewsQueueModel[] a = data.Select(x => new NewsQueueModel()
+
+        NewsQueueModel[] messages = data.Select(x => new NewsQueueModel
         {
             Title = x.Title,
             Description = x.Description,
@@ -36,9 +38,9 @@ internal class NewsQueueService : INewsQueueService
             Guid = x.Guid,
         }).ToArray();
 
-        _producer.Publish(a);
+        _producer.Publish(messages);
 
-        Console.WriteLine("Adding complete");
-        Console.WriteLine("``````````````````````");
+        _logger.LogInformation("Published {Count} news messages to the queue", messages.Length);
+        return Task.CompletedTask;
     }
 }

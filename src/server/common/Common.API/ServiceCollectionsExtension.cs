@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
-using Logger;
+using API.Logger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,17 +8,15 @@ namespace Common.API;
 
 public static class ServiceCollectionsExtension
 {
-
     public static WebApplicationBuilder ConfigureCommonApiSettings(this WebApplicationBuilder builder)
     {
+        builder.UseLogger();
 
-        builder.Host.AddLogger();
-        
         builder.Services.AddCustomControllers();
-        
+
         return builder;
     }
-    
+
     public static IServiceCollection AddCustomControllers(this IServiceCollection services)
     {
         services
@@ -35,7 +33,7 @@ public static class ServiceCollectionsExtension
 
         return services.AddResponseCompression(options => { options.EnableForHttps = true; });
     }
-        
+
     private static JsonSerializerOptions ApplyDefaultSettings(this JsonSerializerOptions options)
     {
         JsonConverter enumConverter = new JsonStringEnumConverter();

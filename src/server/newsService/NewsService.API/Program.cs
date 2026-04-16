@@ -1,12 +1,10 @@
 using Common.API;
-using Logger;
 using MessageQueue;
 using MessageQueue.Settings;
 using NewsService.API.Services;
 using NewsService.API.Settings;
 using NewsService.BLL;
 using NewsService.DAL.PostgreSql;
-using Serilog;
 
 namespace NewsService.API;
 
