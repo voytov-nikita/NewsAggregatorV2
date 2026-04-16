@@ -1,36 +1,53 @@
 using CrawlerService.BLL.Abstractions.Services;
+using CrawlerService.DAL.Abstractions.Stores;
+using CrawlerService.Models.Models;
 using Microsoft.Extensions.Logging;
 
 namespace CrawlerService.BLL.Services;
 
-public class NewsDownloaderService: INewsDownloaderService
+public class NewsDownloaderService : INewsDownloaderService
 {
+    private readonly ISourceStore _sourceStore;
+    private readonly ISourceCrawlerFactory _crawlerFactory;
     private readonly IPostponedJobRunner _postponedJobRunner;
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<NewsDownloaderService> _logger;
 
     public NewsDownloaderService(
+        ISourceStore sourceStore,
+        ISourceCrawlerFactory crawlerFactory,
         IPostponedJobRunner postponedJobRunner,
-        IHttpClientFactory httpClientFactory,
         ILogger<NewsDownloaderService> logger)
     {
+        _sourceStore = sourceStore;
+        _crawlerFactory = crawlerFactory;
         _postponedJobRunner = postponedJobRunner;
-        _httpClientFactory = httpClientFactory;
         _logger = logger;
     }
 
-    public async Task GetNewsAsync()
+    public async Task GetNewsAsync(string sourceId)
     {
-        _logger.LogInformation("Crawling started");
+        NewsSource? source = await _sourceStore.GetByIdAsync(sourceId);
+        if (source is null)
+        {
+            _logger.LogWarning("Source {SourceId} not found, skipping", sourceId);
+            return;
+        }
 
-        HttpClient client = _httpClientFactory.CreateClient();
+        if (!source.Enabled)
+        {
+            _logger.LogInformation("Source {SourceId} is disabled, skipping", sourceId);
+            return;
+        }
 
-        HttpResponseMessage response = await client.GetAsync("https://www.pravda.com.ua/rss/");
+        ISourceCrawler crawler = _crawlerFactory.Get(source.Type);
 
-        byte[] res = await response.Content.ReadAsByteArrayAsync();
+        ParsedNews[] items = await crawler.CrawlAsync(source);
+        if (items.Length == 0)
+        {
+            _logger.LogInformation("Source {SourceId}: no items to save", sourceId);
+            return;
+        }
 
-        _postponedJobRunner.Enqueue<INewsParserService>(service => service.ParseAsync(res));
-
-        _logger.LogInformation("Crawling complete");
+        _postponedJobRunner.Enqueue<INewsService>(service => service.SaveUniqueNewsAsync(items));
     }
 }

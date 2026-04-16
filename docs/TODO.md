@@ -1,5 +1,25 @@
 # TODO
 
+## NewsService
+
+### Normalize publisher storage
+
+Currently the `News` table duplicates publisher info (`PublisherName`, `PublisherLink`, `PublisherGuid`)
+on every row. With multiple sources coming from CrawlerService, this duplication grows linearly with
+the number of articles.
+
+**Idea:** Extract a separate `Publishers` (or `Sources`) table in NewsService and reference it by FK
+from `News`. Each article would store only a `SourceId` / `PublisherId`, and publisher metadata lives
+in one row per source.
+
+**Considerations:**
+- NewsService currently has no concept of a source — publisher arrives as denormalized fields in
+  the `news-queue` message. Either propagate `SourceId` end-to-end (CrawlerService → queue → NewsService),
+  or have NewsService upsert a `Publisher` row on first sight of a new `PublisherName`.
+- Requires an EF Core migration (`dotnet ef migrations add NormalizePublisher`) and a data backfill
+  for existing rows.
+- Frontend DTOs may need to join publisher info — keep denormalized at the read model if performance matters.
+
 ## CrawlerService
 
 ### Cross-source deduplication

@@ -1,51 +1,46 @@
-﻿using CrawlerService.BLL.Abstractions.Services;
+using CrawlerService.BLL.Abstractions.Services;
+using CrawlerService.DAL.Abstractions.Stores;
+using CrawlerService.Models.Models;
 using Hangfire;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace CrawlerService.Hangfire.Services;
 
-public class HangfireSchedulerBackgroundService: BackgroundService
+public class HangfireSchedulerBackgroundService : BackgroundService
 {
     private readonly IRecurringJobManager _recurringJobManager;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILogger<HangfireSchedulerBackgroundService> _logger;
 
-    public HangfireSchedulerBackgroundService(IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
+    public HangfireSchedulerBackgroundService(
+        IRecurringJobManager recurringJobManager,
+        IServiceScopeFactory scopeFactory,
+        ILogger<HangfireSchedulerBackgroundService> logger)
     {
         _recurringJobManager = recurringJobManager;
-        _serviceProvider = serviceProvider;
+        _scopeFactory = scopeFactory;
+        _logger = logger;
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        //Todo: add opportunity of changing schedule by API request
+        using IServiceScope scope = _scopeFactory.CreateScope();
+        ISourceStore sourceStore = scope.ServiceProvider.GetRequiredService<ISourceStore>();
 
-        /*IDataSourceService dataSourceService = new DataSourceService();
-        DataSourceModel[] dataSources = dataSourceService.GetAllAsync();
+        NewsSource[] sources = await sourceStore.GetAllEnabledAsync();
+        _logger.LogInformation("Registering recurring jobs for {Count} enabled sources", sources.Length);
 
-        foreach (var dataSource in dataSources)
+        foreach (NewsSource source in sources)
         {
-            dataSource.ProvidaerName = ProviderType.Pravda;
+            string jobId = $"crawl-{source.Id}";
+            _recurringJobManager.AddOrUpdate<INewsDownloaderService>(
+                jobId,
+                service => service.GetNewsAsync(source.Id),
+                source.CronSchedule);
 
-            INewsParserService parserType = _serviceProvider.GetService(Type.GetType(dataSource.Type)) as INewsParserService;
-            _recurringJobManager.AddOrUpdate<INewsDownloaderService>(dataSource.UniqueName, service => service.GetNewsAsync(dataSource, parserType), "#1#30 * * * * *"); // Every 30 seconds.
-
-            _recurringJobManager.RemoveIfExists(dataSource.UniqueName);
-
-            switch (dataSource.Type)
-            {
-                case "rss":
-                    _recurringJobManager.AddOrUpdate<IRssNewsDownloaderService>(dataSource.UniqueName, service => service.GetNewsAsync<IPravdaNewsPraser>(dataSource), "#1#30 * * * * *"); // Every 30 seconds.
-                    break;
-                case "html":
-                    _recurringJobManager.AddOrUpdate<IHtmlNewsDownloaderService>(dataSource.UniqueName, service => service.GetNewsAsync(dataSource), "#1#30 * * * * *"); // Every 30 seconds.
-                    break;
-            }
-        }*/
-
-
-
-        _recurringJobManager.AddOrUpdate<INewsDownloaderService>("crawl-news", service => service.GetNewsAsync(), "*/30 * * * * *"); // Every 30 seconds.
-
-        return Task.CompletedTask;
+            _logger.LogInformation("Registered job {JobId} with schedule {Cron}", jobId, source.CronSchedule);
+        }
     }
 }

@@ -1,6 +1,7 @@
 using Common.API;
 using CrawlerService.BLL;
 using CrawlerService.DAL;
+using CrawlerService.DAL.Populators;
 using CrawlerService.Hangfire;
 using MessageQueue;
 using MessageQueue.Settings;
@@ -53,6 +54,10 @@ public class Program
         builder.Services.AddHangfireCustomSettings(hangfireSettings);
         
         var app = builder.Build();
+
+        // Run populators before any hosted service (Hangfire scheduler) starts,
+        // so seeded sources exist by the time recurring jobs are registered.
+        app.Services.RunPopulators();
 
         app.UseExceptionHandler();
 

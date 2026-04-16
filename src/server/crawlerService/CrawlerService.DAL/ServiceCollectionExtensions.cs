@@ -1,4 +1,5 @@
-﻿using CrawlerService.DAL.Abstractions.Stores;
+using CrawlerService.DAL.Abstractions.Stores;
+using CrawlerService.DAL.Populators;
 using CrawlerService.DAL.Stores;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -26,16 +27,19 @@ public static class ServiceCollectionExtensions
         });
         services.AddTransient<IMongoDatabase>(provider => provider.GetRequiredService<IMongoClient>()
             .GetDatabase(settings.DatabaseName));
-        
+
         services.AddMigration(new MongoMigrationSettings()
         {
             ConnectionString = settings.ConnectionString,
             Database = settings.DatabaseName,
             //ClientSettings = MongoClientSettings.FromConnectionString(settings.ConnectionString)
         });
-        
+
         services.AddTransient<INewsStore, NewsStore>();
-        
+        services.AddTransient<ISourceStore, SourceStore>();
+
+        services.AddTransient<IPopulator, SourcePopulator>();
+
         return services;
     }
 }

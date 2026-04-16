@@ -2,5 +2,5 @@ namespace CrawlerService.BLL.Abstractions.Services;
 
 public interface INewsDownloaderService
 {
-    Task GetNewsAsync();
+    Task GetNewsAsync(string sourceId);
 }
