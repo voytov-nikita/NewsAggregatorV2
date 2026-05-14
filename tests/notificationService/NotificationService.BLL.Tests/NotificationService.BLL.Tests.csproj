@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0"/>
+        <PackageReference Include="AutoFixture" Version="4.18.1"/>
+        <PackageReference Include="AutoFixture.AutoMoq" Version="4.18.1"/>
+        <PackageReference Include="FluentAssertions" Version="6.12.2"/>
+        <PackageReference Include="Moq" Version="4.20.72"/>
+        <PackageReference Include="xunit" Version="2.9.3"/>
+        <PackageReference Include="xunit.categories" Version="3.0.1"/>
+        <PackageReference Include="Xunit.Extensions.AssemblyFixture" Version="2.6.0"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\src\server\notificationService\NotificationService.BLL\NotificationService.BLL.csproj"/>
+        <ProjectReference Include="..\..\..\src\server\notificationService\NotificationService.BLL.Abstractions\NotificationService.BLL.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\..\src\server\notificationService\NotificationService.DAL\NotificationService.DAL.csproj"/>
+        <ProjectReference Include="..\..\..\src\server\notificationService\NotificationService.DAL.Abstractions\NotificationService.DAL.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\..\src\server\notificationService\NotificationService.Models\NotificationService.Models.csproj"/>
+        <ProjectReference Include="..\..\..\src\server\notificationService\NotificationService.API\NotificationService.API.csproj"/>
+        <ProjectReference Include="..\..\..\src\server\common\MessageQueue\MessageQueue.csproj"/>
+        <ProjectReference Include="..\..\..\src\server\common\Common\Common.csproj"/>
+    </ItemGroup>
+
+</Project>

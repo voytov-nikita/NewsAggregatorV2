@@ -1,0 +1,28 @@
+<div class="settings-menu">
+  <button
+    type="button"
+    class="settings-trigger"
+    [class.active]="onSettings() || open()"
+    title="Settings"
+    (click)="toggle()"
+  >
+    ⚙
+  </button>
+
+  @if (open()) {
+    <div class="backdrop" (click)="close()"></div>
+    <div class="dropdown">
+      <div class="dropdown-label">Settings</div>
+      @for (item of items; track item.id) {
+        <button
+          type="button"
+          class="dropdown-item"
+          [class.active]="onSettings() && currentSection() === item.id"
+          (click)="go(item)"
+        >
+          {{ item.label }}
+        </button>
+      }
+    </div>
+  }
+</div>

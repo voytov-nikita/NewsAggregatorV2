@@ -1,24 +1,25 @@
 @use 'variables' as *;
 
-@mixin heading($size: 1.5rem) {
-  font-family: $font-heading;
-  font-weight: 700;
-  font-size: $size;
-  line-height: 1.35;
+@mixin mono {
+  font-family: $font-mono;
 }
 
-@mixin body-text($size: 0.95rem) {
-  font-family: $font-body;
-  font-size: $size;
+@mixin uppercase-label {
+  font-family: $font-mono;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
 }
 
-@mixin focus-highlight {
+@mixin card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+@mixin focus-ring {
   outline: none;
-  border-color: $ink;
-  background: $highlight;
-}
-
-@mixin hover-ink {
-  background: $ink;
-  color: $paper;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-bg);
 }

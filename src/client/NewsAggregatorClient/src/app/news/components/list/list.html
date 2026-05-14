@@ -1,63 +1,114 @@
-<header class="masthead">
-  <div class="masthead-top">
-    <span class="breadcrumb-current">Новости дня</span>
-    <div class="masthead-right">
-      <a [routerLink]="navigation.getSettingsRoute()" class="icon-button">&#9881;</a>
-      <div class="user-circle"></div>
+<section class="feed">
+  <div class="feed-top">
+    <header class="feed-header">
+      <h1>Feed</h1>
+    </header>
+
+    <div class="toolbar">
+    <app-search-bar
+      class="toolbar-search"
+      placeholder="Search articles…"
+      [value]="searchQuery()"
+      (debounced)="onSearchChange($event)"
+    />
+
+    <div class="sort-select">
+      <span class="sort-label">Sort</span>
+      <select
+        [value]="selectedSortId()"
+        (change)="onSortChange($any($event.target).value)"
+        aria-label="Sort"
+      >
+        @for (opt of sortOptions; track opt.id) {
+          <option [value]="opt.id">{{ opt.label }}</option>
+        }
+      </select>
     </div>
   </div>
-</header>
 
-<section class="content-area">
-  <div class="toolbar">
-    <input
-      type="text"
-      pInputText
-      class="search-field"
-      placeholder="Поиск новостей..."
-      [value]="searchQuery()"
-      (input)="onSearchInput($any($event.target).value)"
+    <app-category-chips
+      class="toolbar-chips"
+      [categories]="categories"
+      [selected]="selectedCategory()"
+      (selectedChange)="onCategoryChange($event)"
     />
-    <p-button
-      icon="pi pi-filter"
-      [outlined]="true"
-      severity="secondary"
-      styleClass="filter-btn"
-      (onClick)="filterPopover.toggle($event)"
-    />
-    <p-popover #filterPopover>
-      <p-menu [model]="sortMenuItems()" />
-    </p-popover>
-  </div>
 
-  <div class="articles">
-    @for (article of articles(); track article.id) {
-      <article class="article">
-        @if (article.imageLink) {
-          <img class="article-thumb" [src]="article.imageLink" [alt]="article.title" />
-        }
-        <div class="article-body">
-          <div class="article-head">
-            <span class="source-badge">{{ article.publisher }}</span>
-            <span class="timestamp">{{ article.publishDate | date: 'dd.MM.yyyy HH:mm' }}</span>
-          </div>
-          <h2 class="article-headline">{{ article.title }}</h2>
-          <div class="article-controls">
-            <a class="control-btn primary" [href]="article.originalLink" target="_blank"
-              >Читать далее</a
-            >
-            <button class="control-btn secondary">&#9733; Сохранить</button>
-          </div>
-        </div>
-      </article>
+    @if (error(); as e) {
+      <div class="error-banner" role="alert">
+        <span class="err-icon">!</span>
+        <span class="err-text">{{ e }}</span>
+        <button type="button" class="err-dismiss" (click)="dismissError()" aria-label="Dismiss">×</button>
+      </div>
     }
   </div>
 
-  <app-pager
-    [currentPage]="currentPage()"
-    [totalPages]="totalPages()"
-    [take]="pageSize()"
-    (pageChange)="setPage($event)"
-    (takeChange)="onTakeChange($event)"
-  />
+  <div class="articles">
+    @if (isLoading() && articles().length === 0) {
+      @for (_ of [1, 2, 3, 4]; track $index) {
+        <article class="article skeleton-card">
+          <app-skeleton width="120px" height="80" />
+          <div class="article-body">
+            <app-skeleton width="40%" height="14" />
+            <app-skeleton width="90%" height="20" />
+            <app-skeleton width="70%" height="14" />
+          </div>
+        </article>
+      }
+    } @else {
+      @for (article of articles(); track article.id) {
+        <article class="article" (click)="open(article)">
+          <app-image-placeholder
+            class="article-thumb"
+            [width]="'120px'"
+            [height]="80"
+            [label]="article.publisher"
+          />
+          <div class="article-body">
+            <div class="article-meta">
+              <app-source-badge [category]="categoryFor(article)" />
+              <span class="meta-publisher">{{ article.publisher }}</span>
+              <span class="meta-dot">·</span>
+              <span>{{ article.publishDate | date: 'mediumDate' }}</span>
+              <span class="meta-dot">·</span>
+              <span>{{ readTimeFor(article) }} min read</span>
+              <app-vote-buttons
+                class="meta-votes"
+                [likes]="likesFor(article)"
+                [dislikes]="dislikesFor(article)"
+                (click)="$event.stopPropagation()"
+              />
+            </div>
+            <h2 class="article-title">{{ article.title }}</h2>
+            @if (article.description) {
+              <p class="article-desc">{{ article.description }}</p>
+            }
+          </div>
+
+          <div class="article-actions" (click)="$event.stopPropagation()">
+            <button type="button" class="icon-btn" title="Save">★</button>
+            <a
+              class="icon-btn"
+              [href]="article.originalLink"
+              target="_blank"
+              rel="noopener"
+              title="Open original"
+            >
+              ↗
+            </a>
+          </div>
+        </article>
+      }
+    }
+  </div>
+
+  <div class="pager-wrap">
+    <app-pager
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [take]="pageSize()"
+      [totalItems]="totalItems()"
+      (pageChange)="setPage($event)"
+      (takeChange)="onTakeChange($event)"
+    />
+  </div>
 </section>

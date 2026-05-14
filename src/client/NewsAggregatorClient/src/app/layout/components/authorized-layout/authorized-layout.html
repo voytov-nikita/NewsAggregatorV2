@@ -1,27 +1,11 @@
-<div class="page-wrapper">
-  <aside class="sidebar">
-    <a [routerLink]="navigation.getNewsListRoute()" class="sidebar-logo">News<br />Aggregator</a>
-
-    <div class="sidebar-section">
-      <div class="section-label">Разделы</div>
-      <nav class="sidebar-links">
-        @for (item of sidebarSections(); track item.label) {
-          <a [routerLink]="item.link" class="sidebar-link">{{ item.label }}</a>
-        }
-      </nav>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="section-label">Личное</div>
-      <nav class="sidebar-links">
-        @for (item of sidebarPersonal(); track item.label) {
-          <a [routerLink]="item.link" class="sidebar-link">{{ item.label }}</a>
-        }
-      </nav>
-    </div>
-  </aside>
+<div class="shell">
+  <app-sidebar [items]="navItems" [activeId]="activeId()" />
 
   <main class="main-area">
+    <div class="settings-slot">
+      <app-settings-menu />
+    </div>
     <router-outlet></router-outlet>
   </main>
+  <app-toast-host />
 </div>

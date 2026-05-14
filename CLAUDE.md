@@ -21,6 +21,7 @@ src/server/notificationService/  NotificationService.API / .BLL / .DAL / .Models
 src/client/NewsAggregatorClient/ Angular frontend
 tests/newsService/          NewsService.BLL.Tests
 tests/crawlerService/       API.Tests, BLL.Tests, DAL.IntegrationTests
+tests/notificationService/  NotificationService.BLL.Tests
 docs/Solution/              Architecture docs and diagrams
 ```
 

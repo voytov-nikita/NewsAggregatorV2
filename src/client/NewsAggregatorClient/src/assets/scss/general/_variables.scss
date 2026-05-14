@@ -1,39 +1,55 @@
-// Color palette
-$paper: #f9f7f3;
-$ink: #1e1e1e;
-$ink-light: #5a5a5a;
-$accent: #d4574d;
-$line: #d8d4cc;
-$highlight: #fff8e1;
-$green: #4a7c59;
-$red: #c44536;
-$success: #4a7c59;
-
 // Typography
-$font-heading: 'Crimson Pro', serif;
-$font-body: 'Libre Franklin', sans-serif;
+$font-sans: 'IBM Plex Sans', sans-serif;
+$font-mono: 'IBM Plex Mono', monospace;
 
 // Spacing
-$content-padding: 3rem;
-$masthead-padding: 2rem 3rem;
-
-// Borders
-$border-standard: 2px solid $line;
-$border-ink: 2px solid $ink;
-$border-double: 3px double $ink;
+$content-padding: 36px;
 
 // Transitions
-$transition-fast: all 0.2s ease;
-$transition-medium: all 0.3s ease;
+$transition-fast: all 0.12s ease;
+$transition-medium: all 0.18s ease;
 
+// Theme tokens — dark (default) / light via [data-theme='light']
+:root,
+:root[data-theme='dark'] {
+  --bg: #080d16;
+  --surface-1: #0d1421;
+  --surface-2: #121a2e;
+  --surface-3: #182136;
+  --border: #1e2d44;
+  --text-primary: #dce8f8;
+  --text-secondary: #7a90b0;
+  --text-muted: #4a5f78;
+  --accent: #3b82f6;
+  --accent-bg: rgba(59, 130, 246, 0.1);
+  --input-bg: #1e2d44;
+  --shadow-modal: 0 12px 48px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme='light'] {
+  --bg: #f0f4f9;
+  --surface-1: #ffffff;
+  --surface-2: #f5f8fc;
+  --surface-3: #edf2f9;
+  --border: #dde6f0;
+  --text-primary: #0e1625;
+  --text-secondary: #4a6080;
+  --text-muted: #94a8c0;
+  --accent: #3b82f6;
+  --accent-bg: rgba(59, 130, 246, 0.1);
+  --input-bg: #ffffff;
+  --shadow-modal: 0 12px 48px rgba(0, 0, 0, 0.18);
+}
+
+// Legacy CSS var aliases — kept until Phase 2 redesigns existing components.
+// Map old newspaper tokens onto new theme tokens so the build doesn't break.
 :root {
-  --paper: #{$paper};
-  --ink: #{$ink};
-  --ink-light: #{$ink-light};
-  --accent: #{$accent};
-  --line: #{$line};
-  --highlight: #{$highlight};
-  --green: #{$green};
-  --red: #{$red};
-  --success: #{$success};
+  --paper: var(--bg);
+  --ink: var(--text-primary);
+  --ink-light: var(--text-secondary);
+  --line: var(--border);
+  --highlight: var(--accent-bg);
+  --green: #4ade80;
+  --red: #ef4444;
+  --success: #4ade80;
 }

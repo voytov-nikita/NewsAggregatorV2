@@ -1,0 +1,45 @@
+<section class="stats-page">
+  <header class="page-head">
+    <h1 class="page-title">Statistics</h1>
+    <p class="page-sub">Crawler activity across all configured sources</p>
+  </header>
+
+  <div class="kpi-grid">
+    @for (k of kpis(); track k.label) {
+      <div class="kpi">
+        <div class="kpi-label">{{ k.label }}</div>
+        <div class="kpi-value">{{ k.value }}</div>
+        <div class="kpi-sub">{{ k.sub }}</div>
+      </div>
+    }
+  </div>
+
+  <section class="chart">
+    <header class="chart-head">
+      <h2 class="section-title">Articles per source</h2>
+      <span class="chart-meta">sorted by volume</span>
+    </header>
+
+    <div class="chart-rows">
+      @for (row of chartRows(); track row.id) {
+        <div class="chart-row">
+          <div class="row-name">
+            <span class="badge" [class.html]="row.type === 'HTML'">{{ row.type }}</span>
+            <span class="name">{{ row.name }}</span>
+          </div>
+          <div class="row-bar">
+            <div
+              class="bar"
+              [style.width.%]="row.widthPct"
+              [class.warn]="row.success < 95"
+            ></div>
+            <span class="bar-value">{{ row.articles }}</span>
+          </div>
+          <div class="row-success" [class]="successClass(row.success)">
+            {{ row.success }}%
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</section>

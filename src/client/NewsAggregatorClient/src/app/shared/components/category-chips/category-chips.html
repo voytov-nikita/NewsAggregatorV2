@@ -1,0 +1,12 @@
+<div class="chips">
+  @for (cat of categories(); track cat) {
+    <button
+      type="button"
+      class="chip"
+      [class.active]="selected() === cat"
+      (click)="select(cat)"
+    >
+      {{ cat }}
+    </button>
+  }
+</div>

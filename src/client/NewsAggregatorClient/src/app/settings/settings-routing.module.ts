@@ -3,11 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { Settings } from './components/settings/settings';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: Settings,
-    data: { pageTitle: 'Настройки' },
-  },
+  { path: '', component: Settings, data: { pageTitle: 'Settings' } },
+  { path: ':section', component: Settings, data: { pageTitle: 'Settings' } },
 ];
 
 @NgModule({

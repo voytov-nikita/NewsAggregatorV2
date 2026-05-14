@@ -1,7 +1,50 @@
-<p-paginator
-  [rows]="take()"
-  [totalRecords]="totalPages() * take()"
-  [first]="(currentPage() - 1) * take()"
-  [rowsPerPageOptions]="[5, 10, 25, 50]"
-  (onPageChange)="onPaginatorChange($event)"
-/>
+<div class="pager">
+  <div class="pager-meta">
+    @if (rangeLabel(); as range) {
+      <span class="range">{{ range }}</span>
+    }
+    <label class="per-page">
+      <span>Per page</span>
+      <select [value]="take()" (change)="onTakeChange($any($event.target).value)">
+        @for (opt of takeOptions(); track opt) {
+          <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  <nav class="pager-nav">
+    <button
+      type="button"
+      class="page-btn"
+      (click)="prev()"
+      [disabled]="currentPage() <= 1"
+      aria-label="Previous page"
+    >
+      ‹
+    </button>
+    @for (item of pages(); track $index) {
+      @if (isEllipsis(item)) {
+        <span class="ellipsis">…</span>
+      } @else {
+        <button
+          type="button"
+          class="page-btn"
+          [class.active]="item === currentPage()"
+          (click)="goto(item)"
+        >
+          {{ item }}
+        </button>
+      }
+    }
+    <button
+      type="button"
+      class="page-btn"
+      (click)="next()"
+      [disabled]="currentPage() >= totalPages()"
+      aria-label="Next page"
+    >
+      ›
+    </button>
+  </nav>
+</div>

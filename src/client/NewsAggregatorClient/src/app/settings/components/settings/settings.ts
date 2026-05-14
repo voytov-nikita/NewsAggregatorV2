@@ -1,23 +1,47 @@
-import { Component, signal } from '@angular/core';
-import { NavigationService } from '@shared/services';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { fromEvent } from 'rxjs';
 
 interface Category {
-  icon: string;
-  name: string;
+  id: string;
+  label: string;
   selected: boolean;
 }
 
-interface NotificationSetting {
+interface ToggleRow {
   title: string;
   description: string;
   active: boolean;
 }
 
-interface StatSource {
+interface FavoriteSource {
   name: string;
-  articles: string;
-  percentage: string;
+  count: number;
+  percentage: number;
 }
+
+interface SectionRef {
+  id: string;
+  label: string;
+}
+
+const SECTIONS: SectionRef[] = [
+  { id: 'account', label: 'Account' },
+  { id: 'feed', label: 'Feed Preferences' },
+  { id: 'categories', label: 'Categories' },
+  { id: 'notifications', label: 'Notifications' },
+  { id: 'privacy', label: 'Privacy' },
+  { id: 'statistics', label: 'Statistics' },
+];
 
 @Component({
   standalone: false,
@@ -25,73 +49,110 @@ interface StatSource {
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
 })
-export class Settings {
-  constructor(protected readonly navigation: NavigationService) {}
+export class Settings implements AfterViewInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  protected readonly activeTab = signal<'profile' | 'integrations' | 'notifications' | 'stats'>('profile');
+  protected readonly sections = SECTIONS;
+  protected readonly activeSection = signal<string>('account');
+
+  protected readonly displayName = signal('Nikita Vojtov');
+  protected readonly email = signal('voytov.nikita@gmail.com');
+
+  protected readonly density = signal<'comfortable' | 'compact'>('comfortable');
+  protected readonly autoMarkRead = signal(true);
+  protected readonly openInNewTab = signal(false);
 
   protected readonly categories = signal<Category[]>([
-    { icon: '\uD83D\uDCBB', name: 'Технологии', selected: true },
-    { icon: '\uD83D\uDD2C', name: 'Наука', selected: true },
-    { icon: '\uD83D\uDCBC', name: 'Бизнес', selected: false },
-    { icon: '\uD83C\uDFDB\uFE0F', name: 'Политика', selected: false },
-    { icon: '\uD83C\uDFA8', name: 'Культура', selected: true },
-    { icon: '\u26BD', name: 'Спорт', selected: false },
+    { id: 'tech', label: 'Technology', selected: true },
+    { id: 'arch', label: 'Architecture', selected: true },
+    { id: 'be', label: 'Backend', selected: true },
+    { id: 'fe', label: 'Frontend', selected: true },
+    { id: 'db', label: 'Database', selected: false },
+    { id: 'devops', label: 'DevOps', selected: false },
+    { id: 'rt', label: 'Real-time', selected: true },
+    { id: 'state', label: 'State', selected: false },
   ]);
 
-  protected readonly privacySettings = signal<NotificationSetting[]>([
-    { title: 'Публичный профиль', description: 'Другие пользователи могут видеть ваш профиль', active: false },
-    { title: 'Показывать активность', description: 'Отображать вашу историю чтения', active: true },
+  protected readonly notifications = signal<ToggleRow[]>([
+    { title: 'New articles in favorite categories', description: 'Push when categories you follow get new content', active: true },
+    { title: 'Trending', description: 'Most-discussed articles of the day', active: true },
+    { title: 'Comment replies', description: 'Someone replied to your comment', active: true },
+    { title: 'Weekly digest', description: 'Sunday summary of the week', active: false },
   ]);
 
-  protected readonly webhookActive = signal(true);
-  protected readonly dailyDigest = signal(true);
-  protected readonly weeklyReview = signal(false);
-
-  protected readonly notificationSettings = signal<NotificationSetting[]>([
-    { title: 'Новости из любимых категорий', description: 'Уведомления о новостях в выбранных категориях', active: true },
-    { title: 'Популярные новости', description: 'Уведомления о самых обсуждаемых статьях', active: true },
-    { title: 'Комментарии к вашим статьям', description: 'Когда кто-то отвечает на ваш комментарий', active: true },
-    { title: 'Еженедельная статистика', description: 'Сводка вашей активности за неделю', active: false },
+  protected readonly privacy = signal<ToggleRow[]>([
+    { title: 'Public profile', description: 'Others can view your profile', active: false },
+    { title: 'Show activity', description: 'Display your reading history', active: true },
   ]);
 
-  protected readonly stats = signal({
-    articlesRead: 247,
-    saved: 18,
-    comments: 52,
-  });
-
-  protected readonly favoriteSources = signal<StatSource[]>([
-    { name: 'TechCrunch', articles: '72 прочитанные статьи', percentage: '29%' },
-    { name: 'The Verge', articles: '54 прочитанные статьи', percentage: '22%' },
-    { name: 'Wired', articles: '41 прочитанная статья', percentage: '17%' },
+  protected readonly stats = signal({ read: 247, saved: 18, comments: 52 });
+  protected readonly favoriteSources = signal<FavoriteSource[]>([
+    { name: 'Angular Blog', count: 72, percentage: 29 },
+    { name: 'InfoQ', count: 54, percentage: 22 },
+    { name: 'The New Stack', count: 41, percentage: 17 },
+    { name: 'CSS-Tricks', count: 32, percentage: 13 },
   ]);
 
-  protected switchTab(tab: 'profile' | 'integrations' | 'notifications' | 'stats'): void {
-    this.activeTab.set(tab);
+  private readonly content = viewChild.required<ElementRef<HTMLElement>>('content');
+
+  ngAfterViewInit(): void {
+    const initial = this.route.snapshot.paramMap.get('section');
+    if (initial) {
+      queueMicrotask(() => this.scrollTo(initial, 'auto'));
+    }
+
+    fromEvent(this.content().nativeElement, 'scroll', { passive: true })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.updateActiveFromScroll());
+    this.updateActiveFromScroll();
   }
 
-  protected toggleCategory(index: number): void {
-    this.categories.update(cats => {
-      const updated = [...cats];
-      updated[index] = { ...updated[index], selected: !updated[index].selected };
-      return updated;
+  protected scrollTo(id: string, behavior: ScrollBehavior = 'smooth'): void {
+    const root = this.content().nativeElement;
+    const target = root.querySelector<HTMLElement>(`[data-section="${id}"]`);
+    if (!target) return;
+    root.scrollTo({ top: target.offsetTop - 12, behavior });
+    this.activeSection.set(id);
+  }
+
+  protected toggleCategory(id: string): void {
+    this.categories.update((list) =>
+      list.map((c) => (c.id === id ? { ...c, selected: !c.selected } : c)),
+    );
+  }
+
+  protected toggleNotification(index: number): void {
+    this.notifications.update((list) => {
+      const next = [...list];
+      next[index] = { ...next[index], active: !next[index].active };
+      return next;
     });
   }
 
   protected togglePrivacy(index: number): void {
-    this.privacySettings.update(settings => {
-      const updated = [...settings];
-      updated[index] = { ...updated[index], active: !updated[index].active };
-      return updated;
+    this.privacy.update((list) => {
+      const next = [...list];
+      next[index] = { ...next[index], active: !next[index].active };
+      return next;
     });
   }
 
-  protected toggleNotification(index: number): void {
-    this.notificationSettings.update(settings => {
-      const updated = [...settings];
-      updated[index] = { ...updated[index], active: !updated[index].active };
-      return updated;
+  protected setDensity(value: 'comfortable' | 'compact'): void {
+    this.density.set(value);
+  }
+
+  private updateActiveFromScroll(): void {
+    const root = this.content().nativeElement;
+    const top = root.scrollTop + 60;
+    const sections = root.querySelectorAll<HTMLElement>('[data-section]');
+    let current = this.sections[0].id;
+    sections.forEach((el) => {
+      if (el.offsetTop <= top) current = el.dataset['section'] ?? current;
     });
+    if (current !== this.activeSection()) {
+      this.activeSection.set(current);
+    }
   }
 }

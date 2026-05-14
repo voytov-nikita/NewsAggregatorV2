@@ -1,29 +1,20 @@
-<header class="masthead">
-  <div class="masthead-top">
-    <nav class="breadcrumb">
-      <a [routerLink]="navigation.getNewsListRoute()" class="breadcrumb-link">Новости</a>
-      <span class="breadcrumb-separator">/</span>
-      <span class="breadcrumb-current">{{ article().category }}</span>
-    </nav>
-    <div class="masthead-right">
-      <a [routerLink]="navigation.getSettingsRoute()" class="icon-button">&#9881;</a>
-      <div class="user-circle"></div>
-    </div>
-  </div>
-</header>
+<section class="discussion">
+  <button type="button" class="back-btn" (click)="back()">← Back to feed</button>
 
-<div class="content-wrapper">
-  <article class="article-main">
-    <div class="article-header">
+  <article class="article">
+    <header class="article-header">
       <div class="article-meta">
-        <span class="source-badge">{{ article().source }}</span>
-        <span class="meta-item">&#128214; {{ article().readTime }}</span>
-        <span class="meta-item">{{ article().timestamp }}</span>
+        <app-source-badge [category]="article().category" />
+        <span class="meta-publisher">{{ article().publisher }}</span>
+        <span class="meta-dot">·</span>
+        <span>{{ article().publishDate | date: 'mediumDate' }}</span>
+        <span class="meta-dot">·</span>
+        <span>{{ article().readTime }} min read</span>
       </div>
       <h1 class="article-title">{{ article().title }}</h1>
-    </div>
+    </header>
 
-    <div class="article-image"></div>
+    <app-image-placeholder [width]="'100%'" [height]="280" [label]="article().publisher" />
 
     <div class="article-body">
       @for (p of article().paragraphs; track $index) {
@@ -31,76 +22,58 @@
       }
     </div>
 
-    <div class="interaction-bar">
-      <div class="rating-group">
-        <p-button label="&#128077; Нравится" [outlined]="true" severity="success" styleClass="rate-btn" />
-        <p-button label="&#128078; Не нравится" [outlined]="true" severity="danger" styleClass="rate-btn" />
-        <span class="rating-score">+{{ article().rating }}</span>
-      </div>
-      <div class="share-group">
-        <p-button label="&#120143;" [outlined]="true" severity="secondary" styleClass="share-btn" />
-        <p-button label="f" [outlined]="true" severity="secondary" styleClass="share-btn" />
-        <p-button label="&#9992;" [outlined]="true" severity="secondary" styleClass="share-btn" />
-        <p-button label="&#9993;" [outlined]="true" severity="secondary" styleClass="share-btn" />
+    <div class="article-footer">
+      <app-vote-buttons [likes]="article().likes" [dislikes]="article().dislikes" />
+      <a class="source-link" [href]="article().sourceUrl" target="_blank" rel="noopener">
+        Read original ↗
+      </a>
+    </div>
+  </article>
+
+  <section class="comments">
+    <h2 class="comments-title">Discussion ({{ comments().length }})</h2>
+
+    <div class="comment-form">
+      <textarea
+        class="comment-input"
+        rows="3"
+        placeholder="Add to the discussion…"
+        [value]="commentDraft()"
+        (input)="updateDraft($any($event.target).value)"
+      ></textarea>
+      <div class="comment-form-actions">
+        <button
+          type="button"
+          class="submit-btn"
+          [disabled]="!commentDraft().trim()"
+          (click)="submitComment()"
+        >
+          Post
+        </button>
       </div>
     </div>
 
-    <div class="source-box">
-      <div class="source-label">Источник:</div>
-      <a href="#" class="source-link">{{ article().sourceUrl }} &rarr;</a>
-    </div>
-
-    <section class="comments-section">
-      <h2 class="comments-header">Комментарии ({{ comments().length }})</h2>
-
-      <div class="comment-input">
-        <textarea
-          pTextarea
-          class="comment-textarea"
-          placeholder="Ваш комментарий..."
-          [value]="commentText()"
-          (input)="onCommentInput($event)"
-        ></textarea>
-        <p-button label="Опубликовать" styleClass="comment-submit" />
-      </div>
-
-      @for (comment of comments(); track comment.author) {
+    <div class="comments-list">
+      @for (comment of comments(); track comment.id) {
         <div class="comment">
-          <div class="comment-top">
-            <span class="comment-author">{{ comment.author }}</span>
-            <span class="comment-time">{{ comment.time }}</span>
-          </div>
-          <div class="comment-text">{{ comment.text }}</div>
-          <div class="comment-actions">
-            <p-button label="&#128077; {{ comment.likes }}" [text]="true" severity="secondary" size="small" />
-            <p-button label="&#128078; {{ comment.dislikes }}" [text]="true" severity="secondary" size="small" />
-            <p-button label="Ответить" [text]="true" severity="secondary" size="small" />
+          <app-avatar [name]="comment.author" [size]="36" />
+          <div class="comment-body">
+            <div class="comment-head">
+              <span class="comment-author">{{ comment.author }}</span>
+              <span class="comment-time">{{ comment.time }}</span>
+            </div>
+            <p class="comment-text">{{ comment.content }}</p>
+            <div class="comment-actions">
+              <app-vote-buttons
+                [likes]="comment.likes"
+                [dislikes]="comment.dislikes"
+                [compact]="true"
+              />
+              <button type="button" class="reply-btn">Reply</button>
+            </div>
           </div>
         </div>
       }
-    </section>
-  </article>
-
-  <aside class="content-sidebar">
-    <div class="sidebar-widget">
-      <h3 class="widget-title">Теги</h3>
-      <div class="tags-cloud">
-        @for (tag of tags(); track tag) {
-          <p-chip [label]="tag" />
-        }
-      </div>
     </div>
-
-    <div class="sidebar-widget">
-      <h3 class="widget-title">Похожие новости</h3>
-      <div class="related-list">
-        @for (related of relatedArticles(); track related.title) {
-          <a [routerLink]="navigation.getNewsDetailRoute(related.id)" class="related-mini">
-            <div class="related-mini-source">{{ related.source }}</div>
-            <div class="related-mini-title">{{ related.title }}</div>
-          </a>
-        }
-      </div>
-    </div>
-  </aside>
-</div>
+  </section>
+</section>

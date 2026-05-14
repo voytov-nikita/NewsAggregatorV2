@@ -1,0 +1,50 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  height: 54px;
+  transition: border-color 0.12s, box-shadow 0.12s;
+
+  &:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-bg);
+  }
+
+  .search-icon {
+    color: var(--text-muted);
+    font-size: 22px;
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 19px;
+    color: var(--text-primary);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-width: 0;
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+
+  .clear-btn {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 28px;
+    line-height: 1;
+    padding: 0 6px;
+
+    &:hover {
+      color: var(--text-secondary);
+    }
+  }
+}

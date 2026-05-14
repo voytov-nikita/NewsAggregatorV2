@@ -1,0 +1,92 @@
+@if (mode() === 'default') {
+  <div class="default-mode">
+    <div class="default-head">
+      <div class="head-left">
+        <span class="check">✓</span>
+        <span class="head-title">Auto-detected mappings</span>
+        <span class="counter">{{ mappedCount() }}/{{ fieldTargets.length }} fields</span>
+      </div>
+      <button type="button" class="link-btn" (click)="toCustom()">Customize →</button>
+    </div>
+
+    <div class="auto-rows">
+      @for (f of fieldTargets; track f.key) {
+        <div class="auto-row">
+          <span class="auto-label">{{ f.label }}</span>
+          <span class="arrow">→</span>
+          @if (mapping()[f.key]; as mapped) {
+            <span class="path">{{ pathLabel(mapped) }}</span>
+          } @else {
+            <span class="not-mapped">not mapped</span>
+          }
+        </div>
+      }
+    </div>
+
+    <p class="hint">
+      Auto-detection based on standard {{ type() }} field names.
+      Click <strong>Customize</strong> to manually assign paths.
+    </p>
+  </div>
+} @else {
+  <div class="custom-mode">
+    <div class="custom-head">
+      @if (active(); as a) {
+        <span class="hint accent">← Click a path to map to <strong>{{ activeLabel() }}</strong></span>
+      } @else {
+        <span class="hint muted">Select a target field →</span>
+      }
+      <button type="button" class="link-btn" (click)="resetToAuto()">← Reset to auto</button>
+    </div>
+
+    <div class="split">
+      <div class="paths">
+        <div class="paths-head">{{ type() }} sample</div>
+        @for (node of sample(); track node.path) {
+          <div
+            class="path-row"
+            [class.clickable]="!!active()"
+            [class.assigned]="!!assignedLabelFor(node.path)"
+            (click)="active() && assign(node.path)"
+          >
+            <div class="path-row-head">
+              <span class="path-label">{{ node.label }}</span>
+              @if (assignedLabelFor(node.path); as assigned) {
+                <span class="assigned-tag">{{ assigned }}</span>
+              }
+            </div>
+            <div class="path-value">{{ node.value }}</div>
+          </div>
+        }
+      </div>
+
+      <div class="targets">
+        @for (f of fieldTargets; track f.key) {
+          <div
+            class="target"
+            [class.active]="active() === f.key"
+            [class.mapped]="!!mapping()[f.key]"
+            (click)="setActive(f.key)"
+          >
+            <div class="target-row">
+              <div>
+                <div class="target-label">{{ f.label }}</div>
+                <div class="target-desc">{{ f.desc }}</div>
+              </div>
+              @if (mapping()[f.key]; as m) {
+                <button
+                  type="button"
+                  class="clear-btn"
+                  (click)="clear(f.key); $event.stopPropagation()"
+                >×</button>
+              }
+            </div>
+            @if (mapping()[f.key]; as m) {
+              <div class="target-path">{{ pathLabel(m) }}</div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

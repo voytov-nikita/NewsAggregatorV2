@@ -1,0 +1,8 @@
+<div class="error-state">
+  <div class="error-state__icon">!</div>
+  <h4 class="error-state__title">{{ title() }}</h4>
+  <p class="error-state__description">{{ description() }}</p>
+  <button type="button" class="error-state__retry" (click)="retry.emit()">
+    {{ retryLabel() }}
+  </button>
+</div>

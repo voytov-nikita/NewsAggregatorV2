@@ -1,11 +1,46 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { debounceTime, finalize, Subject, switchMap, tap } from 'rxjs';
-import { MenuItem } from 'primeng/api';
+import { Component, computed, inject, OnInit } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
 import { NavigationService } from '@shared/services';
 import { NewsResponse, NewsFilterRequest } from '@shared/models';
 import { NewsOrderField, OrderDirection } from '@shared/enums';
-import { NewsService } from '../../services/news.service';
+import {
+  FeedActions,
+  selectArticles,
+  selectCurrentPage,
+  selectError,
+  selectIsLoading,
+  selectPageSize,
+  selectSearchQuery,
+  selectSelectedCategory,
+  selectSelectedSortId,
+} from '../../../store';
+
+interface SortOption {
+  id: string;
+  label: string;
+  field: NewsOrderField;
+  direction: OrderDirection;
+}
+
+const SORT_OPTIONS: SortOption[] = [
+  { id: 'newest', label: 'Newest', field: NewsOrderField.PublishDate, direction: OrderDirection.Descending },
+  { id: 'oldest', label: 'Oldest', field: NewsOrderField.PublishDate, direction: OrderDirection.Ascending },
+  { id: 'title-az', label: 'Title A→Z', field: NewsOrderField.Title, direction: OrderDirection.Ascending },
+  { id: 'title-za', label: 'Title Z→A', field: NewsOrderField.Title, direction: OrderDirection.Descending },
+];
+
+const CATEGORIES = [
+  'All',
+  'Technology',
+  'Architecture',
+  'Backend',
+  'Frontend',
+  'Database',
+  'DevOps',
+  'Real-time',
+  'State',
+] as const;
 
 @Component({
   standalone: false,
@@ -14,107 +49,107 @@ import { NewsService } from '../../services/news.service';
   styleUrl: './list.scss',
 })
 export class NewsList implements OnInit {
-  private destroyRef = inject(DestroyRef);
-  private newsService = inject(NewsService);
+  private readonly store = inject(Store);
+  protected readonly navigation = inject(NavigationService);
 
-  protected readonly pageSize = signal(10);
+  protected readonly sortOptions = SORT_OPTIONS;
+  protected readonly categories = CATEGORIES;
 
-  protected readonly isLoading = signal(false);
-  protected readonly currentPage = signal(1);
-  protected readonly totalPages = signal(5);
-  protected readonly searchQuery = signal('');
-  protected readonly articles = signal<NewsResponse[]>([]);
+  protected readonly articles = toSignal(this.store.select(selectArticles), { initialValue: [] });
+  protected readonly isLoading = toSignal(this.store.select(selectIsLoading), { initialValue: false });
+  protected readonly error = toSignal(this.store.select(selectError), { initialValue: null });
+  protected readonly searchQuery = toSignal(this.store.select(selectSearchQuery), { initialValue: '' });
+  protected readonly selectedSortId = toSignal(this.store.select(selectSelectedSortId), { initialValue: 'newest' });
+  protected readonly selectedCategory = toSignal(this.store.select(selectSelectedCategory), { initialValue: 'All' });
+  protected readonly currentPage = toSignal(this.store.select(selectCurrentPage), { initialValue: 1 });
+  protected readonly pageSize = toSignal(this.store.select(selectPageSize), { initialValue: 10 });
 
-  protected readonly orderBy = signal(NewsOrderField.PublishDate);
-  protected readonly orderDirection = signal(OrderDirection.Descending);
+  protected readonly totalPages = computed(() => {
+    const count = this.articles().length;
+    return Math.max(1, Math.ceil(count / this.pageSize()) + (count >= this.pageSize() ? 1 : 0));
+  });
+  protected readonly totalItems = computed<number | null>(() => null);
 
-  private readonly sortOptions = [
-    { label: 'Сначала новые', field: NewsOrderField.PublishDate, direction: OrderDirection.Descending },
-    { label: 'Сначала старые', field: NewsOrderField.PublishDate, direction: OrderDirection.Ascending },
-    { label: 'По названию А-Я', field: NewsOrderField.Title, direction: OrderDirection.Ascending },
-    { label: 'По названию Я-А', field: NewsOrderField.Title, direction: OrderDirection.Descending },
-  ];
-
-  protected readonly sortMenuItems = computed<MenuItem[]>(() =>
-    this.sortOptions.map((opt) => ({
-      label: opt.label,
-      icon:
-        this.orderBy() === opt.field && this.orderDirection() === opt.direction
-          ? 'pi pi-check'
-          : undefined,
-      command: () => this.applySorting(opt.field, opt.direction),
-    })),
+  protected readonly currentSort = computed(
+    () => this.sortOptions.find((s) => s.id === this.selectedSortId()) ?? this.sortOptions[0],
   );
 
-  private _onSearch$ = new Subject<string>();
-
-  constructor(protected readonly navigation: NavigationService) {
-    this._onSearch$
-      .pipe(
-        debounceTime(300),
-        tap((_) => {
-          this.currentPage.set(1);
-          this.isLoading.set(true);
-        }),
-        switchMap((keyword) => {
-          const filter = this.buildFilter(keyword || undefined);
-          return this.newsService.getMany(filter).pipe(finalize(() => this.isLoading.set(false)));
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((articles) => this.articles.set(articles));
-  }
-
   public ngOnInit(): void {
-    this.loadArticles();
+    this.dispatchLoad();
   }
 
-  protected onSearchInput(value: string): void {
-    this.searchQuery.set(value);
-    this._onSearch$.next(value);
+  protected onSearchChange(value: string): void {
+    this.store.dispatch(FeedActions.setSearch({ keyword: value }));
+    this.dispatchLoad();
+  }
+
+  protected onSortChange(id: string): void {
+    this.store.dispatch(FeedActions.setSort({ sortId: id }));
+    this.dispatchLoad();
+  }
+
+  protected onCategoryChange(category: string): void {
+    this.store.dispatch(FeedActions.setCategory({ category }));
+    // Server-side category filter not implemented; selection only.
   }
 
   protected setPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages() && page !== this.currentPage()) {
-      this.currentPage.set(page);
-      this.loadArticles();
-    }
+    this.store.dispatch(FeedActions.setPage({ page }));
+    this.dispatchLoad();
   }
 
   protected onTakeChange(take: number): void {
-    this.pageSize.set(take);
-    this.currentPage.set(1);
-    this.loadArticles();
+    this.store.dispatch(FeedActions.setTake({ take }));
+    this.dispatchLoad();
   }
 
-  private applySorting(field: NewsOrderField, direction: OrderDirection): void {
-    this.orderBy.set(field);
-    this.orderDirection.set(direction);
-    this.currentPage.set(1);
-    this.loadArticles();
+  protected open(article: NewsResponse): void {
+    this.navigation.toArticle(article.id);
   }
 
-  private loadArticles(): void {
-    const keyword = this.searchQuery() || undefined;
-    const filter = this.buildFilter(keyword);
-
-    this.isLoading.set(true);
-    this.newsService
-      .getMany(filter)
-      .pipe(
-        finalize(() => this.isLoading.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((articles) => this.articles.set(articles));
+  protected dismissError(): void {
+    this.store.dispatch(FeedActions.clearError());
   }
 
-  private buildFilter(keyword?: string): NewsFilterRequest {
+  protected categoryFor(article: NewsResponse): string {
+    const map: Record<string, string> = {
+      'Angular Blog': 'Frontend',
+      InfoQ: 'Architecture',
+      'The New Stack': 'Backend',
+      'Postgres Weekly': 'Database',
+      'Microsoft Dev Blog': 'Backend',
+      'CSS-Tricks': 'Frontend',
+      'ngrx team': 'State',
+      'MongoDB Blog': 'Database',
+    };
+    return map[article.publisher] ?? 'Technology';
+  }
+
+  protected likesFor(article: NewsResponse): number {
+    return ((article.id * 37) % 200) + 12;
+  }
+
+  protected dislikesFor(article: NewsResponse): number {
+    return (article.id * 7) % 18;
+  }
+
+  protected readTimeFor(article: NewsResponse): number {
+    const len = article.description?.length ?? 600;
+    return Math.max(3, Math.round(len / 200));
+  }
+
+  private dispatchLoad(): void {
+    this.store.dispatch(FeedActions.load({ filter: this.buildFilter() }));
+  }
+
+  private buildFilter(): NewsFilterRequest {
+    const sort = this.currentSort();
     return {
       take: this.pageSize(),
       offset: (this.currentPage() - 1) * this.pageSize(),
-      keyword,
-      orderBy: this.orderBy(),
-      orderDirection: this.orderDirection(),
+      keyword: this.searchQuery() || undefined,
+      orderBy: sort.field,
+      orderDirection: sort.direction,
     };
   }
 }

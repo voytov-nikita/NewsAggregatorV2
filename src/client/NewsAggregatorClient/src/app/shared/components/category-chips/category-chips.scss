@@ -1,0 +1,29 @@
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  padding: 7px 17px;
+  border-radius: 150px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 18px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.12s;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--surface-2);
+  }
+
+  &.active {
+    background: var(--accent-bg);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+}

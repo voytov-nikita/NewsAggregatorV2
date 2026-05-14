@@ -12,15 +12,16 @@ All commands run from `src/client/NewsAggregatorClient/`.
 
 ## Architecture
 
-**NgModule-based** Angular 21 app with lazy-loaded feature modules. Uses Angular Signals for component state (not NgRx or other state libraries).
+**NgModule-based** Angular 21 app with lazy-loaded feature modules. Uses Angular Signals for component state plus **NgRx 21** (`@ngrx/store`, `@ngrx/effects`, `@ngrx/store-devtools`) for cross-module state (UI theme/sidebar, news feed). All components are `standalone: false` with `ChangeDetectionStrategy.OnPush`.
 
 ### Module Structure
 
-- **AppModule** — Root module. Imports `LayoutModule`, `SharedModule`, sets up routing.
-- **NewsModule** (lazy) — News list and detail views. Own services: `NewsService`, `CommentsService`.
-- **SettingsModule** (lazy) — Settings page.
-- **SharedModule** — Reusable components (`Pager`), models, enums, `NavigationService`. Imports/exports PrimeNG modules and `FormsModule`.
-- **LayoutModule** — `AuthorizedLayout` component (page shell with navigation).
+- **AppModule** — Root module. Imports `LayoutModule`, configures NgRx store with `uiFeature` + `feedFeature` and effects (`UiEffects`, `FeedEffects`).
+- **NewsModule** (lazy, `/feed`, `/article/:id`) — News list and detail views. Services: `NewsService`, `CommentsService`. Feed list reads/dispatches via NgRx; comments stay service-based.
+- **SettingsModule** (lazy, `/settings/:section?`) — Single-page settings with sticky left nav and scroll-spy across 6 sections.
+- **AdminModule** (lazy, `/admin/sources`, `/admin/stats`) — Sources list with 4-step wizard (URL+validate, crawler config, FieldMapper, review), and Statistics tab (KPIs + per-source bar chart). Mock data only.
+- **SharedModule** — Reusable components: `Pager`, `Avatar`, `SourceBadge`, `ImagePlaceholder`, `Skeleton`, `VoteButtons`, `SearchBar`, `CategoryChips`, `Sidebar`. Imports/exports PrimeNG modules + `FormsModule` + `CommonModule`.
+- **LayoutModule** — `AuthorizedLayout` (sidebar + main + settings-menu shell), `SettingsMenu` (top-right ⚙ dropdown).
 
 ### Path Aliases (tsconfig.json)
 
@@ -28,7 +29,13 @@ All commands run from `src/client/NewsAggregatorClient/`.
 
 ### API Communication
 
-Services use `HttpClient` directly with `providedIn: 'root'`. Base URL is hardcoded to `https://localhost:7300/api/v1/news` (NewsService backend). No interceptors or global error handling currently.
+Services use `HttpClient` with `providedIn: 'root'`. Base URL comes from `src/environments/environment.ts` (`newsApiBaseUrl`); production replacement is configured in `angular.json` `fileReplacements` to `environment.prod.ts`. Feed errors are formatted in `FeedEffects` and surfaced via `feedFeature.selectError` rendered as a dismissable banner above the feed.
+
+### State (NgRx)
+
+Slices live under `src/app/store/`:
+- `ui/` — theme (`dark`/`light`) + sidebar collapsed; persisted to localStorage via `UiEffects`; applies `data-theme` attribute to `documentElement`.
+- `feed/` — articles, isLoading, error, search/sort/category/page/pageSize. `FeedEffects.load$` calls `NewsService.getMany`. NewsList component is fully NgRx-driven (`toSignal` over selectors, dispatches actions).
 
 ### Component Patterns
 
@@ -49,9 +56,9 @@ SCSS + PrimeNG 19 (Aura theme). CSS cascade layers: `@layer app-styles, primeng`
 - `src/assets/scss/common/` — `_masthead.scss`, `_breadcrumb.scss`, `_buttons.scss`, `_controls.scss`, `_forms.scss`, `_cards.scss`
 - `src/styles.scss` — entry point, imports all partials via `@use`
 
-**PrimeNG setup:** Configured in `app.module.ts` via `providePrimeNG()` with Aura preset, `darkModeSelector: 'none'`, CSS layer `primeng`. PrimeNG modules (Button, InputText, Textarea, ToggleSwitch, Popover, Menu, Paginator, Tag, Chip, Avatar, Breadcrumb, Tabs) are imported/exported through `SharedModule`.
+**PrimeNG setup:** Configured in `app.module.ts` via `providePrimeNG()` with Aura preset, `darkModeSelector: '[data-theme="dark"]'`, CSS layer `primeng`. PrimeNG modules (Button, InputText, Textarea, ToggleSwitch, Popover, Menu, Paginator, Tag, Chip, Avatar, Breadcrumb, Tabs) are imported/exported through `SharedModule`.
 
-**Theme:** CSS custom properties for newspaper aesthetic. Fonts: Crimson Pro (serif headings), Libre Franklin (sans-serif body). Accent color: `#d4574d`. Sharp corners (`border-radius: 0`) on most components except toggles and avatars. Component files use `.scss` extension.
+**Theme:** Dark navy (default) + light variants via CSS custom properties on `:root[data-theme='dark'|'light']`. Fonts: IBM Plex Sans (body) + IBM Plex Mono (labels/code) loaded from Google Fonts in `index.html`. Accent: `#3b82f6`. Per-category badge colors via `oklch()` hue rotations. Component files use `.scss` extension.
 
 ## Backend
 

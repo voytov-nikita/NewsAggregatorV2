@@ -1,0 +1,19 @@
+<div class="error-banner" role="alert">
+  <div class="error-banner__icon">!</div>
+  <div class="error-banner__body">
+    <div class="error-banner__title">{{ title() }}</div>
+    @if (description()) {
+      <div class="error-banner__description">{{ description() }}</div>
+    }
+  </div>
+  @if (showRetry()) {
+    <button type="button" class="error-banner__retry" (click)="retry.emit()">Retry</button>
+  }
+  @if (showClose()) {
+    <button
+      type="button"
+      class="error-banner__close"
+      aria-label="Dismiss"
+      (click)="closed.emit()">×</button>
+  }
+</div>

@@ -4,7 +4,23 @@
       "Bash(npx ng build)",
       "Bash(npm install:*)",
       "Bash(git checkout:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(mkdir -p /tmp/design)",
+      "Read(//tmp/**)",
+      "Bash(cp \"C:\\\\Users\\\\voyto\\\\.claude-personal\\\\projects\\\\P--MyProjects-NewsAggregatorV2-src-client-NewsAggregatorClient\\\\723403fc-4530-4fc7-a37c-5ac5329d4692\\\\tool-results\\\\webfetch-1777854070603-iom3ot.bin\" design.tar.gz)",
+      "Bash(tar -tzf design.tar.gz)",
+      "Bash(tar -xzf design.tar.gz)",
+      "Bash(npx ng *)",
+      "Bash(npm view *)",
+      "Read(//p/MyProjects/NewsAggregatorV2/**)",
+      "Read(//c/Users/voyto/**)",
+      "Bash(node -e ' *)",
+      "Bash(tar -xzf \"C:\\\\Users\\\\voyto\\\\.claude-personal\\\\projects\\\\P--MyProjects-NewsAggregatorV2-src-client-NewsAggregatorClient\\\\dd177c34-1589-4692-adbb-4718014a7493\\\\tool-results\\\\webfetch-1778782027925-h9ljyd.bin\" -C /tmp/design)",
+      "PowerShell(New-Item *)",
+      "PowerShell(Test-Path *)",
+      "Bash(node scripts/scale-scss.mjs --dry)",
+      "Bash(node scripts/scale-scss.mjs)"
     ]
   }
 }

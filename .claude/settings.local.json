@@ -15,7 +15,8 @@
       "Read(//p//**)",
       "Read(//c/Users/voyto/**)",
       "Bash(dotnet test:*)",
-      "Bash(dotnet sln *)"
+      "Bash(dotnet sln *)",
+      "Bash(rm *)"
     ]
   }
 }

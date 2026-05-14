@@ -1,0 +1,48 @@
+<section class="sources-page">
+  <header class="page-head">
+    <div>
+      <h1 class="page-title">Sources</h1>
+      <p class="page-sub">{{ filtered().length }} configured</p>
+    </div>
+    <button type="button" class="btn primary" (click)="openWizard()">+ Add source</button>
+  </header>
+
+  <div class="toolbar">
+    <app-search-bar
+      [placeholder]="'Search sources by name or URL'"
+      (debounced)="onSearch($event)"
+    ></app-search-bar>
+  </div>
+
+  @if (paged().length === 0) {
+    <div class="empty">No sources match the current filter.</div>
+  } @else {
+    <div class="cards">
+      @for (s of paged(); track s.id) {
+        <app-source-card
+          [source]="s"
+          (edit)="onEdit($event)"
+          (toggleActive)="onToggleActive($event)"
+          (remove)="onRemove($event)"
+        ></app-source-card>
+      }
+    </div>
+  }
+
+  @if (totalPages() > 1) {
+    <app-pager
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [take]="take()"
+      (pageChange)="onPageChange($event)"
+      (takeChange)="onTakeChange($event)"
+    ></app-pager>
+  }
+</section>
+
+@if (wizardOpen()) {
+  <app-source-wizard
+    (cancel)="closeWizard()"
+    (create)="onCreate($event)"
+  ></app-source-wizard>
+}

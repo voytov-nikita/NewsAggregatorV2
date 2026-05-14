@@ -1,0 +1,9 @@
+<div
+  class="avatar"
+  [style.width.px]="size()"
+  [style.height.px]="size()"
+  [style.font-size.px]="size() * 0.36"
+  [style.background]="'oklch(50% 0.14 ' + hue() + ')'"
+>
+  {{ initials() }}
+</div>

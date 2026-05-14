@@ -1,0 +1,10 @@
+<div class="vote-buttons" [class.compact]="compact()">
+  <button type="button" class="vote-btn" [class.active]="value() === 'up'" (click)="onUp()">
+    <span class="arrow">▲</span>
+    <span class="count">{{ likes() }}</span>
+  </button>
+  <button type="button" class="vote-btn down" [class.active]="value() === 'down'" (click)="onDown()">
+    <span class="arrow">▼</span>
+    <span class="count">{{ dislikes() }}</span>
+  </button>
+</div>

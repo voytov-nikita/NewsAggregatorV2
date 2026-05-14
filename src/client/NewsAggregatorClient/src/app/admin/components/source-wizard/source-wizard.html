@@ -1,0 +1,160 @@
+<div class="overlay" (click)="close()"></div>
+<div class="modal" role="dialog" aria-modal="true">
+  <header class="head">
+    <h2 class="title">Add new source</h2>
+    <button type="button" class="close-btn" (click)="close()" aria-label="Close">×</button>
+  </header>
+
+  <ol class="steps">
+    @for (s of stepNumbers; track s) {
+      <li
+        class="step-pill"
+        [class.active]="step() === s"
+        [class.done]="step() > s"
+        (click)="goTo(s)"
+      >
+        <span class="step-num">{{ s }}</span>
+        <span class="step-label">
+          @switch (s) {
+            @case (1) { URL }
+            @case (2) { Crawler }
+            @case (3) { Mapping }
+            @case (4) { Review }
+          }
+        </span>
+      </li>
+    }
+  </ol>
+
+  <div class="body">
+    @switch (step()) {
+      @case (1) {
+        <div class="step-pane">
+          <label class="field">
+            <span class="label">Source URL</span>
+            <div class="url-row">
+              <input
+                type="text"
+                class="text-input"
+                placeholder="https://example.com/feed"
+                [value]="url()"
+                (input)="onUrlInput($any($event.target).value)"
+              />
+              <button
+                type="button"
+                class="btn primary"
+                [disabled]="!url() || validation() === 'checking'"
+                (click)="validate()"
+              >
+                {{ validation() === 'checking' ? 'Checking…' : 'Validate' }}
+              </button>
+            </div>
+          </label>
+
+          @if (validation() === 'ok') {
+            <div class="result ok">
+              <span class="check">✓</span>
+              <div>
+                <div class="result-title">Connected — detected {{ detectedType() }}</div>
+                <div class="result-sub">{{ detectedName() }}</div>
+              </div>
+            </div>
+          } @else if (validation() === 'error') {
+            <div class="result err">
+              <span class="check">!</span>
+              <div class="result-title">Could not validate URL. Check the address and try again.</div>
+            </div>
+          }
+        </div>
+      }
+
+      @case (2) {
+        <div class="step-pane">
+          <label class="field">
+            <span class="label">Crawl frequency</span>
+            <select class="text-input" [value]="frequency()" (change)="frequency.set(+$any($event.target).value)">
+              @for (o of frequencyOptions; track o.value) {
+                <option [value]="o.value">{{ o.label }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="label">Restart policy</span>
+            <div class="seg">
+              @for (p of restartPolicies; track p) {
+                <button
+                  type="button"
+                  class="seg-btn"
+                  [class.active]="restartPolicy() === p"
+                  (click)="restartPolicy.set(p)"
+                >{{ p }}</button>
+              }
+            </div>
+          </label>
+
+          <div class="field-row">
+            <label class="field">
+              <span class="label">Timeout (sec)</span>
+              <input
+                type="number"
+                class="text-input"
+                min="1"
+                [value]="timeout()"
+                (input)="timeout.set(+$any($event.target).value)"
+              />
+            </label>
+            <label class="field">
+              <span class="label">Retries</span>
+              <input
+                type="number"
+                class="text-input"
+                min="0"
+                [value]="retries()"
+                (input)="retries.set(+$any($event.target).value)"
+              />
+            </label>
+          </div>
+        </div>
+      }
+
+      @case (3) {
+        <div class="step-pane">
+          <app-field-mapper
+            [type]="detectedType()!"
+            [(mapping)]="mapping"
+          ></app-field-mapper>
+        </div>
+      }
+
+      @case (4) {
+        <div class="step-pane">
+          <div class="review">
+            <div class="review-row"><span class="rk">Source</span><span class="rv">{{ detectedName() }}</span></div>
+            <div class="review-row"><span class="rk">URL</span><span class="rv mono">{{ url() }}</span></div>
+            <div class="review-row"><span class="rk">Type</span><span class="rv">{{ detectedType() }}</span></div>
+            <div class="review-row"><span class="rk">Frequency</span><span class="rv">{{ summaryFrequency() }}</span></div>
+            <div class="review-row"><span class="rk">Restart</span><span class="rv">{{ restartPolicy() }}</span></div>
+            <div class="review-row"><span class="rk">Timeout</span><span class="rv">{{ timeout() }}s</span></div>
+            <div class="review-row"><span class="rk">Retries</span><span class="rv">{{ retries() }}</span></div>
+            <div class="review-row"><span class="rk">Mapped fields</span><span class="rv">{{ (mapping() | keyvalue).length }}</span></div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+  <footer class="actions">
+    @if (step() > 1) {
+      <button type="button" class="btn ghost" (click)="prev()">← Back</button>
+    } @else {
+      <button type="button" class="btn ghost" (click)="close()">Cancel</button>
+    }
+
+    @if (step() < 4) {
+      <button type="button" class="btn primary" [disabled]="!canNext()" (click)="next()">Next →</button>
+    } @else {
+      <button type="button" class="btn primary" (click)="confirm()">Create source</button>
+    }
+  </footer>
+</div>

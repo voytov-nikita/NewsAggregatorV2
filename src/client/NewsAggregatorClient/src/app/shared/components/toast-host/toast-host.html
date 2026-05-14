@@ -1,0 +1,27 @@
+@if (toasts().length) {
+  <div class="toast-host">
+    @for (toast of toasts(); track toast.id) {
+      <div
+        class="toast toast--{{ toast.type }}"
+        role="status"
+        (mouseenter)="pause(toast.id)"
+        (mouseleave)="resume(toast.id)">
+        <div class="toast__bar"></div>
+        <div class="toast__icon">{{ iconFor(toast.type) }}</div>
+        <div class="toast__body">
+          @if (toast.text.title) {
+            <strong class="toast__title">{{ toast.text.title }}</strong>
+          }
+          <span class="toast__text" [class.toast__text--standalone]="!toast.text.title">
+            {{ toast.text.body }}
+          </span>
+        </div>
+        <button
+          type="button"
+          class="toast__close"
+          aria-label="Dismiss"
+          (click)="close(toast.id)">×</button>
+      </div>
+    }
+  </div>
+}

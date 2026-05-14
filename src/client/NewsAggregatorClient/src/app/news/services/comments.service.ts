@@ -7,12 +7,13 @@ import {
   CommentCreateRequest,
   CommentUpdateRequest,
 } from '@shared/models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommentsService {
-  private readonly baseUrl: string = 'https://localhost:7300/api/v1/news'; // replace with environment
+  private readonly baseUrl: string = environment.newsApiBaseUrl;
 
   constructor(private http: HttpClient) {}
 

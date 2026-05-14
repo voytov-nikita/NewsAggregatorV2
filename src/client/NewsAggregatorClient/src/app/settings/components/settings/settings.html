@@ -1,320 +1,171 @@
-<header class="masthead">
-  <div class="masthead-top">
-    <span class="breadcrumb-current">Настройки</span>
-    <div class="masthead-right">
-      <a [routerLink]="navigation.getNewsListRoute()" class="icon-button">&#9881;</a>
-      <div class="user-circle"></div>
-    </div>
-  </div>
-</header>
+<section class="settings">
+  <aside class="side-nav">
+    <h2 class="side-title">Settings</h2>
+    <nav>
+      @for (s of sections; track s.id) {
+        <button
+          type="button"
+          class="side-link"
+          [class.active]="activeSection() === s.id"
+          (click)="scrollTo(s.id)"
+        >
+          {{ s.label }}
+        </button>
+      }
+    </nav>
+  </aside>
 
-<div class="settings-container">
-  <h2 class="page-title">Настройки профиля</h2>
-
-  <div class="tabs">
-    <button
-      class="tab"
-      [class.active]="activeTab() === 'profile'"
-      (click)="switchTab('profile')"
-    >
-      Профиль
-    </button>
-    <button
-      class="tab"
-      [class.active]="activeTab() === 'integrations'"
-      (click)="switchTab('integrations')"
-    >
-      Интеграции
-    </button>
-    <button
-      class="tab"
-      [class.active]="activeTab() === 'notifications'"
-      (click)="switchTab('notifications')"
-    >
-      Уведомления
-    </button>
-    <button
-      class="tab"
-      [class.active]="activeTab() === 'stats'"
-      (click)="switchTab('stats')"
-    >
-      Статистика
-    </button>
-  </div>
-
-  <!-- Profile Tab -->
-  @if (activeTab() === 'profile') {
-    <div class="tab-content">
-      <div class="form-section">
-        <h3 class="section-title">Основная информация</h3>
-
-        <div class="avatar-section">
-          <div class="avatar-preview"></div>
-          <div class="avatar-controls">
-            <div class="form-label">Аватар профиля</div>
-            <p class="form-help">Рекомендуемый размер: 400x400px, формат JPG или PNG</p>
-            <div class="avatar-buttons">
-              <p-button label="Загрузить новый" />
-              <p-button label="Удалить" [outlined]="true" severity="secondary" />
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Имя пользователя</label>
-          <input pInputText type="text" class="form-input" value="Александр Петров" placeholder="Введите имя" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input pInputText type="email" class="form-input" value="aleksandr.petrov@example.com" placeholder="email@example.com" />
-          <p class="form-help">На этот адрес будут приходить уведомления</p>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">О себе</label>
-          <textarea pTextarea class="form-input" rows="4" placeholder="Расскажите о себе..."></textarea>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <h3 class="section-title">Любимые категории</h3>
-        <p class="form-help categories-help">
-          Выберите категории, которые вас интересуют больше всего
-        </p>
-
-        <div class="categories-grid">
-          @for (cat of categories(); track cat.name; let i = $index) {
-            <div
-              class="category-card"
-              [class.selected]="cat.selected"
-              (click)="toggleCategory(i)"
-            >
-              <div class="category-icon">{{ cat.icon }}</div>
-              <div class="category-name">{{ cat.name }}</div>
-            </div>
-          }
-        </div>
-      </div>
-
-      <div class="form-section">
-        <h3 class="section-title">Настройки приватности</h3>
-
-        @for (setting of privacySettings(); track setting.title; let i = $index) {
-          <div class="notification-row">
-            <div>
-              <div class="notification-title">{{ setting.title }}</div>
-              <div class="form-help">{{ setting.description }}</div>
-            </div>
-            <p-toggleswitch
-              [ngModel]="setting.active"
-              (ngModelChange)="togglePrivacy(i)"
-            />
-          </div>
-        }
-      </div>
-
-      <div class="actions-bar">
-        <p-button label="Сохранить изменения" />
-        <p-button label="Отменить" [outlined]="true" severity="secondary" />
-      </div>
-    </div>
-  }
-
-  <!-- Integrations Tab -->
-  @if (activeTab() === 'integrations') {
-    <div class="tab-content">
-      <div class="form-section">
-        <h3 class="section-title">Webhook интеграция</h3>
-        <p class="form-help webhook-help">
-          Получайте уведомления о новых новостях через webhook
-        </p>
-
-        <div class="form-group">
-          <label class="form-label">Webhook URL</label>
+  <div #content class="content">
+    <article class="card" [attr.data-section]="'account'">
+      <header class="card-head">
+        <h3>Account</h3>
+        <p>Your profile and credentials.</p>
+      </header>
+      <div class="field-row">
+        <label>
+          <span>Display name</span>
           <input
-            pInputText
-            type="url"
-            class="form-input"
-            placeholder="https://your-server.com/webhook"
-            value="https://api.myserver.com/news-webhook"
+            type="text"
+            [value]="displayName()"
+            (input)="displayName.set($any($event.target).value)"
           />
-          <p class="form-help">
-            POST запрос будет отправлен на этот URL при появлении новых новостей
-          </p>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Secret Token (опционально)</label>
+        </label>
+        <label>
+          <span>Email</span>
           <input
-            pInputText
-            type="password"
-            class="form-input"
-            placeholder="Введите секретный токен"
-          />
-          <p class="form-help">Для проверки подлинности запросов</p>
-        </div>
-
-        <div class="notification-row webhook-toggle">
-          <div>
-            <div class="notification-title">Активировать webhook</div>
-            <div class="form-help">Включить отправку уведомлений</div>
-          </div>
-          <p-toggleswitch
-            [ngModel]="webhookActive()"
-            (ngModelChange)="webhookActive.set($event)"
-          />
-        </div>
-      </div>
-
-      <div class="form-section">
-        <h3 class="section-title">Email уведомления</h3>
-
-        <div class="form-group">
-          <label class="form-label">Email для уведомлений</label>
-          <input
-            pInputText
             type="email"
-            class="form-input"
-            value="aleksandr.petrov@example.com"
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
           />
-        </div>
+        </label>
+      </div>
+    </article>
 
-        <div class="notification-row">
+    <article class="card" [attr.data-section]="'feed'">
+      <header class="card-head">
+        <h3>Feed Preferences</h3>
+        <p>How articles are displayed and handled.</p>
+      </header>
+      <div class="row">
+        <span class="row-label">Density</span>
+        <div class="seg">
+          <button
+            type="button"
+            [class.active]="density() === 'comfortable'"
+            (click)="setDensity('comfortable')"
+          >Comfortable</button>
+          <button
+            type="button"
+            [class.active]="density() === 'compact'"
+            (click)="setDensity('compact')"
+          >Compact</button>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-title">Auto-mark as read</div>
+          <div class="toggle-desc">Mark articles read when opened</div>
+        </div>
+        <p-toggleswitch [(ngModel)]="autoMarkRead" />
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-title">Open in new tab</div>
+          <div class="toggle-desc">Open original sources externally</div>
+        </div>
+        <p-toggleswitch [(ngModel)]="openInNewTab" />
+      </div>
+    </article>
+
+    <article class="card" [attr.data-section]="'categories'">
+      <header class="card-head">
+        <h3>Categories</h3>
+        <p>Which topics show up in your feed.</p>
+      </header>
+      <div class="chips">
+        @for (cat of categories(); track cat.id) {
+          <button
+            type="button"
+            class="chip"
+            [class.active]="cat.selected"
+            (click)="toggleCategory(cat.id)"
+          >
+            {{ cat.label }}
+          </button>
+        }
+      </div>
+    </article>
+
+    <article class="card" [attr.data-section]="'notifications'">
+      <header class="card-head">
+        <h3>Notifications</h3>
+        <p>Push and email alerts.</p>
+      </header>
+      @for (note of notifications(); track note.title; let i = $index) {
+        <div class="toggle-row">
           <div>
-            <div class="notification-title">Дневной дайджест</div>
-            <div class="form-help">Ежедневная сводка новостей в 9:00</div>
+            <div class="toggle-title">{{ note.title }}</div>
+            <div class="toggle-desc">{{ note.description }}</div>
           </div>
           <p-toggleswitch
-            [ngModel]="dailyDigest()"
-            (ngModelChange)="dailyDigest.set($event)"
+            [ngModel]="note.active"
+            (ngModelChange)="toggleNotification(i)"
           />
         </div>
+      }
+    </article>
 
-        <div class="notification-row">
+    <article class="card" [attr.data-section]="'privacy'">
+      <header class="card-head">
+        <h3>Privacy</h3>
+        <p>Visibility of your profile and reading data.</p>
+      </header>
+      @for (item of privacy(); track item.title; let i = $index) {
+        <div class="toggle-row">
           <div>
-            <div class="notification-title">Недельный обзор</div>
-            <div class="form-help">Сводка за неделю каждый понедельник</div>
+            <div class="toggle-title">{{ item.title }}</div>
+            <div class="toggle-desc">{{ item.description }}</div>
           </div>
           <p-toggleswitch
-            [ngModel]="weeklyReview()"
-            (ngModelChange)="weeklyReview.set($event)"
+            [ngModel]="item.active"
+            (ngModelChange)="togglePrivacy(i)"
           />
         </div>
-      </div>
+      }
+    </article>
 
-      <div class="form-section">
-        <h3 class="section-title">Telegram бот</h3>
-
-        <div class="integration-item">
-          <div class="integration-header">
-            <div class="integration-title">NewsAggregator Bot</div>
-            <span class="status-badge inactive">Не подключен</span>
-          </div>
-          <p class="integration-description">
-            Получайте уведомления о важных новостях прямо в Telegram
-          </p>
-          <div class="integration-actions">
-            <p-button label="Подключить бота" />
-            <p-button label="Инструкция" [outlined]="true" severity="secondary" />
-          </div>
+    <article class="card" [attr.data-section]="'statistics'">
+      <header class="card-head">
+        <h3>Statistics</h3>
+        <p>Your reading activity at a glance.</p>
+      </header>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-value">{{ stats().read }}</div>
+          <div class="kpi-label">Articles read</div>
         </div>
-
-        <p class="form-help bot-commands">
-          &#128241; Команды бота: /start, /subscribe, /unsubscribe, /settings
-        </p>
+        <div class="kpi">
+          <div class="kpi-value">{{ stats().saved }}</div>
+          <div class="kpi-label">Saved</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-value">{{ stats().comments }}</div>
+          <div class="kpi-label">Comments</div>
+        </div>
       </div>
 
-      <div class="actions-bar">
-        <p-button label="Сохранить настройки" />
-        <p-button label="Тест webhook" [outlined]="true" severity="secondary" />
-      </div>
-    </div>
-  }
-
-  <!-- Notifications Tab -->
-  @if (activeTab() === 'notifications') {
-    <div class="tab-content">
-      <div class="form-section">
-        <h3 class="section-title">Настройки уведомлений</h3>
-
-        @for (setting of notificationSettings(); track setting.title; let i = $index) {
-          <div class="notification-row">
-            <div>
-              <div class="notification-title">{{ setting.title }}</div>
-              <div class="form-help">{{ setting.description }}</div>
+      <div class="sources-list">
+        <h4>Top sources</h4>
+        @for (src of favoriteSources(); track src.name) {
+          <div class="source-row">
+            <span class="src-name">{{ src.name }}</span>
+            <div class="src-bar">
+              <div class="src-bar-fill" [style.width.%]="src.percentage"></div>
             </div>
-            <p-toggleswitch
-              [ngModel]="setting.active"
-              (ngModelChange)="toggleNotification(i)"
-            />
+            <span class="src-count">{{ src.count }}</span>
           </div>
         }
       </div>
-
-      <div class="form-section">
-        <h3 class="section-title">Время уведомлений</h3>
-
-        <div class="form-group">
-          <label class="form-label">Не беспокоить с</label>
-          <div class="time-range">
-            <input pInputText type="time" class="form-input" value="22:00" />
-            <input pInputText type="time" class="form-input" value="08:00" />
-          </div>
-          <p class="form-help">Уведомления не будут приходить в это время</p>
-        </div>
-      </div>
-
-      <div class="actions-bar">
-        <p-button label="Сохранить настройки" />
-      </div>
-    </div>
-  }
-
-  <!-- Stats Tab -->
-  @if (activeTab() === 'stats') {
-    <div class="tab-content">
-      <div class="form-section">
-        <h3 class="section-title">Статистика чтения</h3>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-number">{{ stats().articlesRead }}</div>
-            <div class="stat-label">Прочитано статей</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">{{ stats().saved }}</div>
-            <div class="stat-label">Сохранено</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">{{ stats().comments }}</div>
-            <div class="stat-label">Комментариев</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <h3 class="section-title">Любимые источники</h3>
-
-        @for (source of favoriteSources(); track source.name) {
-          <div class="integration-item">
-            <div class="source-stat">
-              <div>
-                <div class="source-stat-name">{{ source.name }}</div>
-                <div class="form-help">{{ source.articles }}</div>
-              </div>
-              <div class="source-stat-percentage">{{ source.percentage }}</div>
-            </div>
-          </div>
-        }
-      </div>
-
-      <div class="form-section">
-        <h3 class="section-title">История активности</h3>
-        <p class="form-help">Последние 30 дней активности</p>
-
-        <div class="activity-chart-placeholder">[График активности]</div>
-      </div>
-    </div>
-  }
-</div>
+    </article>
+  </div>
+</section>

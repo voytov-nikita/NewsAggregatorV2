@@ -143,6 +143,23 @@ when new news arrives, subtle unread counter in nav bar.
 General cleanup of the client: consistent spacing/typography, loading states, empty
 states, error handling, mobile responsiveness.
 
+### Migrate custom components to PrimeNG
+
+Replace handwritten shared components with PrimeNG equivalents where they exist, so we
+stop maintaining bespoke versions of common UI primitives and inherit theming/a11y
+from PrimeNG (Aura preset already configured).
+
+**Scope:**
+- Audit `src/app/shared/components/` and map each to its PrimeNG counterpart
+  (e.g. `Avatar` → `p-avatar`, `Pager` → `p-paginator` — already used, `Sidebar` →
+  `p-drawer` or keep custom, `Skeleton` → `p-skeleton`, `SearchBar` → `p-iconfield` +
+  `p-inputtext`, `VoteButtons` → `p-button` group, `CategoryChips` → `p-chip`/`p-tag`,
+  `ToastHost` → `p-toast` + `MessageService`).
+- Decide which to keep custom (highly product-specific: `SourceBadge`,
+  `ImagePlaceholder`, `EmptyState`/`ErrorState`/`ErrorBanner`, `NotFound`).
+- Replace usage call-sites and remove obsolete components/SCSS.
+- Verify theming (`--accent`, dark/light tokens) still applies via PrimeNG CSS layer.
+
 ## Testing
 
 ### NewsService integration tests
