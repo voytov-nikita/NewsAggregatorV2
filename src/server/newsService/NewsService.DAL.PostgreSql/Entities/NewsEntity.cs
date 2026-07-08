@@ -1,3 +1,5 @@
+using Common.Models;
+
 namespace NewsService.DAL.PostgreSql.Entities;
 
 public class NewsEntity
@@ -12,6 +14,11 @@ public class NewsEntity
     public string Publisher { get; set; }
     public string PublisherLink { get; set; }
     public string Guid { get; set; }
-    
+
+    public NewsCategory Category { get; set; } = NewsCategory.Uncategorized;
+    public int ReadTimeMinutes { get; set; }
+    public int Likes { get; set; }
+    public int Dislikes { get; set; }
+
     public ICollection<CommentEntity> Comments { get; set; }
 }

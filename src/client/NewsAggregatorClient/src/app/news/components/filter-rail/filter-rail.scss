@@ -1,0 +1,158 @@
+@use '../../../../assets/scss/general/mixins' as *;
+
+// Filter rail fills its drawer host (see news/list.scss .rail-drawer); the
+// host element handles positioning, scrolling and the slide-in transform.
+:host {
+  display: block;
+  height: 100%;
+}
+
+.rail {
+  background: var(--surface-1);
+  padding: var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.rail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rail-title {
+  @include uppercase-label;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.reset-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: var(--t-12);
+  cursor: pointer;
+  font-family: var(--font-sans);
+
+  &:hover { text-decoration: underline; }
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.group-title {
+  font-size: var(--t-12);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.check-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+
+  &.scrollable {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: var(--s-2);
+  }
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--t-13);
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+
+  input[type='checkbox'] {
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  &:hover .label { color: var(--text-primary); }
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.empty {
+  font-size: var(--t-12);
+  color: var(--text-muted);
+  padding: var(--s-2) 0;
+}
+
+.source-search {
+  width: 100%;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: var(--t-12);
+  font-family: var(--font-sans);
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+
+  &::placeholder { color: var(--text-muted); }
+}
+
+.date-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+}
+
+.date-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--t-11);
+  color: var(--text-muted);
+
+  input[type='date'] {
+    padding: var(--s-2) var(--s-3);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: var(--t-12);
+    font-family: var(--font-sans);
+    color-scheme: dark;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+  }
+}
+

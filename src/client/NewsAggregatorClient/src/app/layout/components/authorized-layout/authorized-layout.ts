@@ -17,8 +17,11 @@ export class AuthorizedLayout {
   protected readonly navigation = inject(NavigationService);
 
   protected readonly navItems: NavItem[] = [
-    { id: 'feed', label: 'Feed', icon: '⊞', route: '/feed' },
-    { id: 'saved', label: 'Saved', icon: '⊕', comingSoon: true },
+    { id: 'foryou', label: 'For you', icon: '★', route: '/foryou' },
+    { id: 'allnews', label: 'All news', icon: '⊞', route: '/allnews' },
+    { id: 'trending', label: 'Trending', icon: '', iconKind: 'flame', route: '/trending' },
+    { id: 'subscriptions', label: 'Subscriptions', icon: '☆', route: '/subscriptions' },
+    { id: 'saved', label: 'Saved', icon: '⊕', route: '/saved' },
     {
       id: 'admin',
       label: 'Admin',
@@ -41,7 +44,11 @@ export class AuthorizedLayout {
 
   protected readonly activeId = computed(() => {
     const url = this.currentUrl().split('?')[0];
-    if (url.startsWith('/feed') || url.startsWith('/article')) return 'feed';
+    if (url.startsWith('/allnews') || url.startsWith('/feed') || url.startsWith('/article')) return 'allnews';
+    if (url.startsWith('/foryou')) return 'foryou';
+    if (url.startsWith('/trending')) return 'trending';
+    if (url.startsWith('/subscriptions')) return 'subscriptions';
+    if (url.startsWith('/saved')) return 'saved';
     if (url.startsWith('/admin/sources')) return 'admin-sources';
     if (url.startsWith('/admin/stats')) return 'admin-stats';
     if (url.startsWith('/admin')) return 'admin-sources';

@@ -64,7 +64,6 @@ internal class HtmlSourceCrawler : ISourceCrawler
             string? image = HtmlFieldExtractor.ExtractSingle(item, selectors.Image);
             string? publishRaw = HtmlFieldExtractor.ExtractSingle(item, selectors.PublishDate);
             string? guidOverride = HtmlFieldExtractor.ExtractSingle(item, selectors.Guid);
-            string[] tags = HtmlFieldExtractor.ExtractMany(item, selectors.Tags);
 
             string guid = !string.IsNullOrEmpty(guidOverride) ? guidOverride : link;
 
@@ -85,7 +84,7 @@ internal class HtmlSourceCrawler : ISourceCrawler
                 PublisherGuid = guid,
                 Guid = guid,
                 GlobalUniqueId = source.Id + guid,
-                Tags = tags,
+                Category = source.Category,
             });
         }
 

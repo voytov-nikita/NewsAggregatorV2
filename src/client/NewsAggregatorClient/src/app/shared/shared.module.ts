@@ -20,8 +20,11 @@ import {
   EmptyState,
   ErrorBanner,
   ErrorState,
+  FlameIcon,
   ImagePlaceholder,
   NotFound,
+  PageHeader,
+  PageShell,
   Pager,
   SearchBar,
   Sidebar,
@@ -61,6 +64,9 @@ const APP_COMPONENTS = [
   ErrorState,
   ErrorBanner,
   NotFound,
+  PageHeader,
+  PageShell,
+  FlameIcon,
 ];
 
 @NgModule({

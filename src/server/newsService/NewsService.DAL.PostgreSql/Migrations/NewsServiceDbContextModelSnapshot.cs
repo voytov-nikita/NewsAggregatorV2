@@ -60,11 +60,21 @@ namespace NewsService.DAL.PostgreSql.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<short>("Category")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((short)0);
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<int>("Dislikes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("Guid")
                         .IsRequired()
@@ -72,6 +82,11 @@ namespace NewsService.DAL.PostgreSql.Migrations
 
                     b.Property<string>("ImageLink")
                         .HasColumnType("text");
+
+                    b.Property<int>("Likes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("OriginalLink")
                         .IsRequired()
@@ -88,11 +103,18 @@ namespace NewsService.DAL.PostgreSql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("ReadTimeMinutes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Category");
 
                     b.HasIndex("Publisher", "Guid")
                         .IsUnique();

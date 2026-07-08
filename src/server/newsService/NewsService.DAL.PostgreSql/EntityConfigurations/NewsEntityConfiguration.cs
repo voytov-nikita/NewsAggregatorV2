@@ -18,6 +18,16 @@ public class NewsEntityConfiguration : IEntityTypeConfiguration<NewsEntity>
         builder.Property(_ => _.Description)
             .IsRequired(false);
 
+        builder.Property(_ => _.Category)
+            .HasConversion<short>()
+            .HasDefaultValue(Common.Models.NewsCategory.Uncategorized);
+
+        builder.Property(_ => _.ReadTimeMinutes).HasDefaultValue(0);
+        builder.Property(_ => _.Likes).HasDefaultValue(0);
+        builder.Property(_ => _.Dislikes).HasDefaultValue(0);
+
+        builder.HasIndex(_ => _.Category);
+
         builder.HasMany(_ => _.Comments)
             .WithOne(_ => _.News)
             .HasForeignKey(_ => _.Id)

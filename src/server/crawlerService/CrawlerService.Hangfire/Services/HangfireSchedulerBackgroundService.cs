@@ -1,26 +1,31 @@
 using CrawlerService.BLL.Abstractions.Services;
 using CrawlerService.DAL.Abstractions.Stores;
 using CrawlerService.Models.Models;
-using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace CrawlerService.Hangfire.Services;
 
+/// <summary>
+/// Registers a recurring Hangfire job for every source at startup. Ongoing
+/// updates go through <see cref="ISourceSchedulingService"/> called from the
+/// CRUD controller — this hosted service is only responsible for the initial
+/// bootstrap.
+/// </summary>
 public class HangfireSchedulerBackgroundService : BackgroundService
 {
-    private readonly IRecurringJobManager _recurringJobManager;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ISourceSchedulingService _scheduling;
     private readonly ILogger<HangfireSchedulerBackgroundService> _logger;
 
     public HangfireSchedulerBackgroundService(
-        IRecurringJobManager recurringJobManager,
         IServiceScopeFactory scopeFactory,
+        ISourceSchedulingService scheduling,
         ILogger<HangfireSchedulerBackgroundService> logger)
     {
-        _recurringJobManager = recurringJobManager;
         _scopeFactory = scopeFactory;
+        _scheduling = scheduling;
         _logger = logger;
     }
 
@@ -34,13 +39,7 @@ public class HangfireSchedulerBackgroundService : BackgroundService
 
         foreach (NewsSource source in sources)
         {
-            string jobId = $"crawl-{source.Id}";
-            _recurringJobManager.AddOrUpdate<INewsDownloaderService>(
-                jobId,
-                service => service.GetNewsAsync(source.Id),
-                source.CronSchedule);
-
-            _logger.LogInformation("Registered job {JobId} with schedule {Cron}", jobId, source.CronSchedule);
+            _scheduling.Schedule(source);
         }
     }
 }

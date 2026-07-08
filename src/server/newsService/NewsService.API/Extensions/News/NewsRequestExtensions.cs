@@ -1,4 +1,4 @@
-﻿using NewsService.API.Models.News;
+using NewsService.API.Models.News;
 using NewsService.Models.News;
 using NewsService.Models.News.Models;
 
@@ -19,9 +19,14 @@ public static class NewsRequestExtensions
             ImageLink = model.ImageLink,
             Publisher = model.Publisher,
             PublisherLink = model.PublisherLink,
+            Category = model.Category,
+            ReadTimeMinutes = model.ReadTimeMinutes,
+            Likes = model.Likes,
+            Dislikes = model.Dislikes,
+            CommentsCount = model.CommentsCount,
         };
     }
-    
+
     public static NewsFilterModel ToModel(this NewsFilterRequest filterRequest)
     {
         return new NewsFilterModel
@@ -31,6 +36,10 @@ public static class NewsRequestExtensions
             OrderBy = filterRequest.OrderBy,
             OrderDirection = filterRequest.OrderDirection,
             Keyword = filterRequest.Keyword,
+            Categories = filterRequest.Categories,
+            Sources = filterRequest.Sources,
+            DateFrom = filterRequest.DateFrom,
+            DateTo = filterRequest.DateTo,
         };
     }
 }

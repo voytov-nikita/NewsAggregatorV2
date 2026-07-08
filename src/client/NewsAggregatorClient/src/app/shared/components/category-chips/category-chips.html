@@ -6,7 +6,7 @@
       [class.active]="selected() === cat"
       (click)="select(cat)"
     >
-      {{ cat }}
+      {{ cat === 'RealTime' ? 'Real-time' : cat }}
     </button>
   }
 </div>

@@ -1,8 +1,7 @@
-﻿using NewsService.BLL.Abstractions;
+﻿using Common.Models;
 using NewsService.BLL.Abstractions.Services;
 using NewsService.BLL.Abstractions.Validators;
 using NewsService.DAL.Abstractions.Stores;
-using NewsService.Models.News;
 using NewsService.Models.News.Models;
 
 namespace NewsService.BLL.Services;
@@ -18,7 +17,7 @@ public class NewsService: INewsService
         _validator = validator;
     }
 
-    public async Task<NewsModel[]> GetManyAsync(NewsFilterModel filter)
+    public async Task<OffsetCollection<NewsModel>> GetManyAsync(NewsFilterModel filter)
     {
         return await _store.GetManyAsync(filter);
     }

@@ -10,15 +10,18 @@ public class WebhookMapperTests
 {
     private readonly Fixture _fixture = new();
 
-    [Fact]
-    public void ToModel_WebhookSubscriptionEntity_ReturnsWebhookSubscriptionModel()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ToModel_WebhookSubscriptionEntity_ReturnsWebhookSubscriptionModel(bool enabled)
     {
         var entity = new WebhookSubscriptionEntity
         {
             Id = ObjectId.GenerateNewId(),
             Url = _fixture.Create<string>(),
             Action = _fixture.Create<string>(),
-            CreationTime = DateTime.UtcNow
+            CreationTime = DateTime.UtcNow,
+            Enabled = enabled,
         };
 
         var result = WebhookMapper.ToModel(entity);
@@ -27,5 +30,6 @@ public class WebhookMapperTests
         result.Url.Should().Be(entity.Url);
         result.Action.Should().Be(entity.Action);
         result.CreationTime.Should().Be(entity.CreationTime);
+        result.Enabled.Should().Be(enabled);
     }
 }

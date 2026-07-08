@@ -1,4 +1,6 @@
-﻿namespace NewsService.API.Models.News;
+﻿using Common.Models;
+
+namespace NewsService.API.Models.News;
 
 
 public class NewsResponse
@@ -12,4 +14,10 @@ public class NewsResponse
     public string? ImageLink { get; set; }
     public string Publisher { get; set; }
     public string PublisherLink { get; set; }
+
+    public NewsCategory Category { get; set; }
+    public int ReadTimeMinutes { get; set; }
+    public int Likes { get; set; }
+    public int Dislikes { get; set; }
+    public int CommentsCount { get; set; }
 }

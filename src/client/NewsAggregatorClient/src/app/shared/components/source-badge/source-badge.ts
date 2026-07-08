@@ -7,8 +7,12 @@ const CATEGORY_HUES: Record<string, number> = {
   Frontend: 280,
   Database: 200,
   DevOps: 120,
-  'Real-time': 10,
+  RealTime: 10,
   State: 250,
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  RealTime: 'Real-time',
 };
 
 @Component({
@@ -22,4 +26,5 @@ export class SourceBadge {
   readonly category = input.required<string>();
 
   protected readonly hue = computed(() => CATEGORY_HUES[this.category()] ?? 220);
+  protected readonly label = computed(() => CATEGORY_LABELS[this.category()] ?? this.category());
 }

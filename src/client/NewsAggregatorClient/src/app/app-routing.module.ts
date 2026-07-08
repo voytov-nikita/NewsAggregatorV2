@@ -8,7 +8,7 @@ const routes: Routes = [
     path: '',
     component: AuthorizedLayout,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'feed' },
+      { path: '', pathMatch: 'full', redirectTo: 'allnews' },
       {
         path: '',
         loadChildren: () => import('./news/news.module').then((m) => m.default),
@@ -20,6 +20,22 @@ const routes: Routes = [
       {
         path: 'admin',
         loadChildren: () => import('./admin/admin.module').then((m) => m.default),
+      },
+      {
+        path: 'foryou',
+        loadChildren: () => import('./foryou/foryou.module').then((m) => m.default),
+      },
+      {
+        path: 'trending',
+        loadChildren: () => import('./trending/trending.module').then((m) => m.default),
+      },
+      {
+        path: 'saved',
+        loadChildren: () => import('./saved/saved.module').then((m) => m.default),
+      },
+      {
+        path: 'subscriptions',
+        loadChildren: () => import('./subscriptions/subscriptions.module').then((m) => m.default),
       },
       { path: '**', component: NotFound, data: { pageTitle: 'Not found' } },
     ],

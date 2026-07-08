@@ -16,5 +16,4 @@ public class HtmlSelectors
     public FieldMapping? Image { get; set; }
     public FieldMapping? PublishDate { get; set; }
     public FieldMapping? Guid { get; set; }
-    public FieldMapping? Tags { get; set; }
 }

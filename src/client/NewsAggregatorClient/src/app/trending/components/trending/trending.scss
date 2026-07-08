@@ -1,0 +1,242 @@
+@use '../../../../assets/scss/general/mixins' as *;
+
+:host {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+
+@keyframes na-pulse {
+  0%   { box-shadow: 0 0 0 0 oklch(64% 0.15 145 / 0.5); }
+  70%  { box-shadow: 0 0 0 6px oklch(64% 0.15 145 / 0); }
+  100% { box-shadow: 0 0 0 0 oklch(64% 0.15 145 / 0); }
+}
+
+.trending-page {
+  flex: 1;
+  min-height: 0;
+}
+
+.body {
+  padding: var(--s-6) 30px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+// ─── Header slot widgets ───────────────────────────────────────────────
+.flame {
+  color: oklch(70% 0.18 25);
+  display: inline-flex;
+}
+
+.header-sub {
+  @include mono;
+  font-size: var(--t-13);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.range-seg {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+}
+
+.seg-btn {
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-sm);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--t-13);
+  font-weight: 400;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s ease;
+
+  &.active {
+    background: var(--surface-1);
+    color: var(--text-primary);
+    font-weight: 600;
+    box-shadow: var(--shadow-1);
+  }
+}
+
+// ─── Hero 2×2 grid ─────────────────────────────────────────────────────
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s-5);
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-card,
+.compact-card {
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  transition: border-color 0.13s, transform 0.13s;
+  cursor: pointer;
+  display: flex;
+
+  &:hover { border-color: var(--accent); }
+  &.skeleton { cursor: default; }
+}
+
+.hero-card {
+  flex-direction: column;
+}
+
+.hero-media,
+.compact-media {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.hero-media { width: 100%; height: 192px; }
+.compact-media { width: 192px; min-height: 138px; }
+
+.hero-body,
+.compact-body {
+  padding: var(--s-4) var(--s-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  flex: 1;
+  min-width: 0;
+}
+
+.meta-top {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+.publisher {
+  @include mono;
+  font-size: var(--t-12);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.title {
+  font-size: var(--t-18);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.compact-title { font-size: var(--t-16); }
+
+.card-foot {
+  margin-top: auto;
+  padding-top: var(--s-2);
+  border-top: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  @include mono;
+  font-size: var(--t-12);
+  color: var(--text-muted);
+}
+
+.metric {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  color: var(--text-secondary);
+  font-weight: 600;
+
+  .eye { font-size: var(--t-14); }
+  .unit { color: var(--text-muted); font-weight: 400; }
+}
+
+.sep { color: var(--text-muted); }
+
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: na-pulse 2s ease-in-out infinite;
+  }
+}
+
+.time { margin-left: auto; }
+
+// ─── Overlays on media ─────────────────────────────────────────────────
+.spiking-badge {
+  position: absolute;
+  top: var(--s-3);
+  left: var(--s-3);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: 3px var(--s-3);
+  border-radius: var(--r-pill);
+  background: oklch(62% 0.18 25 / 0.95);
+  color: #fff;
+  @include mono;
+  font-size: var(--t-11);
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  box-shadow: var(--shadow-1);
+  pointer-events: none;
+}
+
+.save-btn {
+  position: absolute;
+  top: var(--s-3);
+  right: var(--s-3);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  cursor: pointer;
+  font-size: var(--t-14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  transition: all 0.12s;
+
+  &:hover { background: rgba(0, 0, 0, 0.75); }
+  &.saved {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+}
+
+// ─── Compact list ──────────────────────────────────────────────────────
+.compact-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}

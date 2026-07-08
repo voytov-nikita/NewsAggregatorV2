@@ -4,22 +4,41 @@
   font-family: $font-mono;
 }
 
+// Mono uppercase eyebrow label (10/11px). Used for section labels, meta, badges.
 @mixin uppercase-label {
   font-family: $font-mono;
-  font-size: 16px;
+  font-size: var(--t-10);
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
   color: var(--text-muted);
 }
 
 @mixin card {
   background: var(--surface-1);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--r-md);
 }
 
 @mixin focus-ring {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-bg);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+// Category badge using OKLCH hue rotation. Pass a hue (0–360).
+// Hues map (from prototype/na-shared.jsx):
+//   Technology 220 · Architecture 160 · Backend 30 · Frontend 280
+//   Database 200 · DevOps 120 · Real-time 10 · State 250
+@mixin category-chip($hue) {
+  background: oklch(55% 0.14 #{$hue} / 0.12);
+  color: oklch(68% 0.14 #{$hue});
+  border: 1px solid oklch(55% 0.14 #{$hue} / 0.22);
+}
+
+// Category hue CSS custom properties — set --cat-hue on an element to colorize it.
+@mixin category-from-var {
+  background: oklch(55% 0.14 var(--cat-hue, 220) / 0.12);
+  color: oklch(68% 0.14 var(--cat-hue, 220));
+  border: 1px solid oklch(55% 0.14 var(--cat-hue, 220) / 0.22);
 }

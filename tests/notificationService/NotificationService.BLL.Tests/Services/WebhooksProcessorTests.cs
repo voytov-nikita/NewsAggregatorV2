@@ -72,7 +72,11 @@ public class WebhooksProcessorTests
             new() { Id = "2", Url = "https://b", Action = eventType, CreationTime = DateTime.UtcNow }
         };
         _subscriptionsStoreMock
-            .Setup(x => x.GetManyAsync(It.Is<WebhooksFilter>(f => f.Actions != null && f.Actions.Contains(eventType)), OffsetPagination.None))
+            .Setup(x => x.GetManyAsync(
+                It.Is<WebhooksFilter>(f =>
+                    f.Actions != null && f.Actions.Contains(eventType)
+                    && f.Enabled == true),
+                OffsetPagination.None))
             .ReturnsAsync(new OffsetCollection<WebhookSubscriptionModel>(subscriptions, 0, subscriptions.Count));
 
         await _sut.StartAsync(CancellationToken.None);

@@ -1,4 +1,6 @@
-﻿namespace NewsService.Models.News.Models;
+﻿using Common.Models;
+
+namespace NewsService.Models.News.Models;
 
 
 public class NewsCreateModel
@@ -11,4 +13,7 @@ public class NewsCreateModel
     public string Publisher { get; set; }
     public string PublisherLink { get; set; }
     public string Guid { get; set; }
+
+    public NewsCategory Category { get; set; } = NewsCategory.Uncategorized;
+    public int ReadTimeMinutes { get; set; }
 }

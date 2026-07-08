@@ -1,38 +1,30 @@
+@use '../../../../assets/scss/general/mixins' as *;
+
 :host {
-  display: block;
-  font-family: 'IBM Plex Sans', sans-serif;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  font-family: var(--font-sans);
 }
 
 .stats-page {
-  padding: 36px 48px;
-  max-width: 1650px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 34px;
+  flex: 1;
+  min-height: 0;
 }
 
-.page-head {
+.body {
+  padding: var(--s-6) 30px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.page-title {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  gap: var(--s-7);
+  box-sizing: border-box;
 }
 
 .page-sub {
-  font-size: 18px;
+  font-family: var(--font-mono);
+  font-size: var(--t-13);
   color: var(--text-muted);
-  margin: 0;
-  font-family: 'IBM Plex Mono', monospace;
 }
 
 .kpi-grid {
@@ -85,6 +77,68 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.src-table {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .chart-head {
+    padding: var(--s-5) var(--s-6) var(--s-3);
+  }
+}
+
+.src-table-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.src-row {
+  display: grid;
+  grid-template-columns: 1.6fr 110px 110px 110px 1fr 90px;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-6);
+  border-top: 1px solid var(--border);
+  align-items: center;
+  font-size: var(--t-14);
+
+  &:nth-child(odd of :not(.src-row-head)) {
+    background: var(--surface-2);
+  }
+}
+
+.src-row-head {
+  background: var(--surface-3);
+  border-top: none;
+  padding-block: var(--s-3);
+
+  > span {
+    @include uppercase-label;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+}
+
+.src-name {
+  color: var(--text-primary);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+
+  &.muted { color: var(--text-muted); }
+  &.ok { color: #22c55e; }
+  &.warn { color: #f59e0b; }
+  &.bad { color: #ef4444; }
 }
 
 .chart-head {

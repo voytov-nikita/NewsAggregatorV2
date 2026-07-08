@@ -1,48 +1,37 @@
 :host {
-  display: block;
-  font-family: 'IBM Plex Sans', sans-serif;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  font-family: var(--font-sans);
 }
 
 .sources-page {
-  padding: 36px 48px;
-  max-width: 1650px;
-  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.body {
+  padding: var(--s-6) 30px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
-}
-
-.page-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 18px;
-}
-
-.page-title {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 36px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  gap: var(--s-5);
+  box-sizing: border-box;
 }
 
 .page-sub {
-  font-size: 18px;
+  font-family: var(--font-mono);
+  font-size: var(--t-13);
   color: var(--text-muted);
-  margin: 6px 0 0;
-  font-family: 'IBM Plex Mono', monospace;
 }
 
 .btn {
-  padding: 12px 22px;
-  border-radius: 11px;
+  padding: var(--s-2) var(--s-5);
+  border-radius: var(--r-md);
   border: 1px solid var(--accent);
   background: var(--accent);
-  color: var(--surface-1);
-  font-size: 18px;
+  color: #fff;
+  font-size: var(--t-13);
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;

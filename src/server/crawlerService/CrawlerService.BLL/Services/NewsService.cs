@@ -8,12 +8,18 @@ namespace CrawlerService.BLL.Services;
 internal class NewsService : INewsService
 {
     private readonly INewsStore _newsStore;
+    private readonly ISourceStore _sourceStore;
     private readonly IPostponedJobRunner _postponedJobRunner;
     private readonly ILogger<NewsService> _logger;
 
-    public NewsService(INewsStore newsStore, IPostponedJobRunner postponedJobRunner, ILogger<NewsService> logger)
+    public NewsService(
+        INewsStore newsStore,
+        ISourceStore sourceStore,
+        IPostponedJobRunner postponedJobRunner,
+        ILogger<NewsService> logger)
     {
         _newsStore = newsStore;
+        _sourceStore = sourceStore;
         _postponedJobRunner = postponedJobRunner;
         _logger = logger;
     }
@@ -36,7 +42,12 @@ internal class NewsService : INewsService
         if (notExistedIds.Any())
         {
             await _newsStore.InsertAsync(notExistsNews);
-            
+
+            foreach (IGrouping<string, ParsedNews> group in notExistsNews.GroupBy(_ => _.SourceId))
+            {
+                await _sourceStore.IncrementArticlesAsync(group.Key, group.Count());
+            }
+
             _postponedJobRunner.Enqueue<INewsQueueService>(_ => _.AddManyToQueueAsync(notExistsNews));
         }
         else

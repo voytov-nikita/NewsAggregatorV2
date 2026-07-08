@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Common.Models;
+using Microsoft.AspNetCore.Mvc;
 using NewsService.API.Extensions.News;
 using NewsService.API.Models.News;
-using NewsService.BLL.Abstractions;
 using NewsService.BLL.Abstractions.Services;
-using NewsService.Models.News;
 using NewsService.Models.News.Models;
 
 namespace NewsService.API.Controllers;
@@ -23,11 +22,10 @@ public class NewsController: ControllerBase
     public async Task<List<NewsResponse>> GetMany([FromQuery] NewsFilterRequest filterRequest)
     {
         NewsFilterModel filter = filterRequest.ToModel();
-        NewsModel[] result = await _newsService.GetManyAsync(filter);
+        OffsetCollection<NewsModel> result = await _newsService.GetManyAsync(filter);
 
-        //AddHeaders
-        
+        this.AddPaginationHeaders(result);
+
         return result.Select(_ => _.ToResponse()).ToList();
     }
-
 }

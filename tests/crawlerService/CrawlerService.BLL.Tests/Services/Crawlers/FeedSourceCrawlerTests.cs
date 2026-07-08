@@ -1,4 +1,5 @@
 using System.Text;
+using Common.Models;
 using CrawlerService.BLL.Services.Crawlers;
 using CrawlerService.BLL.Tests.Helpers;
 using CrawlerService.Models.Enums;
@@ -20,6 +21,7 @@ public class FeedSourceCrawlerTests
         Url = "https://pub.test/rss",
         Type = SourceType.Feed,
         CronSchedule = "*/30 * * * * *",
+        Category = NewsCategory.Frontend,
         FeedMapping = mapping,
     };
 
@@ -66,9 +68,9 @@ public class FeedSourceCrawlerTests
         result[0].SourceId.Should().Be("test");
         result[0].PublisherName.Should().Be("TestPub");
         result[0].GlobalUniqueId.Should().Be("testguid-1");
-        result[0].Tags.Should().BeEquivalentTo(new[] { "news", "politics" });
+        result[0].Category.Should().Be(NewsCategory.Frontend);
         result[1].Title.Should().Be("Item 2");
-        result[1].Tags.Should().BeEmpty();
+        result[1].Category.Should().Be(NewsCategory.Frontend);
     }
 
     [Fact]
@@ -82,7 +84,6 @@ public class FeedSourceCrawlerTests
             Link = new FieldMapping { Selector = "link" },
             Guid = new FieldMapping { Selector = "guid" },
             PublishDate = new FieldMapping { Selector = "pubDate" },
-            Tags = new FieldMapping { Selector = "category" },
         };
         NewsSource source = BuildSource(mapping);
         IHttpClientFactory factory = HttpClientFactoryStub.ReturningBytes(Encoding.UTF8.GetBytes(SampleRss));
@@ -95,7 +96,7 @@ public class FeedSourceCrawlerTests
         result[0].Guid.Should().Be("guid-1");
         result[0].OriginalLink.Should().Be("https://pub.test/1");
         result[0].GlobalUniqueId.Should().Be("testguid-1");
-        result[0].Tags.Should().BeEquivalentTo(new[] { "news", "politics" });
+        result[0].Category.Should().Be(NewsCategory.Frontend);
     }
 
     [Fact]

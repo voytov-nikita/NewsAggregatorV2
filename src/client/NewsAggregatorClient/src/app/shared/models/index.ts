@@ -1,4 +1,4 @@
-export type { NewsResponse } from './news-response.model';
+export type { NewsResponse, NewsCategory } from './news-response.model';
 export type { NewsFilterRequest } from './news-filter-request.model';
 export type { CommentsResponse } from './comments-response.model';
 export type { CommentsFilterRequest } from './comments-filter-request.model';

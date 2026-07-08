@@ -20,7 +20,32 @@
       "PowerShell(New-Item *)",
       "PowerShell(Test-Path *)",
       "Bash(node scripts/scale-scss.mjs --dry)",
-      "Bash(node scripts/scale-scss.mjs)"
+      "Bash(node scripts/scale-scss.mjs)",
+      "WebFetch(domain:claude.ai)",
+      "Bash(cp \"C:/Users/voyto/.claude-personal/projects/P--MyProjects-NewsAggregatorV2-src-client-NewsAggregatorClient/85c20127-48ab-47d4-bbbc-bb52fc719c20/tool-results/webfetch-1778970155043-nnsxcc.bin\" pkg.bin)",
+      "Bash(tar -xzf pkg.bin)",
+      "Bash(xargs grep -l -E \"class News\\\\b|public class News\")",
+      "Skill(update-config)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet ef *)",
+      "Bash(npx tsc *)",
+      "Bash(xargs grep -H \"ProjectReference\")",
+      "PowerShell(git *)",
+      "Bash(mkdir -p /tmp/design2)",
+      "Bash(tar -xzf \"C:/Users/voyto/.claude-personal/projects/P--MyProjects-NewsAggregatorV2-src-client-NewsAggregatorClient/85c20127-48ab-47d4-bbbc-bb52fc719c20/tool-results/webfetch-1781311136421-cruvwc.bin\")",
+      "Bash(cp \"C:/Users/voyto/.claude-personal/projects/P--MyProjects-NewsAggregatorV2-src-client-NewsAggregatorClient/85c20127-48ab-47d4-bbbc-bb52fc719c20/tool-results/webfetch-1781311136421-cruvwc.bin\" /tmp/design2/pkg.bin)",
+      "Read(//tmp/design2/newsaggregator2/project/**)",
+      "Read(//tmp/design2/newsaggregator2/**)",
+      "WebSearch",
+      "Bash(claude mcp *)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "angular",
+    "primeng",
+    "context7",
+    "playwright",
+    "postgres",
+    "mongodb"
+  ]
 }

@@ -71,47 +71,69 @@
       @case (2) {
         <div class="step-pane">
           <label class="field">
-            <span class="label">Crawl frequency</span>
-            <select class="text-input" [value]="frequency()" (change)="frequency.set(+$any($event.target).value)">
-              @for (o of frequencyOptions; track o.value) {
-                <option [value]="o.value">{{ o.label }}</option>
-              }
-            </select>
-          </label>
-
-          <label class="field">
-            <span class="label">Restart policy</span>
-            <div class="seg">
-              @for (p of restartPolicies; track p) {
-                <button
-                  type="button"
-                  class="seg-btn"
-                  [class.active]="restartPolicy() === p"
-                  (click)="restartPolicy.set(p)"
-                >{{ p }}</button>
-              }
-            </div>
+            <span class="label">Source id (slug)</span>
+            <input
+              type="text"
+              class="text-input"
+              placeholder="pravda"
+              [value]="id()"
+              (input)="id.set($any($event.target).value)"
+            />
           </label>
 
           <div class="field-row">
             <label class="field">
-              <span class="label">Timeout (sec)</span>
+              <span class="label">Publisher name</span>
               <input
-                type="number"
+                type="text"
                 class="text-input"
-                min="1"
-                [value]="timeout()"
-                (input)="timeout.set(+$any($event.target).value)"
+                [value]="publisherName()"
+                (input)="publisherName.set($any($event.target).value)"
               />
             </label>
             <label class="field">
-              <span class="label">Retries</span>
+              <span class="label">Publisher link</span>
               <input
-                type="number"
+                type="text"
                 class="text-input"
-                min="0"
-                [value]="retries()"
-                (input)="retries.set(+$any($event.target).value)"
+                [value]="publisherLink()"
+                (input)="publisherLink.set($any($event.target).value)"
+              />
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="label">Cron schedule (6-field, with seconds)</span>
+            <input
+              type="text"
+              class="text-input mono"
+              placeholder="0 */15 * * * *"
+              [value]="cronSchedule()"
+              (input)="cronSchedule.set($any($event.target).value)"
+            />
+          </label>
+
+          <div class="field-row">
+            <label class="field">
+              <span class="label">Category</span>
+              <select
+                class="text-input"
+                [value]="category()"
+                (change)="category.set($any($event.target).value)"
+              >
+                @for (c of categories; track c) {
+                  <option [value]="c">{{ c }}</option>
+                }
+              </select>
+            </label>
+            <label class="field">
+              <span class="label">Encoding (optional)</span>
+              <input
+                type="text"
+                class="text-input"
+                placeholder="utf-8"
+                [value]="encoding()"
+                (input)="encoding.set($any($event.target).value)"
               />
             </label>
           </div>
@@ -130,13 +152,15 @@
       @case (4) {
         <div class="step-pane">
           <div class="review">
+            <div class="review-row"><span class="rk">Id</span><span class="rv mono">{{ id() }}</span></div>
             <div class="review-row"><span class="rk">Source</span><span class="rv">{{ detectedName() }}</span></div>
+            <div class="review-row"><span class="rk">Publisher</span><span class="rv">{{ publisherName() }}</span></div>
+            <div class="review-row"><span class="rk">Publisher link</span><span class="rv mono">{{ publisherLink() }}</span></div>
             <div class="review-row"><span class="rk">URL</span><span class="rv mono">{{ url() }}</span></div>
             <div class="review-row"><span class="rk">Type</span><span class="rv">{{ detectedType() }}</span></div>
-            <div class="review-row"><span class="rk">Frequency</span><span class="rv">{{ summaryFrequency() }}</span></div>
-            <div class="review-row"><span class="rk">Restart</span><span class="rv">{{ restartPolicy() }}</span></div>
-            <div class="review-row"><span class="rk">Timeout</span><span class="rv">{{ timeout() }}s</span></div>
-            <div class="review-row"><span class="rk">Retries</span><span class="rv">{{ retries() }}</span></div>
+            <div class="review-row"><span class="rk">Cron</span><span class="rv mono">{{ cronSchedule() }}</span></div>
+            <div class="review-row"><span class="rk">Category</span><span class="rv">{{ category() }}</span></div>
+            <div class="review-row"><span class="rk">Encoding</span><span class="rv">{{ encoding() || 'utf-8 (default)' }}</span></div>
             <div class="review-row"><span class="rk">Mapped fields</span><span class="rv">{{ (mapping() | keyvalue).length }}</span></div>
           </div>
         </div>

@@ -1,0 +1,10 @@
+<header class="page-header">
+  <div class="left">
+    <ng-content select="[pageHeaderLeading]"></ng-content>
+    <h1 class="page-title">{{ title() }}</h1>
+    <ng-content select="[pageHeaderMeta]"></ng-content>
+  </div>
+  <div class="right">
+    <ng-content select="[pageHeaderActions]"></ng-content>
+  </div>
+</header>

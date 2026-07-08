@@ -36,6 +36,7 @@ internal class NewsQueueService : INewsQueueService
             PublisherLink = x.PublisherLink,
             PublisherGuid = x.PublisherGuid,
             Guid = x.Guid,
+            Category = x.Category,
         }).ToArray();
 
         _producer.Publish(messages);

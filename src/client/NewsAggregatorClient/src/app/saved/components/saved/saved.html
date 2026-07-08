@@ -1,0 +1,103 @@
+<app-page-shell class="saved-page">
+  <app-page-header pageHeader title="Saved">
+    @if (!isLoading() && !error()) {
+      <span pageHeaderMeta class="count">
+        {{ saved().length }} {{ saved().length === 1 ? 'article' : 'articles' }}
+      </span>
+    }
+
+    @if (saved().length > 0 && !isLoading() && !error()) {
+      <div pageHeaderActions class="group-toggle">
+        <span class="group-label">Group by</span>
+        <div class="seg">
+          @for (opt of [['date', 'Date'], ['category', 'Category'], ['none', 'None']]; track opt[0]) {
+            <button
+              type="button"
+              class="seg-btn"
+              [class.active]="groupBy() === opt[0]"
+              (click)="setGroupBy($any(opt[0]))">
+              {{ opt[1] }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </app-page-header>
+
+  <div class="body">
+    @if (error(); as e) {
+      <app-error-banner
+        title="Couldn't load saved articles"
+        [description]="e"
+        [showRetry]="true"
+        (retry)="load()" />
+    }
+
+    @if (isLoading()) {
+      <div class="skeleton-list">
+        @for (_ of [0, 1, 2]; track $index) {
+          <article class="saved-card skeleton-card">
+            <app-skeleton width="120px" height="80" />
+            <div class="card-body">
+              <app-skeleton width="40%" height="14" />
+              <app-skeleton width="90%" height="20" />
+              <app-skeleton width="70%" height="14" />
+            </div>
+          </article>
+        }
+      </div>
+    } @else if (!error() && saved().length === 0) {
+      <app-empty-state
+        glyph="★"
+        title="You haven't saved anything yet"
+        description="Tap the star on a card or article page to save it for later.">
+        <button type="button" class="reset-btn" (click)="navigation.toFeed()">Browse all news →</button>
+      </app-empty-state>
+    } @else if (!error()) {
+      <div class="groups">
+        @for (group of groups(); track group.key) {
+          <section class="group">
+            @if (groupBy() !== 'none') {
+              <header class="group-head">
+                <span class="group-name">{{ group.label }}</span>
+                <span class="group-count">{{ group.items.length }}</span>
+                <span class="group-rule"></span>
+              </header>
+            }
+            <div class="cards">
+              @for (article of group.items; track article.id) {
+                <article class="saved-card" (click)="open(article)">
+                  <app-image-placeholder [width]="'120px'" [height]="80" [label]="article.publisher" />
+                  <div class="card-body">
+                    <div class="meta">
+                      <app-source-badge [category]="categoryFor(article)" />
+                      <span class="publisher">{{ article.publisher }}</span>
+                    </div>
+                    <h3 class="title">{{ article.title }}</h3>
+                    @if (article.description) {
+                      <p class="desc">{{ article.description }}</p>
+                    }
+                    <div class="foot">
+                      <span>★ saved</span>
+                      <span class="dot">·</span>
+                      <span>{{ readTimeFor(article) }} min read</span>
+                      <span class="dot">·</span>
+                      <span>{{ article.publishDate | date: 'mediumDate' }}</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="unsave-btn"
+                    title="Remove from saved"
+                    (click)="unsave(article, $event)">
+                    ★
+                  </button>
+                </article>
+              }
+            </div>
+          </section>
+        }
+      </div>
+    }
+  </div>
+</app-page-shell>

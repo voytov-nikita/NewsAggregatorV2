@@ -1,6 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, output, signal } from '@angular/core';
-import { FREQUENCY_OPTIONS, RESTART_POLICIES } from '../../data/admin-mock';
-import { FieldKey, RestartPolicy, Source, SourceType } from '../../models/source.model';
+import {
+  FeedFieldMapping,
+  FieldKey,
+  HtmlSelectors,
+  NEWS_CATEGORIES,
+  NewsCategory,
+  Source,
+  SourceType,
+} from '../../models/source.model';
 
 type Mapping = Partial<Record<FieldKey, string>>;
 type ValidationState = 'idle' | 'checking' | 'ok' | 'error';
@@ -14,7 +21,7 @@ type ValidationState = 'idle' | 'checking' | 'ok' | 'error';
 })
 export class SourceWizard {
   readonly cancel = output<void>();
-  readonly create = output<Omit<Source, 'id' | 'articles' | 'success' | 'avgDelay' | 'lastCrawl'>>();
+  readonly create = output<Source>();
 
   protected readonly step = signal<1 | 2 | 3 | 4>(1);
   protected readonly stepNumbers: readonly (1 | 2 | 3 | 4)[] = [1, 2, 3, 4];
@@ -24,27 +31,24 @@ export class SourceWizard {
   protected readonly detectedType = signal<SourceType | null>(null);
   protected readonly detectedName = signal<string>('');
 
-  protected readonly frequency = signal<number>(15);
-  protected readonly restartPolicy = signal<RestartPolicy>('OnFailure');
-  protected readonly timeout = signal<number>(10);
-  protected readonly retries = signal<number>(3);
+  protected readonly id = signal<string>('');
+  protected readonly publisherName = signal<string>('');
+  protected readonly publisherLink = signal<string>('');
+  protected readonly cronSchedule = signal<string>('0 */15 * * * *');
+  protected readonly category = signal<NewsCategory>('Uncategorized');
+  protected readonly encoding = signal<string>('');
 
   protected readonly mapping = signal<Mapping>({});
 
-  protected readonly frequencyOptions = FREQUENCY_OPTIONS;
-  protected readonly restartPolicies = RESTART_POLICIES;
+  protected readonly categories = NEWS_CATEGORIES;
 
   protected readonly canNext = computed(() => {
     switch (this.step()) {
       case 1: return this.validation() === 'ok' && !!this.detectedType();
-      case 2: return this.frequency() > 0 && this.timeout() > 0 && this.retries() >= 0;
+      case 2: return !!this.id().trim() && this.isValidCron(this.cronSchedule());
       case 3: return Object.keys(this.mapping()).length > 0;
       default: return true;
     }
-  });
-
-  protected readonly summaryFrequency = computed(() => {
-    return this.frequencyOptions.find((o) => o.value === this.frequency())?.label ?? `${this.frequency()} min`;
   });
 
   protected validate(): void {
@@ -58,8 +62,18 @@ export class SourceWizard {
       try {
         const parsed = new URL(u);
         const isRss = /\/(feed|rss|atom)(\.xml)?\/?$/i.test(parsed.pathname) || /\.xml$/i.test(parsed.pathname);
-        this.detectedType.set(isRss ? 'RSS' : 'HTML');
-        this.detectedName.set(parsed.hostname.replace(/^www\./, ''));
+        this.detectedType.set(isRss ? 'Feed' : 'Html');
+        const host = parsed.hostname.replace(/^www\./, '');
+        this.detectedName.set(host);
+        if (!this.id()) {
+          this.id.set(host.split('.')[0].toLowerCase());
+        }
+        if (!this.publisherName()) {
+          this.publisherName.set(host);
+        }
+        if (!this.publisherLink()) {
+          this.publisherLink.set(`${parsed.protocol}//${parsed.host}`);
+        }
         this.validation.set('ok');
       } catch {
         this.validation.set('error');
@@ -91,20 +105,49 @@ export class SourceWizard {
   protected confirm(): void {
     const type = this.detectedType();
     if (!type) return;
-    this.create.emit({
+    const m = this.mapping();
+    const feedMapping: FeedFieldMapping | null = type === 'Feed'
+      ? {
+          titlePath: m.title,
+          descriptionPath: m.description,
+          imagePath: m.image,
+          dateTimePath: m.dateTime,
+          publisherPath: m.publisher,
+        }
+      : null;
+    const htmlSelectors: HtmlSelectors | null = type === 'Html'
+      ? {
+          titleSelector: m.title,
+          descriptionSelector: m.description,
+          imageSelector: m.image,
+          dateTimeSelector: m.dateTime,
+          publisherSelector: m.publisher,
+        }
+      : null;
+
+    const source: Source = {
+      id: this.id().trim(),
       name: this.detectedName() || this.url(),
+      publisherName: this.publisherName().trim() || this.detectedName(),
+      publisherLink: this.publisherLink().trim() || this.url(),
       url: this.url(),
       type,
-      active: true,
-      frequency: this.frequency(),
-      restartPolicy: this.restartPolicy(),
-      timeout: this.timeout(),
-      retries: this.retries(),
-      fieldMapping: this.mapping(),
-    });
+      cronSchedule: this.cronSchedule().trim(),
+      encoding: this.encoding().trim() || null,
+      enabled: true,
+      category: this.category(),
+      feedMapping,
+      htmlSelectors,
+    };
+    this.create.emit(source);
   }
 
   protected close(): void {
     this.cancel.emit();
+  }
+
+  private isValidCron(cron: string): boolean {
+    const parts = cron.trim().split(/\s+/).filter(Boolean);
+    return parts.length === 5 || parts.length === 6;
   }
 }

@@ -1,8 +1,10 @@
-<span
-  class="source-badge"
-  [style.background]="'oklch(55% 0.14 ' + hue() + ' / 0.12)'"
-  [style.color]="'oklch(68% 0.14 ' + hue() + ')'"
-  [style.border-color]="'oklch(55% 0.14 ' + hue() + ' / 0.22)'"
->
-  {{ category() }}
-</span>
+@if (category() && category() !== 'Uncategorized') {
+  <span
+    class="source-badge"
+    [style.background]="'oklch(55% 0.14 ' + hue() + ' / 0.12)'"
+    [style.color]="'oklch(68% 0.14 ' + hue() + ')'"
+    [style.border-color]="'oklch(55% 0.14 ' + hue() + ' / 0.22)'"
+  >
+    {{ label() }}
+  </span>
+}

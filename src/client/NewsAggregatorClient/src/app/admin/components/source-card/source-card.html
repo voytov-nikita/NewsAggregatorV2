@@ -1,21 +1,21 @@
 <article class="src-card">
-  <div class="type-badge" [class.html]="source().type === 'HTML'">{{ source().type }}</div>
+  <div class="type-badge" [class.html]="source().type === 'Html'">{{ source().type }}</div>
 
   <div class="src-body">
     <div class="src-head">
       <span class="src-name">{{ source().name }}</span>
       <span
         class="status"
-        [class.active]="source().active"
-      >{{ source().active ? 'Active' : 'Paused' }}</span>
+        [class.active]="source().enabled"
+      >{{ source().enabled ? 'Active' : 'Paused' }}</span>
     </div>
     <div class="src-url">{{ source().url }}</div>
     <div class="src-stats">
-      <span><strong>{{ source().articles }}</strong> articles</span>
+      <span>{{ source().category }}</span>
       <span class="dot">·</span>
-      <span [class.warn]="source().success < 95">{{ source().success }}% success</span>
+      <span class="mono">{{ source().cronSchedule }}</span>
       <span class="dot">·</span>
-      <span>last crawl {{ source().lastCrawl }}</span>
+      <span>id: {{ source().id }}</span>
     </div>
   </div>
 
@@ -25,9 +25,9 @@
       type="button"
       class="icon-btn"
       (click)="toggleActive.emit(source())"
-      [title]="source().active ? 'Pause' : 'Resume'"
+      [title]="source().enabled ? 'Pause' : 'Resume'"
     >
-      {{ source().active ? '⏸' : '▶' }}
+      {{ source().enabled ? '⏸' : '▶' }}
     </button>
     <button type="button" class="icon-btn danger" (click)="remove.emit(source())" title="Delete">×</button>
   </div>

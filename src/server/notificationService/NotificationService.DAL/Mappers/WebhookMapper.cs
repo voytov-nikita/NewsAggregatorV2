@@ -12,7 +12,8 @@ public static class WebhookMapper
             Id = subscriptionEntity.Id.ToString(),
             Url = subscriptionEntity.Url,
             Action = subscriptionEntity.Action,
-            CreationTime = subscriptionEntity.CreationTime
+            CreationTime = subscriptionEntity.CreationTime,
+            Enabled = subscriptionEntity.Enabled,
         };
     }
 }

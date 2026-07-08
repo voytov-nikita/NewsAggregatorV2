@@ -14,6 +14,7 @@ namespace CrawlerService.BLL.Tests.Services;
 public class NewsServiceTests
 {
     private readonly Mock<INewsStore> _newsStoreMock = new();
+    private readonly Mock<ISourceStore> _sourceStoreMock = new();
     private readonly Mock<IPostponedJobRunner> _postponedJobRunnerMock = new();
     private readonly NewsService _sut;
     private readonly Fixture _fixture = new Fixture();
@@ -22,6 +23,7 @@ public class NewsServiceTests
     {
         _sut = new NewsService(
             _newsStoreMock.Object,
+            _sourceStoreMock.Object,
             _postponedJobRunnerMock.Object,
             NullLogger<NewsService>.Instance
         );

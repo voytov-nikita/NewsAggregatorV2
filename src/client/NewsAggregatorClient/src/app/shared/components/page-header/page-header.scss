@@ -1,0 +1,34 @@
+@use '../../../../assets/scss/general/mixins' as *;
+
+:host { display: block; }
+
+.page-header {
+  height: 81px;
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.left,
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  min-width: 0;
+}
+
+.right { gap: var(--s-3); }
+
+.page-title {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: nowrap;
+}

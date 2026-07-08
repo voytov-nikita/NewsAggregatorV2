@@ -1,0 +1,70 @@
+<aside class="rail">
+  <header class="rail-head">
+    <span class="rail-title">Filters</span>
+    @if (activeCount() > 0) {
+      <button type="button" class="reset-btn" (click)="reset()">Reset all</button>
+    }
+  </header>
+
+  <!-- Category -->
+  <section class="group">
+    <h3 class="group-title">Category</h3>
+    <ul class="check-list">
+      @for (cat of categories; track cat) {
+        <li>
+          <label class="check-row">
+            <input
+              type="checkbox"
+              [checked]="isCategorySelected(cat)"
+              (change)="toggleCategory(cat)" />
+            <span class="dot" [style.background]="'oklch(65% 0.14 ' + (hues[cat] ?? 220) + ')'"></span>
+            <span class="label">{{ labels[cat] ?? cat }}</span>
+          </label>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <!-- Source -->
+  <section class="group">
+    <h3 class="group-title">Source</h3>
+    <input
+      type="text"
+      class="source-search"
+      placeholder="Search sources…"
+      [value]="sourceQuery()"
+      (input)="onSourceQuery($any($event.target).value)" />
+    <ul class="check-list scrollable">
+      @for (src of visibleSources(); track src) {
+        <li>
+          <label class="check-row">
+            <input
+              type="checkbox"
+              [checked]="isSourceSelected(src)"
+              (change)="toggleSource(src)" />
+            <span class="label">{{ src }}</span>
+          </label>
+        </li>
+      }
+      @if (visibleSources().length === 0) {
+        <li class="empty">No matches</li>
+      }
+    </ul>
+  </section>
+
+  <!-- Published -->
+  <section class="group">
+    <h3 class="group-title">Published</h3>
+    <div class="date-row">
+      <label class="date-cell">
+        <span>From</span>
+        <input type="date" [value]="dateFrom() ?? ''" (change)="onDateFromChange($any($event.target).value)" />
+      </label>
+      <label class="date-cell">
+        <span>To</span>
+        <input type="date" [value]="dateTo() ?? ''" (change)="onDateToChange($any($event.target).value)" />
+      </label>
+    </div>
+  </section>
+
+</aside>

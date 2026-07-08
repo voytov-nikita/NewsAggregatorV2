@@ -43,6 +43,7 @@ public class WebhooksProcessor : BackgroundService
         WebhooksFilter filter = new WebhooksFilter()
         {
             Actions = [message.EventType],
+            Enabled = true,
         };
         var webhookSubscriptions = await webhookSubscriptionsStore.GetManyAsync(filter, OffsetPagination.None);
 

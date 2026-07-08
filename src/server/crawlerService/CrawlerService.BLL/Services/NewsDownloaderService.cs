@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CrawlerService.BLL.Abstractions.Services;
 using CrawlerService.DAL.Abstractions.Stores;
 using CrawlerService.Models.Models;
@@ -41,7 +42,25 @@ public class NewsDownloaderService : INewsDownloaderService
 
         ISourceCrawler crawler = _crawlerFactory.Get(source.Type);
 
-        ParsedNews[] items = await crawler.CrawlAsync(source);
+        Stopwatch sw = Stopwatch.StartNew();
+        ParsedNews[] items;
+        try
+        {
+            items = await crawler.CrawlAsync(source);
+        }
+        catch (Exception ex)
+        {
+            sw.Stop();
+            _logger.LogError(ex, "Crawl failed for source {SourceId}", sourceId);
+            await _sourceStore.UpdateMetricsAsync(
+                sourceId, DateTime.UtcNow, success: false, (int)sw.ElapsedMilliseconds, parsedCount: 0);
+            throw;
+        }
+        sw.Stop();
+
+        await _sourceStore.UpdateMetricsAsync(
+            sourceId, DateTime.UtcNow, success: true, (int)sw.ElapsedMilliseconds, items.Length);
+
         if (items.Length == 0)
         {
             _logger.LogInformation("Source {SourceId}: no items to save", sourceId);

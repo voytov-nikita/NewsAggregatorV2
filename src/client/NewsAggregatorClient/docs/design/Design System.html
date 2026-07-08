@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NewsAggregator — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Tokens ──────────────────────────────────────────────────────────── */
+  :root {
+    /* type scale (px) */
+    --t-9:  9px;
+    --t-10: 10px;
+    --t-11: 11px;
+    --t-12: 12px;
+    --t-13: 13px;
+    --t-14: 14px;
+    --t-16: 16px;
+    --t-18: 18px;
+    --t-22: 22px;
+    --t-28: 28px;
+    --t-36: 36px;
+    --t-48: 48px;
+
+    /* spacing scale (px) */
+    --s-1: 4px;
+    --s-2: 6px;
+    --s-3: 8px;
+    --s-4: 12px;
+    --s-5: 16px;
+    --s-6: 20px;
+    --s-7: 24px;
+    --s-8: 32px;
+    --s-9: 48px;
+    --s-10: 64px;
+
+    /* radii */
+    --r-xs: 4px;
+    --r-sm: 6px;
+    --r-md: 8px;
+    --r-lg: 10px;
+    --r-xl: 14px;
+    --r-pill: 100px;
+
+    /* fonts */
+    --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+    /* accent (default blue — matches prototype) */
+    --accent:    #3b82f6;
+    --accent-bg: rgba(59,130,246,0.10);
+
+    /* semantic colors — same across themes */
+    --success:    oklch(64% 0.15 145);
+    --success-bg: oklch(64% 0.15 145 / 0.12);
+    --warning:    oklch(72% 0.15 70);
+    --warning-bg: oklch(72% 0.15 70 / 0.12);
+    --danger:     oklch(62% 0.18 25);
+    --danger-bg:  oklch(62% 0.18 25 / 0.12);
+    --info:       oklch(65% 0.13 230);
+    --info-bg:    oklch(65% 0.13 230 / 0.12);
+
+    /* shadows — dark theme */
+    --shadow-1: 0 1px 2px rgba(0,0,0,0.40);
+    --shadow-2: 0 4px 12px rgba(0,0,0,0.32);
+    --shadow-3: 0 8px 32px rgba(0,0,0,0.40);
+  }
+
+  /* dark theme (default) */
+  [data-theme="dark"] {
+    --bg:          #080d16;
+    --surface-1:   #0d1421;
+    --surface-2:   #121a2e;
+    --surface-3:   #182136;
+    --border:      #1e2d44;
+    --text-primary:   #dce8f8;
+    --text-secondary: #7a90b0;
+    --text-muted:     #4a5f78;
+    --input-bg:    #1e2d44;
+    --overlay:     rgba(8,13,22,0.7);
+  }
+
+  /* light theme */
+  [data-theme="light"] {
+    --bg:          #f0f4f9;
+    --surface-1:   #ffffff;
+    --surface-2:   #f5f8fc;
+    --surface-3:   #edf2f9;
+    --border:      #dde6f0;
+    --text-primary:   #0e1625;
+    --text-secondary: #4a6080;
+    --text-muted:     #94a8c0;
+    --input-bg:    #ffffff;
+    --overlay:     rgba(14,22,37,0.45);
+    --shadow-1: 0 1px 2px rgba(14,22,37,0.06);
+    --shadow-2: 0 4px 12px rgba(14,22,37,0.08);
+    --shadow-3: 0 8px 32px rgba(14,22,37,0.12);
+  }
+
+  /* ── Reset & base ────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text-primary); font-family: var(--font-sans); font-size: var(--t-14); line-height: 1.55; -webkit-font-smoothing: antialiased; transition: background 0.18s, color 0.18s; }
+  a { color: var(--accent); text-decoration: none; }
+  code, kbd, samp { font-family: var(--font-mono); font-size: 0.9em; }
+
+  /* ── Layout shell ────────────────────────────────────────────────────── */
+  .shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  .toc {
+    position: sticky; top: 0; align-self: start;
+    height: 100vh; overflow-y: auto;
+    border-right: 1px solid var(--border);
+    background: var(--surface-1);
+    padding: var(--s-6) var(--s-5);
+  }
+  .toc-brand { display: flex; align-items: center; gap: var(--s-3); margin-bottom: var(--s-7); }
+  .toc-brand-mark { width: 28px; height: 28px; border-radius: var(--r-sm); background: var(--accent); color: #fff; font-family: var(--font-mono); font-weight: 700; font-size: var(--t-11); display: flex; align-items: center; justify-content: center; }
+  .toc-brand-title { font-weight: 700; font-size: var(--t-14); letter-spacing: -0.02em; }
+  .toc-brand-sub { font-family: var(--font-mono); font-size: var(--t-10); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .toc h3 { font-family: var(--font-mono); font-size: var(--t-10); text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin: var(--s-6) 0 var(--s-3); font-weight: 500; }
+  .toc h3:first-of-type { margin-top: 0; }
+  .toc a { display: block; padding: var(--s-2) var(--s-3); border-radius: var(--r-sm); color: var(--text-secondary); font-size: var(--t-13); margin-bottom: 2px; transition: background 0.12s, color 0.12s; }
+  .toc a:hover { background: var(--surface-2); color: var(--text-primary); }
+  .toc-theme { display: flex; gap: var(--s-1); padding: var(--s-1); background: var(--surface-2); border-radius: var(--r-md); margin-top: var(--s-7); }
+  .toc-theme button { flex: 1; padding: var(--s-2) 0; border: none; background: transparent; color: var(--text-secondary); font-family: var(--font-sans); font-size: var(--t-12); border-radius: var(--r-sm); cursor: pointer; }
+  .toc-theme button.active { background: var(--surface-1); color: var(--text-primary); font-weight: 600; box-shadow: var(--shadow-1); }
+
+  .main { padding: var(--s-8) var(--s-9); max-width: 1100px; }
+  .page-title { font-size: var(--t-36); font-weight: 700; letter-spacing: -0.025em; margin-bottom: var(--s-3); }
+  .page-sub { color: var(--text-secondary); font-size: var(--t-16); margin-bottom: var(--s-9); max-width: 680px; }
+
+  section { margin-bottom: var(--s-10); scroll-margin-top: var(--s-6); }
+  section > h2 { font-size: var(--t-28); font-weight: 700; letter-spacing: -0.02em; margin-bottom: var(--s-2); display: flex; align-items: baseline; gap: var(--s-4); }
+  section > h2 .num { font-family: var(--font-mono); font-size: var(--t-12); color: var(--text-muted); font-weight: 500; }
+  section > p.lead { color: var(--text-secondary); margin-bottom: var(--s-7); max-width: 680px; }
+
+  h3.sub { font-size: var(--t-16); font-weight: 600; margin: var(--s-7) 0 var(--s-4); letter-spacing: -0.01em; }
+
+  /* generic grid for swatches/specimens */
+  .grid { display: grid; gap: var(--s-3); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-6 { grid-template-columns: repeat(6, 1fr); }
+  .grid-8 { grid-template-columns: repeat(8, 1fr); }
+
+  /* ── Color swatches ───────────────────────────────────────────────────── */
+  .swatch { border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--border); background: var(--surface-1); }
+  .swatch-color { height: 64px; }
+  .swatch-meta { padding: var(--s-3) var(--s-4); display: flex; flex-direction: column; gap: 2px; }
+  .swatch-name { font-size: var(--t-12); font-weight: 600; }
+  .swatch-token { font-family: var(--font-mono); font-size: var(--t-10); color: var(--text-muted); }
+  .swatch-val { font-family: var(--font-mono); font-size: var(--t-10); color: var(--text-secondary); }
+
+  /* category palette */
+  .cat-row { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+  .cat-chip {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: var(--s-2) var(--s-3); border-radius: var(--r-pill);
+    font-family: var(--font-mono); font-size: var(--t-10); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    border: 1px solid;
+  }
+  .cat-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ── Type specimen ────────────────────────────────────────────────────── */
+  .type-row { display: grid; grid-template-columns: 100px 1fr 120px; gap: var(--s-5); align-items: baseline; padding: var(--s-4) 0; border-bottom: 1px solid var(--border); }
+  .type-row:last-child { border-bottom: none; }
+  .type-row .key { font-family: var(--font-mono); font-size: var(--t-11); color: var(--text-muted); }
+  .type-row .spec { font-family: var(--font-mono); font-size: var(--t-10); color: var(--text-secondary); text-align: right; }
+
+  /* ── Spacing & radius ─────────────────────────────────────────────────── */
+  .scale-row { display: grid; grid-template-columns: 80px 1fr; gap: var(--s-5); align-items: center; padding: var(--s-3) 0; border-bottom: 1px solid var(--border); }
+  .scale-row:last-child { border-bottom: none; }
+  .scale-row .key { font-family: var(--font-mono); font-size: var(--t-11); color: var(--text-secondary); }
+  .scale-bar { height: 18px; background: var(--accent); border-radius: 2px; }
+  .radius-tile { display: flex; flex-direction: column; align-items: center; gap: var(--s-3); padding: var(--s-4); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); }
+  .radius-square { width: 64px; height: 64px; background: var(--accent); }
+  .radius-tile .key { font-family: var(--font-mono); font-size: var(--t-11); color: var(--text-secondary); }
+  .radius-tile .val { font-family: var(--font-mono); font-size: var(--t-10); color: var(--text-muted); }
+
+  /* shadows */
+  .shadow-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-3); height: 140px; background: var(--surface-1); border-radius: var(--r-md); }
+  .shadow-block { width: 72px; height: 56px; background: var(--surface-2); border-radius: var(--r-sm); border: 1px solid var(--border); }
+  .shadow-tile .key { font-family: var(--font-mono); font-size: var(--t-11); color: var(--text-secondary); }
+
+  /* ── Components ───────────────────────────────────────────────────────── */
+  .card-block { padding: var(--s-6); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); }
+  .card-block + .card-block { margin-top: var(--s-3); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+  .stack { display: flex; flex-direction: column; gap: var(--s-3); }
+
+  /* buttons */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); padding: var(--s-3) var(--s-5); border-radius: var(--r-md); font-family: var(--font-sans); font-size: var(--t-13); font-weight: 500; line-height: 1; border: 1px solid transparent; cursor: pointer; transition: background 0.12s, border-color 0.12s, color 0.12s; }
+  .btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--accent-bg); border-color: var(--accent); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: color-mix(in oklch, var(--accent), white 10%); }
+  .btn-secondary { background: var(--surface-2); color: var(--text-primary); border-color: var(--border); }
+  .btn-secondary:hover { background: var(--surface-3); }
+  .btn-ghost { background: transparent; color: var(--text-secondary); }
+  .btn-ghost:hover { background: var(--surface-2); color: var(--text-primary); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { filter: brightness(1.1); }
+  .btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+  .btn-sm { padding: var(--s-2) var(--s-4); font-size: var(--t-12); }
+  .btn-lg { padding: var(--s-4) var(--s-6); font-size: var(--t-14); }
+  .btn-icon { padding: 0; width: 32px; height: 32px; border-radius: var(--r-md); }
+
+  /* inputs */
+  .field { display: flex; flex-direction: column; gap: var(--s-2); }
+  .field-label { font-size: var(--t-12); color: var(--text-secondary); font-weight: 500; }
+  .input, .textarea, .select {
+    width: 100%; padding: var(--s-3) var(--s-4); border-radius: var(--r-md);
+    border: 1px solid var(--border); background: var(--input-bg);
+    color: var(--text-primary); font-size: var(--t-13); outline: none;
+    font-family: var(--font-sans); transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .input:focus, .textarea:focus, .select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+  .input::placeholder, .textarea::placeholder { color: var(--text-muted); }
+  .input-error { border-color: var(--danger) !important; }
+  .field-error { font-size: var(--t-11); color: var(--danger); }
+  .field-hint { font-size: var(--t-11); color: var(--text-muted); }
+
+  /* badge */
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--r-pill); font-family: var(--font-mono); font-size: var(--t-10); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; border: 1px solid; }
+  .badge-neutral { background: var(--surface-2); color: var(--text-secondary); border-color: var(--border); }
+  .badge-success { background: var(--success-bg); color: var(--success); border-color: oklch(64% 0.15 145 / 0.3); }
+  .badge-warning { background: var(--warning-bg); color: var(--warning); border-color: oklch(72% 0.15 70 / 0.3); }
+  .badge-danger  { background: var(--danger-bg);  color: var(--danger);  border-color: oklch(62% 0.18 25 / 0.3); }
+  .badge-info    { background: var(--info-bg);    color: var(--info);    border-color: oklch(65% 0.13 230 / 0.3); }
+
+  /* avatar */
+  .avatar { width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: var(--t-13); user-select: none; }
+  .avatar-sm { width: 24px; height: 24px; font-size: var(--t-11); }
+  .avatar-lg { width: 48px; height: 48px; font-size: var(--t-16); }
+
+  /* image placeholder */
+  .img-ph {
+    border-radius: var(--r-sm);
+    background: repeating-linear-gradient(135deg, var(--surface-2) 0, var(--surface-2) 7px, var(--surface-3) 7px, var(--surface-3) 14px);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); font-family: var(--font-mono); font-size: var(--t-10);
+  }
+
+  /* skeleton */
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  .skeleton {
+    border-radius: var(--r-xs);
+    background: linear-gradient(90deg, var(--surface-2) 0%, var(--surface-3) 50%, var(--surface-2) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+  }
+
+  /* spinner */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .spinner-lg { width: 32px; height: 32px; border-width: 3px; }
+
+  /* news card */
+  .news-card { display: flex; gap: var(--s-4); padding: var(--s-5); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface-1); transition: border-color 0.12s, background 0.12s; cursor: pointer; }
+  .news-card:hover { border-color: var(--text-muted); background: var(--surface-2); }
+  .news-card .thumb { width: 96px; height: 72px; flex-shrink: 0; }
+  .news-card .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+  .news-card .title { font-size: var(--t-14); font-weight: 600; line-height: 1.4; color: var(--text-primary); }
+  .news-card .desc { font-size: var(--t-12); color: var(--text-secondary); line-height: 1.5; }
+  .news-card .meta { display: flex; gap: var(--s-3); align-items: center; font-family: var(--font-mono); font-size: var(--t-10); color: var(--text-muted); margin-top: auto; }
+
+  /* sidebar item demo */
+  .si { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-3); border-radius: var(--r-sm); font-size: var(--t-13); color: var(--text-secondary); cursor: pointer; transition: background 0.12s; }
+  .si:hover { background: var(--surface-2); color: var(--text-primary); }
+  .si.active { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+  .si-ico { width: 18px; text-align: center; flex-shrink: 0; }
+
+  /* tabs */
+  .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); }
+  .tab { padding: var(--s-3) var(--s-5); font-size: var(--t-13); color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.12s, border-color 0.12s; }
+  .tab:hover { color: var(--text-primary); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+  /* pagination */
+  .pg { display: flex; gap: var(--s-1); }
+  .pg-btn { min-width: 32px; height: 32px; padding: 0 var(--s-3); border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary); font-family: var(--font-mono); font-size: var(--t-12); cursor: pointer; }
+  .pg-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .pg-btn:hover:not(.active) { background: var(--surface-2); color: var(--text-primary); }
+
+  /* tooltip */
+  .tt-host { position: relative; display: inline-block; }
+  .tt { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--surface-3); border: 1px solid var(--border); color: var(--text-primary); padding: var(--s-2) var(--s-3); border-radius: var(--r-sm); font-size: var(--t-11); white-space: nowrap; box-shadow: var(--shadow-2); }
+
+  /* modal demo */
+  .modal-demo { position: relative; height: 240px; border-radius: var(--r-md); overflow: hidden; background: var(--bg); border: 1px solid var(--border); }
+  .modal-demo .scrim { position: absolute; inset: 0; background: var(--overlay); display: flex; align-items: center; justify-content: center; }
+  .modal-box { width: 80%; max-width: 360px; background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-3); padding: var(--s-6); }
+
+  /* state blocks */
+  .state-block { padding: var(--s-9) var(--s-6); border: 1px dashed var(--border); border-radius: var(--r-md); background: var(--surface-1); display: flex; flex-direction: column; align-items: center; gap: var(--s-3); text-align: center; }
+  .state-block .glyph { width: 56px; height: 56px; border-radius: 50%; background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-size: var(--t-22); color: var(--text-muted); }
+  .state-block h4 { font-size: var(--t-16); font-weight: 600; }
+  .state-block p { color: var(--text-secondary); font-size: var(--t-13); max-width: 360px; }
+
+  /* toasts */
+  .toast { display: flex; gap: var(--s-3); padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--surface-1); border: 1px solid var(--border); box-shadow: var(--shadow-2); min-width: 280px; align-items: flex-start; }
+  .toast .bar { width: 3px; align-self: stretch; border-radius: 2px; flex-shrink: 0; }
+  .toast .body { flex: 1; }
+  .toast .body strong { display: block; font-size: var(--t-13); font-weight: 600; margin-bottom: 2px; }
+  .toast .body span { font-size: var(--t-12); color: var(--text-secondary); }
+  .toast .close { width: 20px; height: 20px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: var(--t-14); }
+  .toast.info .bar    { background: var(--info); }
+  .toast.success .bar { background: var(--success); }
+  .toast.warning .bar { background: var(--warning); }
+  .toast.error .bar   { background: var(--danger); }
+
+  /* helpers */
+  .anchor-target { padding-top: 1px; margin-top: -1px; }
+  .label-mono { font-family: var(--font-mono); font-size: var(--t-10); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .divider { height: 1px; background: var(--border); margin: var(--s-7) 0; }
+  .copy { font-family: var(--font-mono); font-size: var(--t-11); color: var(--text-muted); }
+  .pill-soon { font-size: var(--t-9); padding: 1px 5px; border-radius: 3px; background: var(--surface-3); color: var(--text-muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* responsive */
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    .toc { position: relative; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    .main { padding: var(--s-6); }
+  }
+</style>
+</head>
+<body>
+  <div class="shell">
+
+    <!-- ── TOC ── -->
+    <aside class="toc">
+      <div class="toc-brand">
+        <div class="toc-brand-mark">NA</div>
+        <div>
+          <div class="toc-brand-title">NewsAggregator</div>
+          <div class="toc-brand-sub">Design System</div>
+        </div>
+      </div>
+
+      <h3>Foundations</h3>
+      <a href="#colors">Colors</a>
+      <a href="#categories">Category palette</a>
+      <a href="#typography">Typography</a>
+      <a href="#spacing">Spacing</a>
+      <a href="#radii">Radii</a>
+      <a href="#shadows">Shadows</a>
+      <a href="#iconography">Iconography</a>
+
+      <h3>Components</h3>
+      <a href="#buttons">Buttons</a>
+      <a href="#inputs">Inputs &amp; Field</a>
+      <a href="#badges">Badges</a>
+      <a href="#avatars">Avatars</a>
+      <a href="#cards">News card</a>
+      <a href="#sidebar">Sidebar item</a>
+      <a href="#tabs">Tabs</a>
+      <a href="#pagination">Pagination</a>
+      <a href="#tooltip">Tooltip</a>
+      <a href="#modal">Modal</a>
+
+      <h3>States</h3>
+      <a href="#loading">Loading</a>
+      <a href="#empty">Empty</a>
+      <a href="#error">Error</a>
+      <a href="#toast">Toast</a>
+
+      <div class="toc-theme" role="tablist" aria-label="Theme">
+        <button class="active" data-set-theme="dark">Dark</button>
+        <button data-set-theme="light">Light</button>
+      </div>
+    </aside>
+
+    <!-- ── Main ── -->
+    <main class="main">
+
+      <h1 class="page-title">Design System</h1>
+      <p class="page-sub">Единый источник правды для NewsAggregator: токены, типографика, компоненты и состояния. Используется как референс при разработке прототипа и реального приложения.</p>
+
+      <!-- ───── COLORS ───── -->
+      <section id="colors">
+        <h2><span class="num">01</span> Colors</h2>
+        <p class="lead">Тёмная тема — основная. Светлая поддерживается полностью. Все цвета выражены как CSS custom properties и переключаются на корне через <code>[data-theme]</code>.</p>
+
+        <h3 class="sub">Surface &amp; text</h3>
+        <div class="grid grid-4">
+          <div class="swatch"><div class="swatch-color" style="background:var(--bg)"></div><div class="swatch-meta"><span class="swatch-name">Background</span><span class="swatch-token">--bg</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:var(--surface-1)"></div><div class="swatch-meta"><span class="swatch-name">Surface 1</span><span class="swatch-token">--surface-1</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:var(--surface-2)"></div><div class="swatch-meta"><span class="swatch-name">Surface 2</span><span class="swatch-token">--surface-2</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:var(--surface-3)"></div><div class="swatch-meta"><span class="swatch-name">Surface 3</span><span class="swatch-token">--surface-3</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:var(--border)"></div><div class="swatch-meta"><span class="swatch-name">Border</span><span class="swatch-token">--border</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:var(--text-primary)"></div><div class="swatch-meta"><span class="swatch-name">Text primary</span><span class="swatch-token">--text-primary</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:var(--text-secondary)"></div><div class="swatch-meta"><span class="swatch-name">Text secondary</span><span class="swatch-token">--text-secondary</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:var(--text-muted)"></div><div class="swatch-meta"><span class="swatch-name">Text muted</span><span class="swatch-token">--text-muted</span></div></div>
+        </div>
+
+        <h3 class="sub">Accent &amp; semantic</h3>
+        <div class="grid grid-4">
+          <div class="swatch"><div class="swatch-color" style="background:var(--accent)"></div><div class="swatch-meta"><span class="swatch-name">Accent</span><span class="swatch-token">--accent</span><span class="swatch-val">3 темы: blue / purple / teal</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:var(--success)"></div><div class="swatch-meta"><span class="swatch-name">Success</span><span class="swatch-token">--success</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:var(--warning)"></div><div class="swatch-meta"><span class="swatch-name">Warning</span><span class="swatch-token">--warning</span></div></div>
+          <div class="swatch"><div class="swatch-color" style="background:var(--danger)"></div><div class="swatch-meta"><span class="swatch-name">Danger</span><span class="swatch-token">--danger</span></div></div>
+        </div>
+      </section>
+
+      <!-- ───── CATEGORIES ───── -->
+      <section id="categories">
+        <h2><span class="num">02</span> Category palette</h2>
+        <p class="lead">Каждая категория контента имеет свой hue в OKLCH — это даёт визуальный код, который ведёт пользователя по ленте, и при этом сохраняет одинаковый contrast/chroma.</p>
+        <div class="cat-row">
+          <span class="cat-chip" style="background: oklch(55% 0.14 220 / 0.12); color: oklch(68% 0.14 220); border-color: oklch(55% 0.14 220 / 0.22);"><span class="dot" style="background: oklch(68% 0.14 220)"></span>Technology · 220</span>
+          <span class="cat-chip" style="background: oklch(55% 0.14 160 / 0.12); color: oklch(68% 0.14 160); border-color: oklch(55% 0.14 160 / 0.22);"><span class="dot" style="background: oklch(68% 0.14 160)"></span>Architecture · 160</span>
+          <span class="cat-chip" style="background: oklch(55% 0.14 30 / 0.12); color: oklch(68% 0.14 30); border-color: oklch(55% 0.14 30 / 0.22);"><span class="dot" style="background: oklch(68% 0.14 30)"></span>Backend · 30</span>
+          <span class="cat-chip" style="background: oklch(55% 0.14 280 / 0.12); color: oklch(68% 0.14 280); border-color: oklch(55% 0.14 280 / 0.22);"><span class="dot" style="background: oklch(68% 0.14 280)"></span>Frontend · 280</span>
+          <span class="cat-chip" style="background: oklch(55% 0.14 200 / 0.12); color: oklch(68% 0.14 200); border-color: oklch(55% 0.14 200 / 0.22);"><span class="dot" style="background: oklch(68% 0.14 200)"></span>Database · 200</span>
+          <span class="cat-chip" style="background: oklch(55% 0.14 120 / 0.12); color: oklch(68% 0.14 120); border-color: oklch(55% 0.14 120 / 0.22);"><span class="dot" style="background: oklch(68% 0.14 120)"></span>DevOps · 120</span>
+          <span class="cat-chip" style="background: oklch(55% 0.14 10 / 0.12); color: oklch(68% 0.14 10); border-color: oklch(55% 0.14 10 / 0.22);"><span class="dot" style="background: oklch(68% 0.14 10)"></span>Real-time · 10</span>
+          <span class="cat-chip" style="background: oklch(55% 0.14 250 / 0.12); color: oklch(68% 0.14 250); border-color: oklch(55% 0.14 250 / 0.22);"><span class="dot" style="background: oklch(68% 0.14 250)"></span>State · 250</span>
+        </div>
+        <p class="copy" style="margin-top: var(--s-4);">Формула: <code>oklch(55% 0.14 H / 0.12)</code> для фона, <code>oklch(68% 0.14 H)</code> для текста и точки. Hue — единственная переменная.</p>
+      </section>
+
+      <!-- ───── TYPOGRAPHY ───── -->
+      <section id="typography">
+        <h2><span class="num">03</span> Typography</h2>
+        <p class="lead">IBM Plex Sans для интерфейса и контента. IBM Plex Mono для меток, токенов, кода и микро‑надписей.</p>
+
+        <h3 class="sub">Type scale</h3>
+        <div>
+          <div class="type-row"><span class="key">--t-48</span><span style="font-size:48px; font-weight:700; letter-spacing:-0.025em;">Display</span><span class="spec">48 / 700 / -2.5%</span></div>
+          <div class="type-row"><span class="key">--t-36</span><span style="font-size:36px; font-weight:700; letter-spacing:-0.025em;">Page title</span><span class="spec">36 / 700 / -2.5%</span></div>
+          <div class="type-row"><span class="key">--t-28</span><span style="font-size:28px; font-weight:700; letter-spacing:-0.02em;">Section heading</span><span class="spec">28 / 700 / -2%</span></div>
+          <div class="type-row"><span class="key">--t-22</span><span style="font-size:22px; font-weight:600; letter-spacing:-0.015em;">Article title</span><span class="spec">22 / 600 / -1.5%</span></div>
+          <div class="type-row"><span class="key">--t-18</span><span style="font-size:18px; font-weight:600;">Card title</span><span class="spec">18 / 600 / 0</span></div>
+          <div class="type-row"><span class="key">--t-16</span><span style="font-size:16px;">Body lead — for hero descriptions and lead paragraphs.</span><span class="spec">16 / 400 / 0</span></div>
+          <div class="type-row"><span class="key">--t-14</span><span style="font-size:14px;">Body — default text size for paragraphs and UI labels.</span><span class="spec">14 / 400 / 0</span></div>
+          <div class="type-row"><span class="key">--t-13</span><span style="font-size:13px;">UI default — buttons, list items, dense lists.</span><span class="spec">13 / 400 / 0</span></div>
+          <div class="type-row"><span class="key">--t-12</span><span style="font-size:12px; color: var(--text-secondary);">Field label / caption — secondary text.</span><span class="spec">12 / 500 / 0</span></div>
+          <div class="type-row"><span class="key">--t-11</span><span style="font-size:11px; color: var(--text-muted);">Hint / meta — tertiary.</span><span class="spec">11 / 400 / 0</span></div>
+          <div class="type-row"><span class="key">--t-10</span><span style="font-family: var(--font-mono); font-size:10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);">Eyebrow / token label · mono</span><span class="spec">10 / 500 / 8%</span></div>
+        </div>
+
+        <h3 class="sub">Font weights</h3>
+        <div class="row">
+          <div><span style="font-weight:400">Regular 400</span></div>
+          <div><span style="font-weight:500">Medium 500</span></div>
+          <div><span style="font-weight:600">Semibold 600</span></div>
+          <div><span style="font-weight:700">Bold 700</span></div>
+        </div>
+      </section>
+
+      <!-- ───── SPACING ───── -->
+      <section id="spacing">
+        <h2><span class="num">04</span> Spacing</h2>
+        <p class="lead">База 4px. Скейл с уплотнением в нижней половине — большая часть отступов в плотном UI находится в диапазоне 4–16.</p>
+        <div>
+          <div class="scale-row"><span class="key">--s-1 · 4</span><div class="scale-bar" style="width:4px"></div></div>
+          <div class="scale-row"><span class="key">--s-2 · 6</span><div class="scale-bar" style="width:6px"></div></div>
+          <div class="scale-row"><span class="key">--s-3 · 8</span><div class="scale-bar" style="width:8px"></div></div>
+          <div class="scale-row"><span class="key">--s-4 · 12</span><div class="scale-bar" style="width:12px"></div></div>
+          <div class="scale-row"><span class="key">--s-5 · 16</span><div class="scale-bar" style="width:16px"></div></div>
+          <div class="scale-row"><span class="key">--s-6 · 20</span><div class="scale-bar" style="width:20px"></div></div>
+          <div class="scale-row"><span class="key">--s-7 · 24</span><div class="scale-bar" style="width:24px"></div></div>
+          <div class="scale-row"><span class="key">--s-8 · 32</span><div class="scale-bar" style="width:32px"></div></div>
+          <div class="scale-row"><span class="key">--s-9 · 48</span><div class="scale-bar" style="width:48px"></div></div>
+          <div class="scale-row"><span class="key">--s-10 · 64</span><div class="scale-bar" style="width:64px"></div></div>
+        </div>
+      </section>
+
+      <!-- ───── RADII ───── -->
+      <section id="radii">
+        <h2><span class="num">05</span> Radii</h2>
+        <p class="lead">Радиусы согласованы с размерами компонентов: маленькие элементы — маленький радиус.</p>
+        <div class="grid grid-6">
+          <div class="radius-tile"><div class="radius-square" style="border-radius:4px"></div><span class="key">xs</span><span class="val">4px</span></div>
+          <div class="radius-tile"><div class="radius-square" style="border-radius:6px"></div><span class="key">sm</span><span class="val">6px</span></div>
+          <div class="radius-tile"><div class="radius-square" style="border-radius:8px"></div><span class="key">md</span><span class="val">8px</span></div>
+          <div class="radius-tile"><div class="radius-square" style="border-radius:10px"></div><span class="key">lg</span><span class="val">10px</span></div>
+          <div class="radius-tile"><div class="radius-square" style="border-radius:14px"></div><span class="key">xl</span><span class="val">14px</span></div>
+          <div class="radius-tile"><div class="radius-square" style="border-radius:100px"></div><span class="key">pill</span><span class="val">100px</span></div>
+        </div>
+      </section>
+
+      <!-- ───── SHADOWS ───── -->
+      <section id="shadows">
+        <h2><span class="num">06</span> Shadows</h2>
+        <p class="lead">Три уровня. Используются только для всплывающих поверхностей — карточки в ленте остаются плоскими.</p>
+        <div class="grid grid-3">
+          <div class="shadow-tile"><div class="shadow-block" style="box-shadow: var(--shadow-1);"></div><span class="key">shadow-1 · raised</span></div>
+          <div class="shadow-tile"><div class="shadow-block" style="box-shadow: var(--shadow-2);"></div><span class="key">shadow-2 · popover</span></div>
+          <div class="shadow-tile"><div class="shadow-block" style="box-shadow: var(--shadow-3);"></div><span class="key">shadow-3 · modal</span></div>
+        </div>
+      </section>
+
+      <!-- ───── ICONOGRAPHY ───── -->
+      <section id="iconography">
+        <h2><span class="num">07</span> Iconography</h2>
+        <p class="lead">Все иконки — 1.5px stroke, размеры 16 / 20 / 24. Текущие глифы (⊞ ⊕ ⊗) — временные плейсхолдеры, заменим на единый комплект (Lucide / Phosphor) при подключении реального приложения.</p>
+        <div class="card-block">
+          <div class="row" style="gap: var(--s-5);">
+            <div class="stack" style="align-items:center;"><div style="width:16px;height:16px;background:var(--text-secondary);mask:radial-gradient(circle 6px at 8px 8px, transparent 5px, #000 5px);-webkit-mask:radial-gradient(circle 6px at 8px 8px, transparent 5px, #000 5px);"></div><span class="copy">16</span></div>
+            <div class="stack" style="align-items:center;"><div style="width:20px;height:20px;background:var(--text-secondary);mask:radial-gradient(circle 8px at 10px 10px, transparent 7px, #000 7px);-webkit-mask:radial-gradient(circle 8px at 10px 10px, transparent 7px, #000 7px);"></div><span class="copy">20</span></div>
+            <div class="stack" style="align-items:center;"><div style="width:24px;height:24px;background:var(--text-secondary);mask:radial-gradient(circle 10px at 12px 12px, transparent 9px, #000 9px);-webkit-mask:radial-gradient(circle 10px at 12px 12px, transparent 9px, #000 9px);"></div><span class="copy">24</span></div>
+            <span class="copy" style="margin-left: var(--s-4);">Размеры. Реальные иконки подгрузим позже.</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <!-- ───── BUTTONS ───── -->
+      <section id="buttons">
+        <h2><span class="num">08</span> Buttons</h2>
+        <p class="lead">Четыре варианта (Primary / Secondary / Ghost / Danger), три размера (sm / md / lg) + icon‑only.</p>
+
+        <h3 class="sub">Variants</h3>
+        <div class="card-block">
+          <div class="row">
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-ghost">Ghost</button>
+            <button class="btn btn-danger">Danger</button>
+            <button class="btn btn-primary" disabled>Disabled</button>
+          </div>
+        </div>
+
+        <h3 class="sub">Sizes</h3>
+        <div class="card-block">
+          <div class="row" style="align-items: center;">
+            <button class="btn btn-primary btn-sm">Small</button>
+            <button class="btn btn-primary">Medium</button>
+            <button class="btn btn-primary btn-lg">Large</button>
+            <button class="btn btn-secondary btn-icon" aria-label="Add">+</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── INPUTS ───── -->
+      <section id="inputs">
+        <h2><span class="num">09</span> Inputs &amp; Field</h2>
+        <p class="lead"><code>Field</code> — это обёртка с лейблом, хинтом и состоянием ошибки. Все инпуты используют общий стиль и focus‑ring.</p>
+        <div class="card-block">
+          <div class="grid grid-2" style="gap: var(--s-5);">
+            <div class="field">
+              <span class="field-label">Email</span>
+              <input class="input" type="email" placeholder="you@company.com">
+              <span class="field-hint">Используется для входа</span>
+            </div>
+            <div class="field">
+              <span class="field-label">Password</span>
+              <input class="input" type="password" value="••••••••">
+            </div>
+            <div class="field">
+              <span class="field-label">Source URL</span>
+              <input class="input input-error" value="not-a-valid-url">
+              <span class="field-error">Введите корректный URL (https://…)</span>
+            </div>
+            <div class="field">
+              <span class="field-label">Category</span>
+              <select class="select"><option>Technology</option><option>Backend</option></select>
+            </div>
+            <div class="field" style="grid-column: span 2;">
+              <span class="field-label">Comment</span>
+              <textarea class="textarea" rows="3" placeholder="Поделитесь мнением…"></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── BADGES ───── -->
+      <section id="badges">
+        <h2><span class="num">10</span> Badges</h2>
+        <p class="lead">Используются для категорий, статусов источников и системных меток.</p>
+        <div class="card-block">
+          <div class="row">
+            <span class="badge badge-neutral">Neutral</span>
+            <span class="badge badge-info">Info</span>
+            <span class="badge badge-success">Success · 98%</span>
+            <span class="badge badge-warning">Warning · 4.1s</span>
+            <span class="badge badge-danger">Failed</span>
+            <span class="pill-soon">Soon</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── AVATARS ───── -->
+      <section id="avatars">
+        <h2><span class="num">11</span> Avatars</h2>
+        <p class="lead">Инициалы + детерминированный hue по имени. Размеры: sm 24 / md 36 / lg 48.</p>
+        <div class="card-block">
+          <div class="row">
+            <span class="avatar avatar-sm" style="background: oklch(50% 0.14 200)">AD</span>
+            <span class="avatar" style="background: oklch(50% 0.14 280)">TF</span>
+            <span class="avatar" style="background: oklch(50% 0.14 30)">NK</span>
+            <span class="avatar" style="background: oklch(50% 0.14 140)">BD</span>
+            <span class="avatar avatar-lg" style="background: oklch(50% 0.14 350)">MR</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── NEWS CARD ───── -->
+      <section id="cards">
+        <h2><span class="num">12</span> News card</h2>
+        <p class="lead">Основной элемент ленты. Состоит из миниатюры, заголовка, описания, мета‑строки и категории.</p>
+        <div class="stack">
+          <div class="news-card">
+            <div class="img-ph thumb">image</div>
+            <div class="body">
+              <div class="row" style="gap: var(--s-3);">
+                <span class="cat-chip" style="background: oklch(55% 0.14 220 / 0.12); color: oklch(68% 0.14 220); border-color: oklch(55% 0.14 220 / 0.22);">Technology</span>
+                <span class="copy">Angular Blog · 4 min read</span>
+              </div>
+              <div class="title">Angular 21 Signals: Complete Migration Guide for Large Codebases</div>
+              <div class="desc">A comprehensive guide to migrating existing Angular applications to use the new Signals API, covering common patterns and performance considerations.</div>
+              <div class="meta">
+                <span>▲ 142</span>
+                <span>▼ 8</span>
+                <span>2h ago</span>
+              </div>
+            </div>
+          </div>
+          <div class="news-card">
+            <div class="img-ph thumb">image</div>
+            <div class="body">
+              <div class="row" style="gap: var(--s-3);">
+                <span class="cat-chip" style="background: oklch(55% 0.14 200 / 0.12); color: oklch(68% 0.14 200); border-color: oklch(55% 0.14 200 / 0.22);">Database</span>
+                <span class="copy">Postgres Weekly · 6 min read</span>
+              </div>
+              <div class="title">PostgreSQL 17: JSON Path Queries and Parallel Vacuuming Deep Dive</div>
+              <div class="desc">PostgreSQL 17 introduces powerful new features for JSON handling and database maintenance. Everything you need to know.</div>
+              <div class="meta">
+                <span>▲ 56</span>
+                <span>▼ 3</span>
+                <span>5h ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── SIDEBAR ITEM ───── -->
+      <section id="sidebar">
+        <h2><span class="num">13</span> Sidebar item</h2>
+        <p class="lead">Состояния: default, hover, active, disabled (coming soon).</p>
+        <div class="card-block" style="max-width: 280px;">
+          <div class="stack" style="gap: 2px;">
+            <div class="si active"><span class="si-ico">⊞</span><span>Feed</span></div>
+            <div class="si"><span class="si-ico">★</span><span>Saved</span></div>
+            <div class="si" style="cursor:default; color: var(--text-muted);"><span class="si-ico">⊕</span><span style="flex:1;">Collections</span><span class="pill-soon">Soon</span></div>
+            <div class="si"><span class="si-ico">⊗</span><span>Admin</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── TABS ───── -->
+      <section id="tabs">
+        <h2><span class="num">14</span> Tabs</h2>
+        <p class="lead">Используются в админке (Sources / Statistics) и в Settings.</p>
+        <div class="card-block">
+          <div class="tabs">
+            <div class="tab active">Sources</div>
+            <div class="tab">Statistics</div>
+            <div class="tab">Crawl log</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── PAGINATION ───── -->
+      <section id="pagination">
+        <h2><span class="num">15</span> Pagination</h2>
+        <div class="card-block">
+          <div class="pg">
+            <button class="pg-btn">‹</button>
+            <button class="pg-btn">1</button>
+            <button class="pg-btn active">2</button>
+            <button class="pg-btn">3</button>
+            <button class="pg-btn">4</button>
+            <button class="pg-btn" disabled>…</button>
+            <button class="pg-btn">12</button>
+            <button class="pg-btn">›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── TOOLTIP ───── -->
+      <section id="tooltip">
+        <h2><span class="num">16</span> Tooltip</h2>
+        <div class="card-block">
+          <div class="row" style="padding-top: var(--s-7);">
+            <div class="tt-host">
+              <span class="tt">Save for later</span>
+              <button class="btn btn-secondary btn-icon">★</button>
+            </div>
+            <div class="tt-host">
+              <span class="tt">Open original source</span>
+              <button class="btn btn-secondary btn-icon">↗</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── MODAL ───── -->
+      <section id="modal">
+        <h2><span class="num">17</span> Modal</h2>
+        <p class="lead">Подложка: <code>--overlay</code>, тень <code>--shadow-3</code>, радиус <code>--r-lg</code>.</p>
+        <div class="modal-demo">
+          <div class="scrim">
+            <div class="modal-box">
+              <h3 class="sub" style="margin-top:0;">Delete source?</h3>
+              <p style="color: var(--text-secondary); font-size: var(--t-13); margin-bottom: var(--s-5);">«Angular Blog» будет удалён. История уже распарсенных статей сохранится.</p>
+              <div class="row" style="justify-content: flex-end;">
+                <button class="btn btn-ghost">Cancel</button>
+                <button class="btn btn-danger">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <!-- ───── LOADING ───── -->
+      <section id="loading">
+        <h2><span class="num">18</span> Loading</h2>
+        <p class="lead">Два паттерна: <strong>skeleton</strong> для предсказуемой формы (карточки, списки) и <strong>spinner</strong> для коротких неопределённых операций.</p>
+
+        <h3 class="sub">Skeleton — news card</h3>
+        <div class="stack">
+          <div class="news-card" style="cursor: default;">
+            <div class="skeleton thumb" style="width:96px; height:72px;"></div>
+            <div class="body">
+              <div class="row" style="gap: var(--s-3);">
+                <div class="skeleton" style="width: 64px; height: 16px; border-radius: var(--r-pill);"></div>
+                <div class="skeleton" style="width: 140px; height: 10px;"></div>
+              </div>
+              <div class="skeleton" style="width: 90%; height: 16px;"></div>
+              <div class="skeleton" style="width: 70%; height: 16px;"></div>
+              <div class="skeleton" style="width: 100%; height: 10px; margin-top: var(--s-1);"></div>
+              <div class="skeleton" style="width: 60%; height: 10px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="sub">Spinner</h3>
+        <div class="card-block">
+          <div class="row">
+            <div class="spinner"></div>
+            <div class="spinner spinner-lg"></div>
+            <button class="btn btn-primary"><div class="spinner" style="width:14px; height:14px; border-width:2px; border-color: rgba(255,255,255,0.4); border-top-color: #fff;"></div>Loading…</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── EMPTY ───── -->
+      <section id="empty">
+        <h2><span class="num">19</span> Empty</h2>
+        <p class="lead">Заголовок + одно предложение объяснения + одно primary‑действие. Никаких лишних иллюстраций.</p>
+        <div class="grid grid-2">
+          <div class="state-block">
+            <div class="glyph">⊞</div>
+            <h4>No articles match these filters</h4>
+            <p>Попробуйте сбросить фильтры или выбрать другую категорию.</p>
+            <button class="btn btn-secondary btn-sm">Reset filters</button>
+          </div>
+          <div class="state-block">
+            <div class="glyph">★</div>
+            <h4>You haven't saved anything yet</h4>
+            <p>Нажмите на звезду в карточке статьи, чтобы сохранить её для чтения позже.</p>
+            <button class="btn btn-secondary btn-sm">Browse feed</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── ERROR ───── -->
+      <section id="error">
+        <h2><span class="num">20</span> Error</h2>
+        <p class="lead">Два уровня: блокирующая ошибка экрана и неблокирующий inline‑баннер.</p>
+
+        <h3 class="sub">Screen-level</h3>
+        <div class="state-block" style="border-style: solid; border-color: oklch(62% 0.18 25 / 0.3); background: oklch(62% 0.18 25 / 0.04);">
+          <div class="glyph" style="background: var(--danger-bg); color: var(--danger);">!</div>
+          <h4>Couldn't load the feed</h4>
+          <p>Не удалось получить данные с сервера. Проверьте соединение и попробуйте снова.</p>
+          <div class="row">
+            <button class="btn btn-primary btn-sm">Retry</button>
+            <button class="btn btn-ghost btn-sm">Report</button>
+          </div>
+        </div>
+
+        <h3 class="sub">Inline banner</h3>
+        <div class="row" style="padding: var(--s-3) var(--s-4); border: 1px solid oklch(62% 0.18 25 / 0.3); background: var(--danger-bg); border-radius: var(--r-md); gap: var(--s-3);">
+          <div style="width: 18px; height: 18px; border-radius: 50%; background: var(--danger); color: #fff; display: flex; align-items: center; justify-content: center; font-size: var(--t-11); font-weight: 700; flex-shrink: 0;">!</div>
+          <div style="flex:1;">
+            <strong style="font-size: var(--t-13); display: block;">Source crawl failed</strong>
+            <span style="font-size: var(--t-12); color: var(--text-secondary);">CSS-Tricks responded with 503. Next retry in 4m.</span>
+          </div>
+          <button class="btn btn-ghost btn-sm">Retry now</button>
+        </div>
+
+        <h3 class="sub">Offline banner</h3>
+        <div class="row" style="padding: var(--s-2) var(--s-4); background: var(--surface-3); border-bottom: 1px solid var(--border); border-radius: var(--r-sm); gap: var(--s-3); font-size: var(--t-12); color: var(--text-secondary);">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--warning);"></span>
+          You're offline. Showing cached articles.
+        </div>
+      </section>
+
+      <!-- ───── TOAST ───── -->
+      <section id="toast">
+        <h2><span class="num">21</span> Toast / snackbar</h2>
+        <p class="lead">Стек до 3 одновременно, автоскрытие 4 секунды, hover ставит на паузу. Используем для подтверждений действий и неблокирующих ошибок.</p>
+        <div class="stack" style="max-width: 380px;">
+          <div class="toast info">
+            <div class="bar"></div>
+            <div class="body"><strong>Heads up</strong><span>Feed refreshed — 4 new articles.</span></div>
+            <button class="close">×</button>
+          </div>
+          <div class="toast success">
+            <div class="bar"></div>
+            <div class="body"><strong>Saved</strong><span>Article added to your saved list.</span></div>
+            <button class="close">×</button>
+          </div>
+          <div class="toast warning">
+            <div class="bar"></div>
+            <div class="body"><strong>Slow source</strong><span>CSS-Tricks crawl took 4.1s — review settings.</span></div>
+            <button class="close">×</button>
+          </div>
+          <div class="toast error">
+            <div class="bar"></div>
+            <div class="body"><strong>Failed to delete source</strong><span>Network error. Try again.</span></div>
+            <button class="close">×</button>
+          </div>
+        </div>
+        <p class="copy" style="margin-top: var(--s-4);">API: <code>window.toast.success("Article saved")</code> — реализуем в следующем шаге.</p>
+      </section>
+
+      <div class="divider"></div>
+
+      <p class="copy" style="margin-bottom: var(--s-9);">
+        v0.1 · Базовая дизайн‑система. Все токены доступны через CSS‑переменные. Следующий шаг — перевести инлайн‑стили в <code>na-app.jsx</code> / <code>na-screens.jsx</code> на эти токены.
+      </p>
+
+    </main>
+  </div>
+
+  <script>
+    // Theme toggle
+    document.querySelectorAll('[data-set-theme]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const t = btn.dataset.setTheme;
+        document.documentElement.setAttribute('data-theme', t);
+        document.querySelectorAll('[data-set-theme]').forEach(b => b.classList.toggle('active', b.dataset.setTheme === t));
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,3 +1,5 @@
+using Common.Models;
+
 namespace CrawlerService.Models.Models;
 
 public class ParsedNews
@@ -13,5 +15,6 @@ public class ParsedNews
     public string PublisherGuid { get; set; }
     public string GlobalUniqueId { get; set; }
     public string Guid { get; set; }
-    public string[] Tags { get; set; } = Array.Empty<string>();
+
+    public NewsCategory Category { get; set; } = NewsCategory.Uncategorized;
 }

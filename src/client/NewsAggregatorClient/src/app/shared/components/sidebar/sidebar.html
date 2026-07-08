@@ -28,7 +28,12 @@
           [attr.title]="collapsed() ? item.label : null"
           [routerLink]="item.comingSoon ? null : (item.children ? item.children[0].route : item.route)"
         >
-          <span class="icon">{{ item.icon }}</span>
+          <span class="icon">
+            @switch (item.iconKind) {
+              @case ('flame') { <app-flame-icon [size]="16" /> }
+              @default { {{ item.icon }} }
+            }
+          </span>
           @if (!collapsed()) {
             <span class="label">{{ item.label }}</span>
             @if (item.comingSoon) {

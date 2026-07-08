@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\common\Common\Common.csproj" />
+      <ProjectReference Include="..\NotificationService.DAL.Abstractions\NotificationService.DAL.Abstractions.csproj" />
       <ProjectReference Include="..\NotificationService.Models\NotificationService.Models.csproj" />
     </ItemGroup>
 

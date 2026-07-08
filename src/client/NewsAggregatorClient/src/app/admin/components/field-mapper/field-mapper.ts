@@ -25,7 +25,7 @@ export class FieldMapper {
   protected readonly active = signal<FieldKey | null>(null);
 
   protected readonly sample = computed<SamplePath[]>(() =>
-    this.type() === 'HTML' ? HTML_SAMPLE : RSS_SAMPLE,
+    this.type() === 'Html' ? HTML_SAMPLE : RSS_SAMPLE,
   );
 
   protected readonly autoMap = computed(() => AUTO_MAPPINGS[this.type()]);

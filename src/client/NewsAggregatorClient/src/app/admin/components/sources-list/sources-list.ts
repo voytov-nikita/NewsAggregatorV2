@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { MOCK_SOURCES } from '../../data/admin-mock';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef } from '@angular/core';
+import { ToastService } from '@shared/services';
 import { Source } from '../../models/source.model';
+import { SourcesService } from '../../services/sources.service';
 
 const PAGE_SIZE = 6;
 
@@ -12,7 +15,13 @@ const PAGE_SIZE = 6;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SourcesList {
-  protected readonly sources = signal<Source[]>(MOCK_SOURCES);
+  private readonly toast = inject(ToastService);
+  private readonly sourcesService = inject(SourcesService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  protected readonly sources = signal<Source[]>([]);
+  protected readonly loading = signal<boolean>(true);
+  protected readonly loadError = signal<string | null>(null);
   protected readonly query = signal('');
   protected readonly currentPage = signal(1);
   protected readonly take = signal(PAGE_SIZE);
@@ -34,6 +43,28 @@ export class SourcesList {
     const start = (this.currentPage() - 1) * this.take();
     return this.filtered().slice(start, start + this.take());
   });
+
+  constructor() {
+    this.reload();
+  }
+
+  protected reload(): void {
+    this.loading.set(true);
+    this.loadError.set(null);
+    this.sourcesService
+      .getAll()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (list) => {
+          this.sources.set(list ?? []);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.loadError.set(err?.message ?? 'Failed to load sources');
+          this.loading.set(false);
+        },
+      });
+  }
 
   protected onSearch(value: string): void {
     this.query.set(value);
@@ -57,31 +88,49 @@ export class SourcesList {
     this.wizardOpen.set(false);
   }
 
-  protected onCreate(payload: Omit<Source, 'id' | 'articles' | 'success' | 'avgDelay' | 'lastCrawl'>): void {
-    const id = Math.max(0, ...this.sources().map((s) => s.id)) + 1;
-    const next: Source = {
-      ...payload,
-      id,
-      articles: 0,
-      success: 100,
-      avgDelay: 0,
-      lastCrawl: 'just now',
-    };
-    this.sources.update((arr) => [next, ...arr]);
-    this.wizardOpen.set(false);
+  protected onCreate(payload: Source): void {
+    this.sourcesService
+      .create(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (created) => {
+          this.sources.update((arr) => [created, ...arr]);
+          this.wizardOpen.set(false);
+          this.toast.success(`Source "${created.name}" added`);
+        },
+        error: (err) => {
+          this.toast.error(err?.error ?? `Failed to add source`);
+        },
+      });
   }
 
   protected onToggleActive(s: Source): void {
-    this.sources.update((arr) =>
-      arr.map((x) => (x.id === s.id ? { ...x, active: !x.active } : x)),
-    );
+    this.sourcesService
+      .toggle(s.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (updated) => {
+          this.sources.update((arr) => arr.map((x) => (x.id === updated.id ? updated : x)));
+          this.toast.info(updated.enabled ? `Enabled "${updated.name}"` : `Paused "${updated.name}"`);
+        },
+        error: () => this.toast.error(`Failed to toggle "${s.name}"`),
+      });
   }
 
   protected onRemove(s: Source): void {
-    this.sources.update((arr) => arr.filter((x) => x.id !== s.id));
+    this.sourcesService
+      .delete(s.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.sources.update((arr) => arr.filter((x) => x.id !== s.id));
+          this.toast.success(`Source "${s.name}" removed`);
+        },
+        error: () => this.toast.error(`Failed to remove "${s.name}"`),
+      });
   }
 
   protected onEdit(_: Source): void {
-    // Placeholder: opens wizard pre-filled in future iteration.
+    // TODO: open wizard pre-filled for edit.
   }
 }

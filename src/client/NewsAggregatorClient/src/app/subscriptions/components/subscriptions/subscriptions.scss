@@ -1,0 +1,122 @@
+@use '../../../../assets/scss/general/mixins' as *;
+
+:host {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.subs-page {
+  flex: 1;
+  min-height: 0;
+}
+
+.body {
+  padding: var(--s-6) 30px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.page-sub {
+  font-size: var(--t-13);
+  color: var(--text-muted);
+  @include mono;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  padding: var(--s-3) var(--s-5);
+  font-size: var(--t-13);
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: all 0.12s ease;
+
+  &:hover { color: var(--text-primary); }
+
+  &.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+  }
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface-1);
+
+  &:hover { background: var(--surface-2); }
+}
+
+.row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.row-label {
+  font-size: var(--t-14);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.row-meta {
+  font-size: var(--t-11);
+  color: var(--text-muted);
+  @include mono;
+}
+
+.follow-btn {
+  min-width: 96px;
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: var(--t-12);
+  font-weight: 500;
+  transition: all 0.12s ease;
+
+  &.following {
+    background: transparent;
+    color: var(--accent);
+  }
+
+  &.following:hover {
+    background: var(--danger-bg);
+    border-color: var(--danger);
+    color: var(--danger);
+
+    // Swap label on hover for visual cue of unfollow action.
+    &::after { content: ''; }
+  }
+}

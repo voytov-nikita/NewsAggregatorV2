@@ -1,3 +1,4 @@
+using Common.Models;
 using CrawlerService.Models.Enums;
 
 namespace CrawlerService.Models.Models;
@@ -22,6 +23,24 @@ public class NewsSource
 
     public bool Enabled { get; set; } = true;
 
+    /// <summary>
+    /// Category assigned to every article from this source. Set by the admin
+    /// when configuring the source; defaults to <see cref="NewsCategory.Uncategorized"/>.
+    /// </summary>
+    public NewsCategory Category { get; set; } = NewsCategory.Uncategorized;
+
     public FeedFieldMapping? FeedMapping { get; set; }
     public HtmlSelectors? HtmlSelectors { get; set; }
+
+    // ---- Runtime crawl metrics (updated by NewsDownloaderService / NewsService) ----
+
+    public DateTime? LastCrawlAt { get; set; }
+    public bool? LastCrawlSuccess { get; set; }
+    public int LastCrawlDurationMs { get; set; }
+    public int LastParsedCount { get; set; }
+
+    /// <summary>Cumulative count of unique inserts credited to this source.</summary>
+    public int ArticlesCount { get; set; }
+
+    public int ConsecutiveFailures { get; set; }
 }

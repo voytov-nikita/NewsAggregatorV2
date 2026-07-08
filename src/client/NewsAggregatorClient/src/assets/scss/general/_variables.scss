@@ -1,15 +1,71 @@
 // Typography
-$font-sans: 'IBM Plex Sans', sans-serif;
-$font-mono: 'IBM Plex Mono', monospace;
-
-// Spacing
-$content-padding: 36px;
+$font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+$font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
 // Transitions
 $transition-fast: all 0.12s ease;
 $transition-medium: all 0.18s ease;
 
-// Theme tokens — dark (default) / light via [data-theme='light']
+// Theme-agnostic tokens — type scale, spacing, radii, accents, semantic colors.
+// Source: prototype/Design System.html
+:root {
+  // Type scale (px)
+  --t-9: 9px;
+  --t-10: 10px;
+  --t-11: 11px;
+  --t-12: 12px;
+  --t-13: 13px;
+  --t-14: 14px;
+  --t-16: 16px;
+  --t-18: 18px;
+  --t-22: 22px;
+  --t-28: 28px;
+  --t-36: 36px;
+  --t-48: 48px;
+
+  // Spacing scale (px)
+  --s-1: 4px;
+  --s-2: 6px;
+  --s-3: 8px;
+  --s-4: 12px;
+  --s-5: 16px;
+  --s-6: 20px;
+  --s-7: 24px;
+  --s-8: 32px;
+  --s-9: 48px;
+  --s-10: 64px;
+
+  // Radii
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 10px;
+  --r-xl: 14px;
+  --r-pill: 100px;
+
+  // Fonts
+  --font-sans: #{$font-sans};
+  --font-mono: #{$font-mono};
+
+  // Accent. Tweaks-style palette from prototype/na-app.jsx ACCENTS:
+  //   blue   #3b82f6 / rgba(59,130,246,0.10)
+  //   purple #8b5cf6 / rgba(139,92,246,0.10)  ← active
+  //   teal   #14b8a6 / rgba(20,184,166,0.10)
+  --accent: #8b5cf6;
+  --accent-bg: rgba(139, 92, 246, 0.10);
+
+  // Semantic colors — shared across themes
+  --success:    oklch(64% 0.15 145);
+  --success-bg: oklch(64% 0.15 145 / 0.12);
+  --warning:    oklch(72% 0.15 70);
+  --warning-bg: oklch(72% 0.15 70 / 0.12);
+  --danger:     oklch(62% 0.18 25);
+  --danger-bg:  oklch(62% 0.18 25 / 0.12);
+  --info:       oklch(65% 0.13 230);
+  --info-bg:    oklch(65% 0.13 230 / 0.12);
+}
+
+// Dark theme (default)
 :root,
 :root[data-theme='dark'] {
   --bg: #080d16;
@@ -20,12 +76,16 @@ $transition-medium: all 0.18s ease;
   --text-primary: #dce8f8;
   --text-secondary: #7a90b0;
   --text-muted: #4a5f78;
-  --accent: #3b82f6;
-  --accent-bg: rgba(59, 130, 246, 0.1);
   --input-bg: #1e2d44;
-  --shadow-modal: 0 12px 48px rgba(0, 0, 0, 0.4);
+  --overlay: rgba(8, 13, 22, 0.7);
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.32);
+  --shadow-3: 0 8px 32px rgba(0, 0, 0, 0.40);
+  --shadow-modal: var(--shadow-3);
 }
 
+// Light theme
 :root[data-theme='light'] {
   --bg: #f0f4f9;
   --surface-1: #ffffff;
@@ -35,14 +95,16 @@ $transition-medium: all 0.18s ease;
   --text-primary: #0e1625;
   --text-secondary: #4a6080;
   --text-muted: #94a8c0;
-  --accent: #3b82f6;
-  --accent-bg: rgba(59, 130, 246, 0.1);
   --input-bg: #ffffff;
-  --shadow-modal: 0 12px 48px rgba(0, 0, 0, 0.18);
+  --overlay: rgba(14, 22, 37, 0.45);
+
+  --shadow-1: 0 1px 2px rgba(14, 22, 37, 0.06);
+  --shadow-2: 0 4px 12px rgba(14, 22, 37, 0.08);
+  --shadow-3: 0 8px 32px rgba(14, 22, 37, 0.12);
+  --shadow-modal: var(--shadow-3);
 }
 
-// Legacy CSS var aliases — kept until Phase 2 redesigns existing components.
-// Map old newspaper tokens onto new theme tokens so the build doesn't break.
+// Legacy aliases — kept until all components migrate to the new tokens.
 :root {
   --paper: var(--bg);
   --ink: var(--text-primary);
@@ -51,5 +113,5 @@ $transition-medium: all 0.18s ease;
   --highlight: var(--accent-bg);
   --green: #4ade80;
   --red: #ef4444;
-  --success: #4ade80;
+  --success: oklch(64% 0.15 145); // already set above; kept for legacy --success usage
 }

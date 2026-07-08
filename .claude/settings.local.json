@@ -16,7 +16,16 @@
       "Read(//c/Users/voyto/**)",
       "Bash(dotnet test:*)",
       "Bash(dotnet sln *)",
-      "Bash(rm *)"
+      "Bash(rm *)",
+      "Read(//p/MyProjects/NewsAggregatorV2/**)",
+      "Edit(//p/MyProjects/NewsAggregatorV2/**)",
+      "Write(//p/MyProjects/NewsAggregatorV2/**)",
+      "Read(P:/MyProjects/NewsAggregatorV2/**)",
+      "Edit(P:/MyProjects/NewsAggregatorV2/**)",
+      "Write(P:/MyProjects/NewsAggregatorV2/**)"
+    ],
+    "additionalDirectories": [
+      "P:/MyProjects/NewsAggregatorV2"
     ]
   }
 }

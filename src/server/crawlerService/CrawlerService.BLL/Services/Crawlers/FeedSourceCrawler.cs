@@ -70,11 +70,6 @@ internal class FeedSourceCrawler : ISourceCrawler
             ?.Uri?.ToString() ?? item.Links.FirstOrDefault()?.Uri?.ToString() ?? string.Empty;
         string? image = item.Links.FirstOrDefault(l => l.RelationshipType == "enclosure")?.Uri?.ToString();
 
-        string[] tags = item.Categories
-            .Select(c => c.Name)
-            .Where(n => !string.IsNullOrWhiteSpace(n))
-            .ToArray();
-
         return new ParsedNews
         {
             Title = item.Title?.Text ?? string.Empty,
@@ -88,7 +83,7 @@ internal class FeedSourceCrawler : ISourceCrawler
             PublisherGuid = guid,
             Guid = guid,
             GlobalUniqueId = source.Id + guid,
-            Tags = tags,
+            Category = source.Category,
         };
     }
 
@@ -116,7 +111,6 @@ internal class FeedSourceCrawler : ISourceCrawler
             string? description = XmlFieldExtractor.ExtractSingle(item, mapping.Description);
             string? image = XmlFieldExtractor.ExtractSingle(item, mapping.Image);
             string? publishRaw = XmlFieldExtractor.ExtractSingle(item, mapping.PublishDate);
-            string[] tags = XmlFieldExtractor.ExtractMany(item, mapping.Tags);
 
             DateTime publishDate = DateTime.TryParse(publishRaw, out DateTime parsed)
                 ? parsed.ToUniversalTime()
@@ -135,7 +129,7 @@ internal class FeedSourceCrawler : ISourceCrawler
                 PublisherGuid = guid,
                 Guid = guid,
                 GlobalUniqueId = source.Id + guid,
-                Tags = tags,
+                Category = source.Category,
             });
         }
 

@@ -7,8 +7,7 @@ import { Router } from '@angular/router';
 export class NavigationService {
   private readonly router = inject(Router);
 
-  private readonly feedRoute: string[] = ['/feed'];
-  private readonly articleRoute: string[] = ['/article'];
+  private readonly feedRoute: string[] = ['/allnews'];
   private readonly settingsRoute: string[] = ['/settings'];
   private readonly adminSourcesRoute: string[] = ['/admin', 'sources'];
   private readonly adminStatsRoute: string[] = ['/admin', 'stats'];
@@ -19,14 +18,6 @@ export class NavigationService {
 
   public toFeed(): void {
     this.router.navigate(this.feedRoute);
-  }
-
-  public getArticleRoute(id: string | number): string[] {
-    return [...this.articleRoute, id.toString()];
-  }
-
-  public toArticle(id: string | number): void {
-    this.router.navigate(this.getArticleRoute(id));
   }
 
   public getSettingsRoute(section?: string): string[] {
@@ -49,17 +40,21 @@ export class NavigationService {
     this.router.navigate(this.feedRoute);
   }
 
-  // Legacy aliases — kept until callers migrate.
+  /**
+   * Opens the article's source URL in a new tab. The internal /article/:id
+   * discussion screen was removed — the parser doesn't reliably extract the
+   * article body, so we send the reader to the original source instead.
+   */
+  public openOriginal(article: { originalLink: string }): void {
+    if (!article?.originalLink) return;
+    window.open(article.originalLink, '_blank', 'noopener,noreferrer');
+  }
+
+  // Legacy alias — kept until callers migrate.
   public getNewsListRoute(): string[] {
     return this.feedRoute;
   }
   public toNewsListRoute(): void {
     this.toFeed();
-  }
-  public getNewsDetailRoute(id: string | number): string[] {
-    return this.getArticleRoute(id);
-  }
-  public toNewsDetailRoute(id: string | number): void {
-    this.toArticle(id);
   }
 }

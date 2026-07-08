@@ -1,0 +1,118 @@
+<app-page-shell class="trending-page">
+  <app-page-header pageHeader title="Trending now">
+    <app-flame-icon pageHeaderLeading class="flame" [size]="22" />
+    <span pageHeaderMeta class="header-sub">· most-viewed articles</span>
+    <div pageHeaderActions class="range-seg">
+      @for (r of ranges; track r.id) {
+        <button
+          type="button"
+          class="seg-btn"
+          [class.active]="range() === r.id"
+          (click)="setRange(r.id)">
+          {{ r.label }}
+        </button>
+      }
+    </div>
+  </app-page-header>
+
+  <div class="body">
+    @if (error(); as e) {
+      <app-error-banner
+        title="Couldn't load trending"
+        [description]="e"
+        [showRetry]="true"
+        (retry)="load()" />
+    }
+
+    @if (isLoading()) {
+      <div class="hero-grid">
+        @for (_ of [0, 1, 2, 3]; track $index) {
+          <article class="hero-card skeleton">
+            <app-skeleton width="100%" height="192" />
+            <div class="hero-body">
+              <app-skeleton width="40%" height="14" />
+              <app-skeleton width="90%" height="20" />
+            </div>
+          </article>
+        }
+      </div>
+    } @else if (!error() && entries().length === 0) {
+      <app-empty-state
+        glyph="🔥"
+        title="Nothing trending right now"
+        description="Check back in a few minutes." />
+    } @else if (!error()) {
+      <!-- Top 4 hero grid -->
+      <div class="hero-grid">
+        @for (entry of heroEntries(); track entry.article.id) {
+          <article class="hero-card" (click)="open(entry.article)">
+            <div class="hero-media">
+              <app-image-placeholder [width]="'100%'" [height]="192" label="hero image" />
+              @if (entry.spiking) {
+                <span class="spiking-badge"><app-flame-icon [size]="12" /> Spiking</span>
+              }
+              <button
+                type="button"
+                class="save-btn"
+                [class.saved]="isSaved(entry.article.id)"
+                [title]="isSaved(entry.article.id) ? 'Saved' : 'Save'"
+                (click)="toggleSaved(entry.article, $event)">
+                {{ isSaved(entry.article.id) ? '★' : '☆' }}
+              </button>
+            </div>
+            <div class="hero-body">
+              <div class="meta-top">
+                <app-source-badge [category]="categoryFor(entry.article)" />
+                <span class="publisher">{{ entry.article.publisher }}</span>
+              </div>
+              <h3 class="title">{{ entry.article.title }}</h3>
+              <div class="card-foot">
+                <span class="metric"><span class="eye">👁</span>{{ formatCount(entry.views) }} <span class="unit">views{{ rangeUnit() }}</span></span>
+                <span class="sep">·</span>
+                <span class="live"><span class="dot"></span>{{ entry.readers }} reading</span>
+                <span class="time">{{ formatRelativeTime(entry.article.publishDate) }}</span>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+
+      <!-- Rest — compact horizontal cards -->
+      @if (compactEntries().length > 0) {
+        <div class="compact-list">
+          @for (entry of compactEntries(); track entry.article.id) {
+            <article class="compact-card" (click)="open(entry.article)">
+              <div class="compact-media">
+                <app-image-placeholder [width]="'192px'" [height]="138" label="image" />
+                @if (entry.spiking) {
+                  <span class="spiking-badge"><app-flame-icon [size]="11" /> Spiking</span>
+                }
+                <button
+                  type="button"
+                  class="save-btn"
+                  [class.saved]="isSaved(entry.article.id)"
+                  [title]="isSaved(entry.article.id) ? 'Saved' : 'Save'"
+                  (click)="toggleSaved(entry.article, $event)">
+                  {{ isSaved(entry.article.id) ? '★' : '☆' }}
+                </button>
+              </div>
+              <div class="compact-body">
+                <div class="meta-top">
+                  <app-source-badge [category]="categoryFor(entry.article)" />
+                  <span class="publisher">{{ entry.article.publisher }}</span>
+                </div>
+                <h3 class="title compact-title">{{ entry.article.title }}</h3>
+                <div class="card-foot">
+                  <span class="metric"><span class="eye">👁</span>{{ formatCount(entry.views) }} <span class="unit">views{{ rangeUnit() }}</span></span>
+                  <span class="sep">·</span>
+                  <span class="live"><span class="dot"></span>{{ entry.readers }} reading</span>
+                  <span class="time">{{ formatRelativeTime(entry.article.publishDate) }}</span>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    }
+  </div>
+</app-page-shell>

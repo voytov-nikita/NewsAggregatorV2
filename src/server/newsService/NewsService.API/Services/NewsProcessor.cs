@@ -54,6 +54,8 @@ public class NewsProcessor : BackgroundService
             Publisher = _.PublisherName,
             PublisherLink = _.PublisherLink,
             Guid = _.Guid,
+            Category = _.Category,
+            ReadTimeMinutes = EstimateReadTimeMinutes(_.Description),
         }).ToArray();
 
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
@@ -65,5 +67,12 @@ public class NewsProcessor : BackgroundService
         webhookDispatcher.Dispatch("news.created", createModels);
 
         _logger.LogInformation("Saved {Count} news items and dispatched webhook", createModels.Length);
+    }
+
+    /// <summary>Estimates reading time at ~200 wpm, floor 3 minutes.</summary>
+    private static int EstimateReadTimeMinutes(string? description)
+    {
+        int length = description?.Length ?? 600;
+        return Math.Max(3, (int)Math.Round(length / 200.0));
     }
 }

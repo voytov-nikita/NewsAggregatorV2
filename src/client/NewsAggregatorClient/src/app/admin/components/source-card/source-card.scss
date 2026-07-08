@@ -107,6 +107,11 @@
   .warn {
     color: #f59e0b;
   }
+
+  .mono {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text-muted);
+  }
 }
 
 .src-actions {

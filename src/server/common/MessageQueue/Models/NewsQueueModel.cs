@@ -1,4 +1,6 @@
-﻿namespace MessageQueue.Models;
+using Common.Models;
+
+namespace MessageQueue.Models;
 
 public class NewsQueueModel
 {
@@ -11,4 +13,6 @@ public class NewsQueueModel
     public string PublisherLink { get; set; }
     public string PublisherGuid { get; set; }
     public string Guid { get; set; }
+
+    public NewsCategory Category { get; set; } = NewsCategory.Uncategorized;
 }

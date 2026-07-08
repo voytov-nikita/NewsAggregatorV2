@@ -2,26 +2,64 @@
 
 ## NewsService
 
-### News categories
+### ✅ News categories — DONE (single-category, enum-backed)
 
-Add category system for aggregated news — taxonomy (sport, politics, tech, etc.) and
-per-article categorization to allow filtering/grouping on the frontend.
+Implemented as a `short`-backed `NewsCategory` enum on `NewsEntity` (not a separate
+taxonomy table — chosen for simplicity given small fixed set; see chat 2026-05-16).
+`Tags string[]` (jsonb) also stored as raw values from the source. Resolver in
+`NewsService.BLL.Helpers.NewsCategoryResolver` maps incoming tags + publisher
+fallback into the canonical enum. Migration `AddCategoryAndEngagementFields`
+backfills existing rows.
 
-**Scope:**
-- `Category` table and `NewsCategories` join table (many-to-many) in NewsService
-- EF Core migration
-- Extend `news-queue` message to carry categories from CrawlerService (mapping per source)
-- `GET /api/v1/news` — filter by `categoryId`
-- Seed a default category list or derive from source tags
+**Follow-ups (out of scope for the first cut):**
+- Surface multi-category articles. Current resolver picks one; if a news item
+  legitimately belongs to two (e.g. "Frontend" + "State"), only the first wins.
+  When this becomes a real need, add a separate `NewsTags` table or M:N to a
+  `Category` table — that's the original plan in this slot.
+- Admin UI for managing the synonym map without redeploys.
 
-### News rating
+### News rating — partial (storage done, write API pending)
 
-Implement a rating system for news items (likes/dislikes, or 1-5 stars).
+`Likes` / `Dislikes` columns exist on `NewsEntity` and round-trip through the
+response model. Voting itself is **not implemented**: `POST /api/v1/news/{id}/vote`
+endpoint, anti-spam (per user/IP), and the optimistic UI update are TODO.
 
-**Considerations:**
-- Anonymous vs. authenticated voting — tied to the upcoming Authorization Service
-- Counter storage on `News` or separate `NewsRating` table
-- Anti-spam: one vote per user/IP per article
+**Blocked by:** anonymous-vs-authenticated decision — see [Authorization Service](#authorization-service).
+For an interim, a `X-Device-Id` header (UUID stored in localStorage) would let us
+ship anonymous voting before auth lands.
+
+### News list — totalCount + extended filtering (Phase B)
+
+The response is currently a bare array; the client can't render accurate pager
+state. Plan:
+- Change `GET /api/v1/news` response to `{ items: NewsResponse[], totalCount: int }`.
+- Add multi-value filters from the prototype filter rail:
+  `categories[]`, `sources[]`, `dateFrom`, `dateTo`, `readTimeMin/Max`,
+  `likesMin/Max`, `hasComments`.
+- Extend `NewsOrderField` with `MostLiked`, `MostDiscussed`, `MostViewed`
+  (the last one requires view tracking — separate task).
+
+### User follows / subscriptions
+
+Backend for the existing client-side Subscriptions screen (currently localStorage:
+`na-follows`). Decided to wait for Authorization Service rather than build an
+anonymous `X-Device-Id` table now (would require a "claim follows on login"
+migration step later — extra work for short-lived state).
+
+**When Auth lands:**
+- New `UserFollow` table (PostgreSQL): `(UserId, Kind, Key)` unique.
+  Kind ∈ {Category, Source, Author}.
+- `GET /api/v1/me/follows` → `{ categories: string[], sources: string[], authors: string[] }`
+- `POST/DELETE /api/v1/me/follows/{kind}/{key}` → 204
+- Frontend `FollowsService` swaps localStorage for HTTP, keeps the same signal API.
+- `Authors` are TBD: requires an `Author` column on `NewsEntity` first.
+
+### Saved articles
+
+Same shape as Follows — client-side only today (`na-saved` localStorage).
+Returning an empty list by design until Auth. Endpoints when ready:
+- `GET /api/v1/me/saved` → `NewsResponse[]`
+- `POST /api/v1/me/saved/{newsId}` / `DELETE` → 204
 
 ### News validation
 

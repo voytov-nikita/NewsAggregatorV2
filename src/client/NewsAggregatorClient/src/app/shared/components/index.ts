@@ -13,3 +13,6 @@ export { EmptyState } from './empty-state/empty-state';
 export { ErrorState } from './error-state/error-state';
 export { ErrorBanner } from './error-banner/error-banner';
 export { NotFound } from './not-found/not-found';
+export { PageHeader } from './page-header/page-header';
+export { PageShell } from './page-shell/page-shell';
+export { FlameIcon } from './flame-icon/flame-icon';

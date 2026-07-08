@@ -16,7 +16,7 @@ export class NotFound {
   protected readonly requestedPath = this.router.url;
 
   protected goHome() {
-    this.router.navigate(['/feed']);
+    this.router.navigate(['/allnews']);
   }
 
   protected goBack() {

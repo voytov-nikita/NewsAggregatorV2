@@ -1,0 +1,90 @@
+<app-page-shell class="foryou-page">
+  <app-page-header pageHeader title="For you">
+    @if (hasFollows() && !isLoading() && !error()) {
+      <span pageHeaderMeta class="page-sub">Articles ranked by the categories and sources you follow.</span>
+    }
+  </app-page-header>
+
+  <div class="body">
+  @if (error(); as e) {
+    <app-error-banner
+      title="Couldn't load For You"
+      [description]="e"
+      [showRetry]="true"
+      (retry)="load()" />
+  }
+
+  @if (!hasFollows() && !isLoading() && !error()) {
+    <!-- Onboarding -->
+    <section class="onboarding">
+      <h2 class="onboarding-title">Pick at least {{ minOnboarding }} categories to get started</h2>
+      <p class="onboarding-sub">We'll use these to rank articles in your personal feed. You can change them anytime in Subscriptions.</p>
+
+      <div class="cat-grid">
+        @for (cat of categories; track cat) {
+          <button
+            type="button"
+            class="cat-chip"
+            [class.selected]="isDrafted(cat)"
+            (click)="toggleDraft(cat)">
+            <app-source-badge [category]="cat" />
+            <span class="cat-check" [class.on]="isDrafted(cat)">{{ isDrafted(cat) ? '✓' : '+' }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="onboarding-footer">
+        <span class="onboarding-count">{{ draftCount() }} / {{ minOnboarding }} selected</span>
+        <button
+          type="button"
+          class="save-btn"
+          [disabled]="!canSaveOnboarding()"
+          (click)="saveOnboarding()">
+          Save my interests
+        </button>
+      </div>
+    </section>
+  } @else if (isLoading()) {
+    <div class="skeleton-list">
+      @for (_ of [0, 1, 2, 3]; track $index) {
+        <article class="article skeleton-card">
+          <app-skeleton width="120px" height="80" />
+          <div class="body">
+            <app-skeleton width="40%" height="14" />
+            <app-skeleton width="90%" height="20" />
+            <app-skeleton width="70%" height="14" />
+          </div>
+        </article>
+      }
+    </div>
+  } @else if (!error() && scored().length === 0) {
+    <app-empty-state
+      glyph="∅"
+      title="No matching articles right now"
+      description="None of the recent articles match your current interests. Try following more sources or categories."/>
+  } @else if (!error()) {
+    <div class="articles">
+      @for (entry of scored(); track entry.article.id) {
+        <article class="article" (click)="open(entry.article)">
+          <app-image-placeholder [width]="'120px'" [height]="80" [label]="entry.article.publisher" />
+          <div class="body">
+            <div class="meta">
+              <app-source-badge [category]="categoryFor(entry.article)" />
+              <span class="publisher">{{ entry.article.publisher }}</span>
+              <span class="dot">·</span>
+              <span>{{ entry.article.publishDate | date: 'mediumDate' }}</span>
+              <span class="dot">·</span>
+              <span>{{ readTimeFor(entry.article) }} min read</span>
+            </div>
+            <h2 class="title">{{ entry.article.title }}</h2>
+            @if (entry.article.description) {
+              <p class="desc">{{ entry.article.description }}</p>
+            }
+            <p class="why">→ because you follow {{ entry.reasons.join(' · ') }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  }
+  </div>
+</app-page-shell>

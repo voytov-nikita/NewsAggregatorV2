@@ -19,11 +19,22 @@ public class Program
         // Add services to the container.
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.ConfigureCommonApiSettings();
-        
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
         builder.Services.AddOpenApi();
         builder.Services.AddProblemDetails();
-        
-        
+
+
         builder.Services.AddCustomControllers();
         builder.Services.AddBusinessLayer();
         

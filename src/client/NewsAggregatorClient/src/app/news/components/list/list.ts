@@ -4,16 +4,22 @@ import { Store } from '@ngrx/store';
 import { NavigationService } from '@shared/services';
 import { NewsResponse, NewsFilterRequest } from '@shared/models';
 import { NewsOrderField, OrderDirection } from '@shared/enums';
+import { categoryFor, readTimeFor } from '@shared/data/news-catalog';
 import {
   FeedActions,
   selectArticles,
   selectCurrentPage,
+  selectDateFrom,
+  selectDateTo,
   selectError,
+  selectFilterRailOpen,
   selectIsLoading,
   selectPageSize,
   selectSearchQuery,
-  selectSelectedCategory,
+  selectSelectedCategories,
   selectSelectedSortId,
+  selectSelectedSources,
+  selectTotalCount,
 } from '../../../store';
 
 interface SortOption {
@@ -24,23 +30,13 @@ interface SortOption {
 }
 
 const SORT_OPTIONS: SortOption[] = [
-  { id: 'newest', label: 'Newest', field: NewsOrderField.PublishDate, direction: OrderDirection.Descending },
-  { id: 'oldest', label: 'Oldest', field: NewsOrderField.PublishDate, direction: OrderDirection.Ascending },
-  { id: 'title-az', label: 'Title A→Z', field: NewsOrderField.Title, direction: OrderDirection.Ascending },
-  { id: 'title-za', label: 'Title Z→A', field: NewsOrderField.Title, direction: OrderDirection.Descending },
+  { id: 'newest',        label: 'Newest',         field: NewsOrderField.PublishDate,   direction: OrderDirection.Descending },
+  { id: 'oldest',        label: 'Oldest',         field: NewsOrderField.PublishDate,   direction: OrderDirection.Ascending },
+/*  { id: 'most-liked',    label: 'Most liked',     field: NewsOrderField.MostLiked,     direction: OrderDirection.Descending },
+  { id: 'most-discussed',label: 'Most discussed', field: NewsOrderField.MostDiscussed, direction: OrderDirection.Descending },*/
+  { id: 'title-az',      label: 'Title A→Z',      field: NewsOrderField.Title,         direction: OrderDirection.Ascending },
+  { id: 'title-za',      label: 'Title Z→A',      field: NewsOrderField.Title,         direction: OrderDirection.Descending },
 ];
-
-const CATEGORIES = [
-  'All',
-  'Technology',
-  'Architecture',
-  'Backend',
-  'Frontend',
-  'Database',
-  'DevOps',
-  'Real-time',
-  'State',
-] as const;
 
 @Component({
   standalone: false,
@@ -53,103 +49,96 @@ export class NewsList implements OnInit {
   protected readonly navigation = inject(NavigationService);
 
   protected readonly sortOptions = SORT_OPTIONS;
-  protected readonly categories = CATEGORIES;
 
   protected readonly articles = toSignal(this.store.select(selectArticles), { initialValue: [] });
   protected readonly isLoading = toSignal(this.store.select(selectIsLoading), { initialValue: false });
   protected readonly error = toSignal(this.store.select(selectError), { initialValue: null });
   protected readonly searchQuery = toSignal(this.store.select(selectSearchQuery), { initialValue: '' });
   protected readonly selectedSortId = toSignal(this.store.select(selectSelectedSortId), { initialValue: 'newest' });
-  protected readonly selectedCategory = toSignal(this.store.select(selectSelectedCategory), { initialValue: 'All' });
+  protected readonly selectedCategories = toSignal(this.store.select(selectSelectedCategories), { initialValue: [] });
+  protected readonly selectedSources = toSignal(this.store.select(selectSelectedSources), { initialValue: [] });
+  protected readonly dateFrom = toSignal(this.store.select(selectDateFrom), { initialValue: null });
+  protected readonly dateTo = toSignal(this.store.select(selectDateTo), { initialValue: null });
+  protected readonly filterRailOpen = toSignal(this.store.select(selectFilterRailOpen), { initialValue: true });
   protected readonly currentPage = toSignal(this.store.select(selectCurrentPage), { initialValue: 1 });
   protected readonly pageSize = toSignal(this.store.select(selectPageSize), { initialValue: 10 });
+  protected readonly totalItems = toSignal(this.store.select(selectTotalCount), { initialValue: 0 });
 
-  protected readonly totalPages = computed(() => {
-    const count = this.articles().length;
-    return Math.max(1, Math.ceil(count / this.pageSize()) + (count >= this.pageSize() ? 1 : 0));
+  protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalItems() / this.pageSize())));
+
+  protected readonly activeFilterCount = computed(() => {
+    let n = 0;
+    if (this.selectedCategories().length) n++;
+    if (this.selectedSources().length) n++;
+    if (this.dateFrom() || this.dateTo()) n++;
+    return n;
   });
-  protected readonly totalItems = computed<number | null>(() => null);
 
-  protected readonly currentSort = computed(
-    () => this.sortOptions.find((s) => s.id === this.selectedSortId()) ?? this.sortOptions[0],
+  protected readonly hasActiveFilters = computed(
+    () => !!this.searchQuery() || this.activeFilterCount() > 0,
   );
 
   public ngOnInit(): void {
-    this.dispatchLoad();
+    // Initial load — subsequent reloads are driven by FeedEffects.autoReload$.
+    this.store.dispatch(FeedActions.load({ filter: this.buildFilter() }));
   }
 
   protected onSearchChange(value: string): void {
     this.store.dispatch(FeedActions.setSearch({ keyword: value }));
-    this.dispatchLoad();
   }
 
   protected onSortChange(id: string): void {
     this.store.dispatch(FeedActions.setSort({ sortId: id }));
-    this.dispatchLoad();
-  }
-
-  protected onCategoryChange(category: string): void {
-    this.store.dispatch(FeedActions.setCategory({ category }));
-    // Server-side category filter not implemented; selection only.
   }
 
   protected setPage(page: number): void {
     this.store.dispatch(FeedActions.setPage({ page }));
-    this.dispatchLoad();
   }
 
   protected onTakeChange(take: number): void {
     this.store.dispatch(FeedActions.setTake({ take }));
-    this.dispatchLoad();
   }
 
-  protected open(article: NewsResponse): void {
-    this.navigation.toArticle(article.id);
+  protected toggleFilterRail(): void {
+    this.store.dispatch(FeedActions.toggleFilterRail());
+  }
+
+  protected resetFilters(): void {
+    this.store.dispatch(FeedActions.resetFilters());
   }
 
   protected dismissError(): void {
     this.store.dispatch(FeedActions.clearError());
   }
 
-  protected categoryFor(article: NewsResponse): string {
-    const map: Record<string, string> = {
-      'Angular Blog': 'Frontend',
-      InfoQ: 'Architecture',
-      'The New Stack': 'Backend',
-      'Postgres Weekly': 'Database',
-      'Microsoft Dev Blog': 'Backend',
-      'CSS-Tricks': 'Frontend',
-      'ngrx team': 'State',
-      'MongoDB Blog': 'Database',
-    };
-    return map[article.publisher] ?? 'Technology';
-  }
-
-  protected likesFor(article: NewsResponse): number {
-    return ((article.id * 37) % 200) + 12;
-  }
-
-  protected dislikesFor(article: NewsResponse): number {
-    return (article.id * 7) % 18;
-  }
-
-  protected readTimeFor(article: NewsResponse): number {
-    const len = article.description?.length ?? 600;
-    return Math.max(3, Math.round(len / 200));
-  }
-
-  private dispatchLoad(): void {
+  protected reload(): void {
+    this.store.dispatch(FeedActions.clearError());
     this.store.dispatch(FeedActions.load({ filter: this.buildFilter() }));
   }
 
+  protected categoryFor = (article: NewsResponse): string => categoryFor(article);
+  protected readTimeFor = (article: NewsResponse): number => readTimeFor(article);
+
+  protected likesFor(article: NewsResponse): number {
+    return article.likes ?? 0;
+  }
+
+  protected dislikesFor(article: NewsResponse): number {
+    return article.dislikes ?? 0;
+  }
+
   private buildFilter(): NewsFilterRequest {
-    const sort = this.currentSort();
+    const sort = this.sortOptions.find((s) => s.id === this.selectedSortId()) ?? this.sortOptions[0];
     return {
       take: this.pageSize(),
       offset: (this.currentPage() - 1) * this.pageSize(),
       keyword: this.searchQuery() || undefined,
       orderBy: sort.field,
       orderDirection: sort.direction,
+      categories: this.selectedCategories().length ? this.selectedCategories() : undefined,
+      sources: this.selectedSources().length ? this.selectedSources() : undefined,
+      dateFrom: this.dateFrom() ?? undefined,
+      dateTo: this.dateTo() ?? undefined,
     };
   }
 }

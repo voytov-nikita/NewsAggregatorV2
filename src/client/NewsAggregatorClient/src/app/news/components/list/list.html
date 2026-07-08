@@ -1,114 +1,135 @@
-<section class="feed">
-  <div class="feed-top">
-    <header class="feed-header">
-      <h1>Feed</h1>
-    </header>
-
-    <div class="toolbar">
-    <app-search-bar
-      class="toolbar-search"
-      placeholder="Search articles…"
-      [value]="searchQuery()"
-      (debounced)="onSearchChange($event)"
-    />
-
-    <div class="sort-select">
+<app-page-shell class="feed">
+  <app-page-header pageHeader title="All news">
+    <button
+      pageHeaderLeading
+      type="button"
+      class="filter-toggle"
+      [class.open]="filterRailOpen()"
+      (click)="toggleFilterRail()"
+      [title]="filterRailOpen() ? 'Hide filters' : 'Show filters'">
+      <span class="icon">{{ filterRailOpen() ? '◧' : '☰' }}</span>
+      {{ filterRailOpen() ? 'Hide filters' : 'Filters' }}
+      @if (activeFilterCount() > 0) {
+        <span class="badge">{{ activeFilterCount() }}</span>
+      }
+    </button>
+    <span pageHeaderMeta class="header-count">
+      {{ totalItems() }} {{ totalItems() === 1 ? 'article' : 'articles' }}
+    </span>
+    <div pageHeaderActions class="sort-select">
       <span class="sort-label">Sort</span>
       <select
         [value]="selectedSortId()"
         (change)="onSortChange($any($event.target).value)"
-        aria-label="Sort"
-      >
+        aria-label="Sort">
         @for (opt of sortOptions; track opt.id) {
           <option [value]="opt.id">{{ opt.label }}</option>
         }
       </select>
     </div>
-  </div>
+  </app-page-header>
 
-    <app-category-chips
-      class="toolbar-chips"
-      [categories]="categories"
-      [selected]="selectedCategory()"
-      (selectedChange)="onCategoryChange($event)"
-    />
+  <div class="layout" [class.rail-open]="filterRailOpen()">
+    <!-- Drawer: absolute on the left, slides in/out from var(--rail-width). -->
+    <app-filter-rail class="rail-drawer" aria-hidden="false" />
 
-    @if (error(); as e) {
-      <div class="error-banner" role="alert">
-        <span class="err-icon">!</span>
-        <span class="err-text">{{ e }}</span>
-        <button type="button" class="err-dismiss" (click)="dismissError()" aria-label="Dismiss">×</button>
+    <div class="main">
+      <!-- Sticky search + error banner; the articles list below is what actually scrolls. -->
+      <div class="sticky-top">
+        <app-search-bar
+          class="toolbar-search"
+          placeholder="Search articles…"
+          [value]="searchQuery()"
+          (debounced)="onSearchChange($event)" />
+
+        @if (error(); as e) {
+          <app-error-banner
+            title="Couldn't load feed"
+            [description]="e"
+            [showRetry]="true"
+            (retry)="reload()"
+            (closed)="dismissError()" />
+        }
       </div>
-    }
+
+      <div class="articles">
+        @if (isLoading() && articles().length === 0) {
+          @for (_ of [1, 2, 3, 4]; track $index) {
+            <article class="article skeleton-card">
+              <app-skeleton width="120px" height="80" />
+              <div class="article-body">
+                <app-skeleton width="40%" height="14" />
+                <app-skeleton width="90%" height="20" />
+                <app-skeleton width="70%" height="14" />
+              </div>
+            </article>
+          }
+        } @else if (!error() && articles().length === 0) {
+          @if (hasActiveFilters()) {
+            <app-empty-state
+              glyph="⌕"
+              title="No matching articles"
+              [description]="'Try changing the search or filters.'">
+              <button type="button" class="reset-btn" (click)="resetFilters()">Reset filters</button>
+            </app-empty-state>
+          } @else {
+            <app-empty-state
+              title="No articles yet"
+              description="The feed is empty. Come back later or check your sources." />
+          }
+        } @else {
+          @for (article of articles(); track article.id) {
+            <article class="article">
+              <app-image-placeholder
+                class="article-thumb"
+                [width]="'120px'"
+                [height]="80"
+                [label]="article.publisher" />
+              <div class="article-body">
+                <div class="article-meta">
+                  <app-source-badge [category]="categoryFor(article)" />
+                  <span class="meta-publisher">{{ article.publisher }}</span>
+                  <span class="meta-dot">·</span>
+                  <span>{{ article.publishDate | date: 'mediumDate' }}</span>
+                  <span class="meta-dot">·</span>
+                  <span>{{ readTimeFor(article) }} min read</span>
+                  <app-vote-buttons
+                    class="meta-votes"
+                    [likes]="likesFor(article)"
+                    [dislikes]="dislikesFor(article)"
+                    (click)="$event.stopPropagation()" />
+                </div>
+                <h2 class="article-title">{{ article.title }}</h2>
+                @if (article.description) {
+                  <p class="article-desc">{{ article.description }}</p>
+                }
+              </div>
+
+              <div class="article-actions" (click)="$event.stopPropagation()">
+                <button type="button" class="icon-btn" title="Save">★</button>
+                <a
+                  class="icon-btn"
+                  [href]="article.originalLink"
+                  target="_blank"
+                  rel="noopener"
+                  title="Open original">
+                  ↗
+                </a>
+              </div>
+            </article>
+          }
+        }
+      </div>
+    </div>
   </div>
 
-  <div class="articles">
-    @if (isLoading() && articles().length === 0) {
-      @for (_ of [1, 2, 3, 4]; track $index) {
-        <article class="article skeleton-card">
-          <app-skeleton width="120px" height="80" />
-          <div class="article-body">
-            <app-skeleton width="40%" height="14" />
-            <app-skeleton width="90%" height="20" />
-            <app-skeleton width="70%" height="14" />
-          </div>
-        </article>
-      }
-    } @else {
-      @for (article of articles(); track article.id) {
-        <article class="article" (click)="open(article)">
-          <app-image-placeholder
-            class="article-thumb"
-            [width]="'120px'"
-            [height]="80"
-            [label]="article.publisher"
-          />
-          <div class="article-body">
-            <div class="article-meta">
-              <app-source-badge [category]="categoryFor(article)" />
-              <span class="meta-publisher">{{ article.publisher }}</span>
-              <span class="meta-dot">·</span>
-              <span>{{ article.publishDate | date: 'mediumDate' }}</span>
-              <span class="meta-dot">·</span>
-              <span>{{ readTimeFor(article) }} min read</span>
-              <app-vote-buttons
-                class="meta-votes"
-                [likes]="likesFor(article)"
-                [dislikes]="dislikesFor(article)"
-                (click)="$event.stopPropagation()"
-              />
-            </div>
-            <h2 class="article-title">{{ article.title }}</h2>
-            @if (article.description) {
-              <p class="article-desc">{{ article.description }}</p>
-            }
-          </div>
-
-          <div class="article-actions" (click)="$event.stopPropagation()">
-            <button type="button" class="icon-btn" title="Save">★</button>
-            <a
-              class="icon-btn"
-              [href]="article.originalLink"
-              target="_blank"
-              rel="noopener"
-              title="Open original"
-            >
-              ↗
-            </a>
-          </div>
-        </article>
-      }
-    }
-  </div>
-
-  <div class="pager-wrap">
+  <div pageFooter>
     <app-pager
       [currentPage]="currentPage()"
       [totalPages]="totalPages()"
       [take]="pageSize()"
       [totalItems]="totalItems()"
       (pageChange)="setPage($event)"
-      (takeChange)="onTakeChange($event)"
-    />
+      (takeChange)="onTakeChange($event)" />
   </div>
-</section>
+</app-page-shell>

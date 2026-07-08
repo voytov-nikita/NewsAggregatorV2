@@ -30,6 +30,7 @@ public static class ServiceCollectionExtensions
             .AddHangfireServer();
 
         collection.AddTransient<IPostponedJobRunner, PostponedJobRunner>();
+        collection.AddSingleton<ISourceSchedulingService, SourceSchedulingService>();
 
         collection.AddHostedService<HangfireSchedulerBackgroundService>();
 

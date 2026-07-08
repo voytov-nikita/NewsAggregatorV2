@@ -1,3 +1,4 @@
+using Common.Models;
 using CrawlerService.BLL.Services.Crawlers;
 using CrawlerService.BLL.Tests.Helpers;
 using CrawlerService.Models.Enums;
@@ -36,6 +37,7 @@ public class HtmlSourceCrawlerTests
         Url = "https://pub.test/news",
         Type = SourceType.Html,
         CronSchedule = "*/30 * * * * *",
+        Category = NewsCategory.Backend,
         HtmlSelectors = selectors,
     };
 
@@ -46,7 +48,6 @@ public class HtmlSourceCrawlerTests
         Link = new FieldMapping { Selector = "h2 a", From = FieldValueSource.Attribute, Attribute = "href" },
         Description = new FieldMapping { Selector = "p.desc" },
         PublishDate = new FieldMapping { Selector = "time", From = FieldValueSource.Attribute, Attribute = "datetime" },
-        Tags = new FieldMapping { Selector = "span.tag" },
     };
 
     [Fact]
@@ -65,9 +66,9 @@ public class HtmlSourceCrawlerTests
         result[0].Guid.Should().Be("https://pub.test/1");
         result[0].GlobalUniqueId.Should().Be("testhttps://pub.test/1");
         result[0].SourceId.Should().Be("test");
-        result[0].Tags.Should().BeEquivalentTo(new[] { "news", "politics" });
+        result[0].Category.Should().Be(NewsCategory.Backend);
         result[1].Title.Should().Be("Title 2");
-        result[1].Tags.Should().BeEmpty();
+        result[1].Category.Should().Be(NewsCategory.Backend);
     }
 
     [Fact]

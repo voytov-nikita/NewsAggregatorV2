@@ -1,45 +1,79 @@
-<section class="stats-page">
-  <header class="page-head">
-    <h1 class="page-title">Statistics</h1>
-    <p class="page-sub">Crawler activity across all configured sources</p>
-  </header>
+<app-page-shell class="stats-page">
+  <app-page-header pageHeader title="Statistics">
+    <span pageHeaderMeta class="page-sub">Crawler activity across all configured sources</span>
+  </app-page-header>
 
-  <div class="kpi-grid">
-    @for (k of kpis(); track k.label) {
-      <div class="kpi">
-        <div class="kpi-label">{{ k.label }}</div>
-        <div class="kpi-value">{{ k.value }}</div>
-        <div class="kpi-sub">{{ k.sub }}</div>
-      </div>
-    }
-  </div>
+  <div class="body">
+    @if (sources().length === 0) {
+      <app-empty-state
+        title="No statistics yet"
+        description="Statistics will appear once you have configured sources and the crawler has run." />
+    } @else {
 
-  <section class="chart">
-    <header class="chart-head">
-      <h2 class="section-title">Articles per source</h2>
-      <span class="chart-meta">sorted by volume</span>
-    </header>
-
-    <div class="chart-rows">
-      @for (row of chartRows(); track row.id) {
-        <div class="chart-row">
-          <div class="row-name">
-            <span class="badge" [class.html]="row.type === 'HTML'">{{ row.type }}</span>
-            <span class="name">{{ row.name }}</span>
-          </div>
-          <div class="row-bar">
-            <div
-              class="bar"
-              [style.width.%]="row.widthPct"
-              [class.warn]="row.success < 95"
-            ></div>
-            <span class="bar-value">{{ row.articles }}</span>
-          </div>
-          <div class="row-success" [class]="successClass(row.success)">
-            {{ row.success }}%
-          </div>
+    <div class="kpi-grid">
+      @for (k of kpis(); track k.label) {
+        <div class="kpi">
+          <div class="kpi-label">{{ k.label }}</div>
+          <div class="kpi-value">{{ k.value }}</div>
+          <div class="kpi-sub">{{ k.sub }}</div>
         </div>
       }
     </div>
-  </section>
-</section>
+
+    <section class="src-table">
+      <header class="chart-head">
+        <h2 class="section-title">Per-source breakdown</h2>
+      </header>
+      <div class="src-table-grid">
+        <div class="src-row src-row-head">
+          <span>Source</span>
+          <span>Articles</span>
+          <span>Last crawl</span>
+          <span>Duration</span>
+          <span>Result</span>
+          <span>Type</span>
+        </div>
+        @for (s of sources(); track s.id) {
+          <div class="src-row">
+            <span class="src-name">{{ s.name }}</span>
+            <span class="mono">{{ s.articlesCount ?? 0 }}</span>
+            <span class="mono muted">{{ lastCrawlLabel(s) }}</span>
+            <span class="mono muted">{{ s.lastCrawlDurationMs ? (s.lastCrawlDurationMs + 'ms') : '—' }}</span>
+            <span class="mono" [class]="successClass(s)">{{ successLabel(s) }}</span>
+            <span class="badge" [class.html]="s.type === 'Html'">{{ s.type }}</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="chart">
+      <header class="chart-head">
+        <h2 class="section-title">Articles by source</h2>
+        <span class="chart-meta">sorted by volume</span>
+      </header>
+
+      <div class="chart-rows">
+        @for (row of chartRows(); track row.id) {
+          <div class="chart-row">
+            <div class="row-name">
+              <span class="badge" [class.html]="row.type === 'Html'">{{ row.type }}</span>
+              <span class="name">{{ row.name }}</span>
+            </div>
+            <div class="row-bar">
+              <div
+                class="bar"
+                [style.width.%]="row.widthPct"
+                [class.warn]="row.lastCrawlSuccess === false"
+              ></div>
+              <span class="bar-value">{{ row.articlesCount ?? 0 }}</span>
+            </div>
+            <div class="row-success" [class]="successClass(row)">
+              {{ successLabel(row) }}
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+    }
+  </div>
+</app-page-shell>
