@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MongoDB.Driver" Version="2.24.0" />
+        <PackageReference Include="MongoDB.Bson" Version="2.24.0" />
+        <PackageReference Include="Mongo.Migration" Version="3.1.4" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\common\Common\Common.csproj" />
+      <ProjectReference Include="..\__SERVICE_FULL__.DAL.Abstractions\__SERVICE_FULL__.DAL.Abstractions.csproj" />
+      <ProjectReference Include="..\__SERVICE_FULL__.Models\__SERVICE_FULL__.Models.csproj" />
+    </ItemGroup>
+
+</Project>

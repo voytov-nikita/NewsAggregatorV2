@@ -12,6 +12,7 @@
       <ProjectReference Include="..\..\common\MessageQueue\MessageQueue.csproj" />
       <ProjectReference Include="..\NotificationService.BLL\NotificationService.BLL.csproj" />
       <ProjectReference Include="..\NotificationService.DAL\NotificationService.DAL.csproj" />
+      <ProjectReference Include="..\..\common\Common.Auth\Common.Auth.csproj" />
     </ItemGroup>
     
 </Project>

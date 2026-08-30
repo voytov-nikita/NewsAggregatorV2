@@ -1,0 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+
+namespace __SERVICE_FULL__.DAL.PostgreSql;
+
+public class __SERVICE_FULL__DbContext(DbContextOptions<__SERVICE_FULL__DbContext> options) : DbContext(options)
+{
+    // public DbSet<SomeEntity> Some { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasDefaultSchema("__SERVICE_CAMEL__");
+
+        base.OnModelCreating(modelBuilder);
+
+        // Entity configurations are applied one by one, matching the convention in NewsService:
+        // modelBuilder.ApplyConfiguration(new SomeEntityConfiguration());
+    }
+}

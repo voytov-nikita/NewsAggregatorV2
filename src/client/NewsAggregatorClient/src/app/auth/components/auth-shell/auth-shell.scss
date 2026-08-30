@@ -1,0 +1,37 @@
+@use '../../../../assets/scss/general/mixins' as *;
+
+.auth-shell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--s-7);
+  background: var(--bg);
+
+  &__card {
+    @include card;
+
+    width: 100%;
+    max-width: 380px;
+    padding: var(--s-8);
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-bottom: var(--s-7);
+  }
+
+  &__mark {
+    color: var(--accent);
+    font-size: var(--t-18);
+  }
+
+  &__name {
+    @include uppercase-label;
+
+    color: var(--text-primary);
+    font-size: var(--t-12);
+  }
+}

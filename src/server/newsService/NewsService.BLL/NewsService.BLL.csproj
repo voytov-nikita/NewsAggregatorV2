@@ -13,6 +13,7 @@
     <ItemGroup>
       <ProjectReference Include="..\NewsService.BLL.Abstractions\NewsService.BLL.Abstractions.csproj" />
       <ProjectReference Include="..\NewsService.DAL.Abstractions\NewsService.DAL.Abstractions.csproj" />
+      <ProjectReference Include="..\..\common\Common.Auth\Common.Auth.csproj" />
     </ItemGroup>
 
 </Project>

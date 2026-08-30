@@ -1,0 +1,6 @@
+namespace __SERVICE_FULL__.API.Settings;
+
+public class GlobalSettings
+{
+    public ConnectionStringSettings ConnectionStrings { get; set; } = null!;
+}

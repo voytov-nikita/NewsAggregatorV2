@@ -1,6 +1,8 @@
 using Common.API;
+using Common.Auth;
 using MessageQueue;
 using MessageQueue.Settings;
+using NewsService.API.Handlers;
 using NewsService.API.Services;
 using NewsService.API.Settings;
 using NewsService.BLL;
@@ -14,7 +16,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        GlobalSettings globalSettings = builder.Configuration.Get<GlobalSettings>();
+        GlobalSettings globalSettings = builder.Configuration.Get<GlobalSettings>()
+                                        ?? throw new InvalidOperationException("Configuration could not be bound to GlobalSettings.");
         
         builder.ConfigureCommonApiSettings();
 
@@ -31,8 +34,11 @@ public class Program
             });
         });
 
+        builder.Services.AddJwtAuthentication(globalSettings.Auth);
+
         builder.Services.AddOpenApi(); // Move to Swagger project
         builder.Services.AddProblemDetails();
+        builder.Services.AddExceptionHandler<DomainExceptionHandler>();
 
         builder.Services.AddBusinessLayer();
         builder.Services.AddDataAccessLayer(globalSettings.ConnectionStrings.PostgreSql);
@@ -58,8 +64,10 @@ public class Program
         
         app.UseExceptionHandler();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        // Configure the HTTP request pipeline. The `local` launch profile sets
+        // ASPNETCORE_ENVIRONMENT=Local, so IsDevelopment() alone would be false and Swagger
+        // would never be reachable.
+        if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Local"))
         {
             app.MapOpenApi();
 
@@ -70,6 +78,10 @@ public class Program
             .UseHttpsRedirection()
             .UseCors("AllowAll")
             .UseRouting()
+            // UseCors before auth so a 401 still carries CORS headers; UseRouting before
+            // UseAuthorization so endpoint metadata ([HasPermission]) is resolved when it runs.
+            .UseAuthentication()
+            .UseAuthorization()
             .UseResponseCompression();
 
         app.MapControllers();

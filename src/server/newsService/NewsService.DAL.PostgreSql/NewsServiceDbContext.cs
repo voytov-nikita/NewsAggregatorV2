@@ -10,6 +10,7 @@ public class NewsServiceDbContext(DbContextOptions<NewsServiceDbContext> options
 {
     public DbSet<NewsEntity> News { get; set; }
     public DbSet<CommentEntity> Comments { get; set; }
+    public DbSet<NewsVoteEntity> Votes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -27,5 +28,6 @@ public class NewsServiceDbContext(DbContextOptions<NewsServiceDbContext> options
 
         modelBuilder.ApplyConfiguration(new NewsEntityConfiguration());
         modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new NewsVoteEntityConfiguration());
     }
 };

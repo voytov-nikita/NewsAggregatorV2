@@ -101,3 +101,7 @@ scripts/PrintServiceApi.bat
 *.drawio.svg.bkp
 *.drawio.svg.dtmp
 /.claude/settings.local.json
+
+# JWT signing keys (AuthService generates these locally on first run)
+keys/
+*.pem

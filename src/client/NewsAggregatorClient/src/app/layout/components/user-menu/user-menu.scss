@@ -1,0 +1,123 @@
+.user-menu {
+  position: relative;
+}
+
+.user-trigger {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.13s;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+
+  &:hover {
+    background: var(--surface-2);
+  }
+
+  &.active {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+}
+
+.signin-trigger {
+  height: 52px;
+  padding: 0 var(--s-6);
+  border-radius: 12px;
+  border: 1px solid var(--accent);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: var(--t-14);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.13s;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+
+  &:hover {
+    background: var(--surface-2);
+  }
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 260px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-modal);
+  padding: var(--s-4);
+  z-index: 100;
+  animation: na-fadein 0.16s ease;
+}
+
+.dropdown-identity {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: var(--t-14);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  &__email {
+    font-size: var(--t-11);
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.role-badge {
+  display: inline-block;
+  margin: var(--s-4) 0 var(--s-2);
+  padding: 2px var(--s-3);
+  border-radius: var(--r-pill);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: var(--t-10);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  margin-top: var(--s-3);
+  padding: var(--s-4);
+  text-align: left;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--t-14);
+  cursor: pointer;
+  transition: all 0.1s;
+
+  &:hover {
+    background: var(--surface-2);
+  }
+}

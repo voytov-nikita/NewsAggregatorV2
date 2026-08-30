@@ -30,6 +30,9 @@ public class CommentsStore : ICommentsStore
         return await query.Select(_ => new CommentsModel
             {
                 Id = _.Id,
+                NewsId = _.NewsId,
+                AuthorId = _.AuthorId,
+                AuthorName = _.AuthorName,
                 Content = _.Content,
                 CreateDate = _.CreateDate,
                 LastModifiedDate = _.LastModifiedDate,
@@ -54,6 +57,8 @@ public class CommentsStore : ICommentsStore
         CommentEntity commentEntity = new CommentEntity()
         {
             NewsId = model.NewsId,
+            AuthorId = model.AuthorId,
+            AuthorName = model.AuthorName,
             Content = model.Content,
             CreateDate = DateTime.UtcNow,
             Likes = 0,
@@ -91,6 +96,14 @@ public class CommentsStore : ICommentsStore
         }
 
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<Guid?> GetAuthorIdAsync(int newsId, int commentId)
+    {
+        return await _dbContext.Comments
+            .Where(_ => _.NewsId == newsId && _.Id == commentId)
+            .Select(_ => (Guid?)_.AuthorId)
+            .FirstOrDefaultAsync();
     }
 
     public async Task DeleteAsync(int newsId, int commentId)

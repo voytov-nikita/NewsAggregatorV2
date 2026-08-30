@@ -4,6 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { NavItem } from '@shared/components';
 import { NavigationService } from '@shared/services';
+import { AuthService, Permissions } from '@auth/index';
 
 @Component({
   standalone: false,
@@ -16,22 +17,37 @@ export class AuthorizedLayout {
   private readonly router = inject(Router);
   protected readonly navigation = inject(NavigationService);
 
-  protected readonly navItems: NavItem[] = [
-    { id: 'foryou', label: 'For you', icon: '★', route: '/foryou' },
-    { id: 'allnews', label: 'All news', icon: '⊞', route: '/allnews' },
-    { id: 'trending', label: 'Trending', icon: '', iconKind: 'flame', route: '/trending' },
-    { id: 'subscriptions', label: 'Subscriptions', icon: '☆', route: '/subscriptions' },
-    { id: 'saved', label: 'Saved', icon: '⊕', route: '/saved' },
-    {
-      id: 'admin',
-      label: 'Admin',
-      icon: '⊗',
-      children: [
-        { id: 'admin-sources', label: 'Sources', route: '/admin/sources' },
-        { id: 'admin-stats', label: 'Statistics', route: '/admin/stats' },
-      ],
-    },
-  ];
+  private readonly auth = inject(AuthService);
+
+  /**
+   * Computed so the Admin entry appears and disappears with the signed-in user's permissions. Each
+   * child is checked separately - an account may hold one of the two admin permissions and not the
+   * other, and a link to a screen its guard will bounce is worse than no link.
+   */
+  protected readonly navItems = computed<NavItem[]>(() => {
+    const items: NavItem[] = [
+      { id: 'foryou', label: 'For you', icon: '★', route: '/foryou' },
+      { id: 'allnews', label: 'All news', icon: '⊞', route: '/allnews' },
+      { id: 'trending', label: 'Trending', icon: '', iconKind: 'flame', route: '/trending' },
+      { id: 'subscriptions', label: 'Subscriptions', icon: '☆', route: '/subscriptions' },
+      { id: 'saved', label: 'Saved', icon: '⊕', route: '/saved' },
+    ];
+
+    const adminChildren = [
+      ...(this.auth.has(Permissions.SourcesManage)
+        ? [{ id: 'admin-sources', label: 'Sources', route: '/admin/sources' }]
+        : []),
+      ...(this.auth.has(Permissions.StatsView)
+        ? [{ id: 'admin-stats', label: 'Statistics', route: '/admin/stats' }]
+        : []),
+    ];
+
+    if (adminChildren.length) {
+      items.push({ id: 'admin', label: 'Admin', icon: '⊗', children: adminChildren });
+    }
+
+    return items;
+  });
 
   private readonly currentUrl = toSignal(
     this.router.events.pipe(

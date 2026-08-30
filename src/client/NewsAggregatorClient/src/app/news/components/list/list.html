@@ -97,6 +97,8 @@
                     class="meta-votes"
                     [likes]="likesFor(article)"
                     [dislikes]="dislikesFor(article)"
+                    [value]="voteFor(article)"
+                    (vote)="onVote(article, $event)"
                     (click)="$event.stopPropagation()" />
                 </div>
                 <h2 class="article-title">{{ article.title }}</h2>

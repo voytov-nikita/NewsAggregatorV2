@@ -1,0 +1,72 @@
+<h1 class="auth-form__title">Create account</h1>
+<p class="auth-form__subtitle">You will be able to comment, vote and follow sources.</p>
+
+@if (errors().length) {
+  <div class="form-error" role="alert">
+    @for (message of errors(); track message) {
+      <p>{{ message }}</p>
+    }
+  </div>
+}
+
+<form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="field">
+    <label class="field__label" for="register-email">Email</label>
+    <input
+      id="register-email"
+      type="email"
+      pInputText
+      autocomplete="email"
+      formControlName="email"
+      [class.field__control--invalid]="form.controls.email.touched && form.controls.email.invalid"
+    />
+    @if (form.controls.email.touched && form.controls.email.invalid) {
+      <span class="field__error">Enter a valid email address.</span>
+    }
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="register-username">Display name</label>
+    <input
+      id="register-username"
+      type="text"
+      pInputText
+      autocomplete="nickname"
+      formControlName="userName"
+      [class.field__control--invalid]="
+        form.controls.userName.touched && form.controls.userName.invalid
+      "
+    />
+    <span class="field__hint">Shown next to your comments.</span>
+    @if (form.controls.userName.touched && form.controls.userName.invalid) {
+      <span class="field__error">Use at least 2 characters.</span>
+    }
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="register-password">Password</label>
+    <input
+      id="register-password"
+      type="password"
+      pInputText
+      autocomplete="new-password"
+      formControlName="password"
+      [class.field__control--invalid]="
+        form.controls.password.touched && form.controls.password.invalid
+      "
+    />
+    <span class="field__hint">At least 8 characters.</span>
+    @if (form.controls.password.touched && form.controls.password.invalid) {
+      <span class="field__error">Password must be at least 8 characters.</span>
+    }
+  </div>
+
+  <p-button
+    type="submit"
+    styleClass="w-full"
+    [label]="isSubmitting() ? 'Creating…' : 'Create account'"
+    [disabled]="isSubmitting()"
+  />
+</form>
+
+<p class="auth-form__switch">Already registered? <a routerLink="/auth/login">Sign in</a></p>

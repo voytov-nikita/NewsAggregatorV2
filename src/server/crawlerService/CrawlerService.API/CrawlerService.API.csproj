@@ -10,8 +10,9 @@
         <ProjectReference Include="..\..\common\Common.API\Common.API.csproj" />
         <ProjectReference Include="..\..\common\MessageQueue\MessageQueue.csproj" />
         <ProjectReference Include="..\CrawlerService.BLL\CrawlerService.BLL.csproj" />
-        <ProjectReference Include="..\CrawlerService.DAL\CrawlerService.DAL.csproj"/>
+        <ProjectReference Include="..\CrawlerService.DAL\CrawlerService.DAL.csproj" />
         <ProjectReference Include="..\CrawlerService.Hangfire\CrawlerService.Hangfire.csproj" />
+        <ProjectReference Include="..\..\common\Common.Auth\Common.Auth.csproj" />
     </ItemGroup>
 
 </Project>

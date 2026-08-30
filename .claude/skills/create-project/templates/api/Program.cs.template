@@ -1,0 +1,66 @@
+using Common.API;
+using __SERVICE_FULL__.API.Settings;
+using __SERVICE_FULL__.BLL;
+using __DAL_NAMESPACE__;
+
+namespace __SERVICE_FULL__.API;
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        // The `local` launch profile sets ASPNETCORE_ENVIRONMENT=Local, so the default
+        // user-secrets registration (Development only) never kicks in.
+        if (builder.Environment.IsEnvironment("Local"))
+        {
+            builder.Configuration.AddUserSecrets<Program>(optional: true);
+        }
+
+        GlobalSettings globalSettings = builder.Configuration.Get<GlobalSettings>()
+                                        ?? throw new InvalidOperationException("Configuration could not be bound to GlobalSettings.");
+
+        builder.ConfigureCommonApiSettings();
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
+        builder.Services.AddOpenApi();
+        builder.Services.AddProblemDetails();
+
+        builder.Services.AddBusinessLayer();
+__DAL_REGISTRATION__
+
+        var app = builder.Build();
+
+        app.UseExceptionHandler();
+
+        // The `local` launch profile sets ASPNETCORE_ENVIRONMENT=Local, so IsDevelopment() alone
+        // would be false and Swagger would never be reachable.
+        if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Local"))
+        {
+            app.MapOpenApi();
+
+            app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "__SERVICE_FULL__ API V1"); });
+        }
+
+        app
+            .UseHttpsRedirection()
+            .UseCors("AllowAll")
+            .UseRouting()
+            .UseResponseCompression();
+
+        app.MapControllers();
+
+        app.Run();
+    }
+}

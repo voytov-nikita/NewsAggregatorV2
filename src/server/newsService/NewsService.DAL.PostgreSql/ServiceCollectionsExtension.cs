@@ -20,6 +20,7 @@ public static class ServiceCollectionsExtension
             
         services.AddTransient<INewsStore, NewsStore>();
         services.AddTransient<ICommentsStore, CommentsStore>();
+        services.AddTransient<INewsVotesStore, NewsVotesStore>();
 
         return services;
     }

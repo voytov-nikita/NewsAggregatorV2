@@ -15,5 +15,12 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<CommentEntity
 
         builder.Property(_ => _.LastModifiedDate)
             .IsRequired(false);
+
+        builder.Property(_ => _.AuthorName)
+            .HasMaxLength(256)
+            .IsRequired();
+
+        // "Everything this user wrote" is the query behind both moderation and account deletion.
+        builder.HasIndex(_ => _.AuthorId);
     }
 };

@@ -11,8 +11,8 @@ public static class CommentsRequestExtensions
         return new CommentsResponse
         {
             Id = model.Id,
-            /*CreatorName = model.CreatorName,
-            CreatorGuid = model.CreatorGuid,*/
+            AuthorId = model.AuthorId,
+            AuthorName = model.AuthorName,
             Content = model.Content,
             CreateDate = model.CreateDate,
             LastModifiedDate = model.LastModifiedDate,
@@ -27,17 +27,20 @@ public static class CommentsRequestExtensions
         {
             NewsId = newsId,
             CommentId = commentId,
-            /*CreatorGuid = model.CreatorGuid,*/
             Content = model.Content,
         };
     }
-    
-    public static CommentCreateModel ToModel(this CommentCreateRequest model, int newsId)
+
+    /// <summary>
+    /// The author is passed in from ICurrentUser: the request body has no say in who wrote a comment.
+    /// </summary>
+    public static CommentCreateModel ToModel(this CommentCreateRequest model, int newsId, Guid authorId, string authorName)
     {
         return new CommentCreateModel
         {
             NewsId = newsId,
-            /*CreatorGuid = model.CreatorGuid,*/
+            AuthorId = authorId,
+            AuthorName = authorName,
             Content = model.Content,
         };
     }

@@ -57,6 +57,8 @@ purple-swap / theme-swap painful next time.
 | Loading            | `<app-skeleton>` |
 | Toast              | `<app-toast-host>` + `ToastService` |
 | Sidebar nav        | `<app-sidebar>` |
+| Form field         | `.field` + `.field__label` / `__hint` / `__error` (`common/_forms.scss`) |
+| Form-level error   | `.form-error` |
 
 ## Page anatomy
 
@@ -99,6 +101,28 @@ Component SCSS shape:
 
 The page header is **always 81px tall** (`_page-header.scss`); pager is
 **always pinned to the bottom of the page**, never to the bottom of the table.
+
+## Forms
+
+Form vocabulary lives in `common/_forms.scss` — `.field` with `__label`, `__hint`,
+`__error`, the `.form-error` block for a server-level failure, and `.auth-form` for
+the sign-in / sign-up stack. Inputs come from PrimeNG (`pInputText`); the partial only
+sets the shared geometry (36px height, `--r-sm` radius, `@include focus-ring`), so
+theming stays PrimeNG's job.
+
+Do not restyle inputs inside a feature's own SCSS. If a form needs something the
+partial does not have, add it there — the second form should inherit it.
+
+## Exception to the PageShell rule: AuthShell
+
+`AuthShell` (`/auth/login`, `/auth/register`) is a centered card and is deliberately
+**not** wrapped in `<app-page-shell>`. The "every top-level screen is wrapped in
+PageShell" rule covers screens rendered *inside* the application frame — sidebar, page
+header, pinned footer. The sign-in screens render before that frame exists and have no
+navigation to sit in, so PageShell would only add an empty 81px header bar.
+
+It is the only exception. A new screen that lives inside `AuthorizedLayout` still
+follows the rule above.
 
 ## Density / accent / theme — keep them token-driven
 

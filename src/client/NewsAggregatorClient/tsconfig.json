@@ -19,7 +19,8 @@
       "@shared/*": ["src/app/shared/*"],
       "@news/*": ["src/app/news/*"],
       "@layout/*": ["src/app/layout/*"],
-      "@settings/*": ["src/app/settings/*"]
+      "@settings/*": ["src/app/settings/*"],
+      "@auth/*": ["src/app/auth/*"]
     }
   },
   "angularCompilerOptions": {

@@ -1,0 +1,15 @@
+using Microsoft.Extensions.DependencyInjection;
+
+namespace __SERVICE_FULL__.BLL;
+
+public static class ServiceCollectionsExtension
+{
+    public static IServiceCollection AddBusinessLayer(this IServiceCollection services)
+    {
+        // Register BLL services and validators here:
+        // services.AddTransient<ISomethingService, SomethingService>();
+        // services.AddTransient<ISomethingValidator, SomethingValidator>();
+
+        return services;
+    }
+}

@@ -2,7 +2,6 @@ namespace NewsService.API.Models.Comments;
 
 public class CommentCreateRequest
 {
-    //Todo: Investigate about Users
-    /*public string CreatorGuid { get; set; }*/
+    // No author field on purpose: the author comes from the caller's token, never from the body.
     public string Content { get; set; }
 }

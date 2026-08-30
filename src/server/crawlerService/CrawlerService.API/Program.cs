@@ -1,4 +1,6 @@
 using Common.API;
+using Common.Auth;
+using CrawlerService.API.Settings;
 using CrawlerService.BLL;
 using CrawlerService.DAL;
 using CrawlerService.DAL.Populators;
@@ -14,7 +16,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-       // GlobalSettings globalSettings = builder.Configuration.Get<GlobalSettings>();
+        GlobalSettings globalSettings = builder.Configuration.Get<GlobalSettings>()
+                                        ?? throw new InvalidOperationException("Configuration could not be bound to GlobalSettings.");
 
         // Add services to the container.
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -30,6 +33,8 @@ public class Program
                     .AllowAnyHeader();
             });
         });
+
+        builder.Services.AddJwtAuthentication(globalSettings.Auth);
 
         builder.Services.AddOpenApi();
         builder.Services.AddProblemDetails();
@@ -72,8 +77,10 @@ public class Program
 
         app.UseExceptionHandler();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        // Configure the HTTP request pipeline. The `local` launch profile sets
+        // ASPNETCORE_ENVIRONMENT=Local, so IsDevelopment() alone would be false and Swagger
+        // would never be reachable.
+        if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Local"))
         {
             app.MapOpenApi();
 
@@ -84,6 +91,10 @@ public class Program
             .UseHttpsRedirection()
             .UseCors("AllowAll")
             .UseRouting()
+            // UseCors before auth so a 401 still carries CORS headers; UseRouting before
+            // UseAuthorization so endpoint metadata ([HasPermission]) is resolved when it runs.
+            .UseAuthentication()
+            .UseAuthorization()
             .UseResponseCompression();
 
         app.MapControllers();

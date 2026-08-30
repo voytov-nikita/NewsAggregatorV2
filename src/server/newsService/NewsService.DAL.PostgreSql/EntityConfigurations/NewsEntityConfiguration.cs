@@ -30,7 +30,10 @@ public class NewsEntityConfiguration : IEntityTypeConfiguration<NewsEntity>
 
         builder.HasMany(_ => _.Comments)
             .WithOne(_ => _.News)
-            .HasForeignKey(_ => _.Id)
+            // The foreign key is NewsId, not the comment's own primary key. Pointing it at Id made
+            // Comments.Id both identity and foreign key, so every insert failed with "The value of
+            // CommentEntity.Id is unknown when attempting to save changes".
+            .HasForeignKey(_ => _.NewsId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(_ => new { _.Publisher, _.Guid }).IsUnique();

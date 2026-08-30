@@ -14,6 +14,7 @@ public static class ServiceCollectionsExtension
     {
         services.AddTransient<INewsService, Services.NewsService>();
         services.AddTransient<ICommentsService, CommentsService>();
+        services.AddTransient<INewsVotesService, NewsVotesService>();
         
         services.AddTransient<INewsValidator, NewsValidator>();
         services.AddTransient<ICommentsValidator, CommentsValidator>();

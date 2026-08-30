@@ -40,11 +40,26 @@ public class CommentsRequestExtensionsTests
     {
         var request = _fixture.Create<CommentCreateRequest>();
         var newsId = _fixture.Create<int>();
+        var authorId = Guid.NewGuid();
+        var authorName = _fixture.Create<string>();
 
-        var result = request.ToModel(newsId);
+        var result = request.ToModel(newsId, authorId, authorName);
 
         result.NewsId.Should().Be(newsId);
+        result.AuthorId.Should().Be(authorId);
+        result.AuthorName.Should().Be(authorName);
         result.Content.Should().Be(request.Content);
+    }
+
+    [Fact]
+    public void ToModel_CommentCreateRequest_TakesNoAuthorFieldFromTheRequestItself()
+    {
+        // An author id accepted from the body would let anyone post as anyone else.
+
+        typeof(CommentCreateRequest).GetProperties().Select(_ => _.Name)
+            .Should().NotContain(name =>
+                name.Contains("Author", StringComparison.OrdinalIgnoreCase)
+                || name.Contains("Creator", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

@@ -1,0 +1,24 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using __SERVICE_FULL__.DAL.PostgreSql.Filters;
+
+namespace __SERVICE_FULL__.DAL.PostgreSql;
+
+public static class ServiceCollectionsExtension
+{
+    public static IServiceCollection AddDataAccessLayer(this IServiceCollection services, string connectionString)
+    {
+        services.AddDbContext<__SERVICE_FULL__DbContext>(builder => builder
+            .UseNpgsql(connectionString, optionsBuilder => optionsBuilder.EnableRetryOnFailure())
+            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+            .EnableSensitiveDataLogging());
+
+        services.AddTransient<IStartupFilter, MigrationsFilter>();
+
+        // Register stores here:
+        // services.AddTransient<ISomeStore, SomeStore>();
+
+        return services;
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "ConnectionStrings": {
+    "Mongo": "mongodb://localhost:27017",
+    "DatabaseName": "__SERVICE_CAMEL__"
+  },
+  "Serilog": {
+    "Properties": {
+      "Application": "__SERVICE_FULL__"
+    }
+  },
+  "AllowedHosts": "*"
+}

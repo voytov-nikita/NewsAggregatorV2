@@ -1,4 +1,5 @@
 ﻿using Common.API;
+using Common.Auth;
 using MessageQueue;
 using MessageQueue.Settings;
 using Microsoft.AspNetCore.Builder;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using NotificationService.BLL;
 using NotificationService.DAL;
 using NotificationService.Services;
+using NotificationService.Settings;
 
 namespace NotificationService;
 
@@ -17,12 +19,28 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-       // GlobalSettings globalSettings = builder.Configuration.Get<GlobalSettings>();
+        GlobalSettings globalSettings = builder.Configuration.Get<GlobalSettings>()
+                                        ?? throw new InvalidOperationException("Configuration could not be bound to GlobalSettings.");
 
         // Add services to the container.
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.ConfigureCommonApiSettings();
         
+        // The pipeline calls UseCors("AllowAll"), but the policy itself was never registered -
+        // any request threw an InvalidOperationException until this block was added.
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
+        builder.Services.AddJwtAuthentication(globalSettings.Auth);
+
         builder.Services.AddOpenApi();
         builder.Services.AddProblemDetails();
         
@@ -64,8 +82,10 @@ public class Program
 
         app.UseExceptionHandler();
 
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        // Configure the HTTP request pipeline. The `local` launch profile sets
+        // ASPNETCORE_ENVIRONMENT=Local, so IsDevelopment() alone would be false and Swagger
+        // would never be reachable.
+        if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Local"))
         {
             app.MapOpenApi();
 
@@ -76,6 +96,10 @@ public class Program
             .UseHttpsRedirection()
             .UseCors("AllowAll")
             .UseRouting()
+            // UseCors before auth so a 401 still carries CORS headers; UseRouting before
+            // UseAuthorization so endpoint metadata ([HasPermission]) is resolved when it runs.
+            .UseAuthentication()
+            .UseAuthorization()
             .UseResponseCompression();
 
         app.MapControllers();

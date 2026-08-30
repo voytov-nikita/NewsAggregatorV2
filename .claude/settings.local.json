@@ -22,7 +22,16 @@
       "Write(//p/MyProjects/NewsAggregatorV2/**)",
       "Read(P:/MyProjects/NewsAggregatorV2/**)",
       "Edit(P:/MyProjects/NewsAggregatorV2/**)",
-      "Write(P:/MyProjects/NewsAggregatorV2/**)"
+      "Write(P:/MyProjects/NewsAggregatorV2/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"https://www.pravda.com.ua/rss/\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/125.0.0.0 Safari/537.36\" \"https://www.pravda.com.ua/rss/\")",
+      "Bash(curl -s -D - -o /dev/null -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/125.0.0.0 Safari/537.36\" \"https://www.pravda.com.ua/rss/\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} http_ver=%{http_version}\\\\n\" --http1.1 -A \"Mozilla/5.0\" \"https://www.pravda.com.ua/rss/\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} http_ver=%{http_version}\\\\n\" --http2 -A \"Mozilla/5.0\" \"https://www.pravda.com.ua/rss/\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"https://www.pravda.com.ua/rss/\" -H \"User-Agent: curl/8.0\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" -H \"User-Agent:\" \"https://www.pravda.com.ua/rss/\")",
+      "Bash(curl --version)",
+      "Bash(curl -s -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/125.0.0.0 Safari/537.36\" \"https://www.pravda.com.ua/rss/\")"
     ],
     "additionalDirectories": [
       "P:/MyProjects/NewsAggregatorV2"

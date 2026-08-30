@@ -1,0 +1,34 @@
+<div class="user-menu">
+  @if (isAuthenticated()) {
+    <button
+      type="button"
+      class="user-trigger"
+      [class.active]="open()"
+      [title]="displayName()"
+      (click)="toggle()"
+    >
+      <app-avatar [name]="displayName()" [size]="34" />
+    </button>
+
+    @if (open()) {
+      <div class="backdrop" (click)="close()"></div>
+      <div class="dropdown">
+        <div class="dropdown-identity">
+          <app-avatar [name]="displayName()" [size]="40" />
+          <div class="dropdown-identity__text">
+            <span class="dropdown-identity__name">{{ displayName() }}</span>
+            <span class="dropdown-identity__email">{{ user()?.email }}</span>
+          </div>
+        </div>
+
+        @if (role(); as roleName) {
+          <span class="role-badge">{{ roleName }}</span>
+        }
+
+        <button type="button" class="dropdown-item" (click)="signOut()">Sign out</button>
+      </div>
+    }
+  } @else {
+    <button type="button" class="signin-trigger" (click)="signIn()">Sign in</button>
+  }
+</div>

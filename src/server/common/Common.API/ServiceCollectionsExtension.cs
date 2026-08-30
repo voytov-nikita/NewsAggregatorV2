@@ -22,9 +22,10 @@ public static class ServiceCollectionsExtension
         services
             .AddControllers(options =>
             {
-                //TODO Wait till AuthorizeFilter will be added to release version
-                //https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/1295
-                //options.Filters.Add(new AuthorizeFilter());
+                // No global AuthorizeFilter on purpose: the read APIs are public by design, so a
+                // default-deny fallback would need [AllowAnonymous] on nearly every existing action.
+                // Endpoints opt in with [Authorize] / [HasPermission] instead. A service that should be
+                // closed end to end sets its own FallbackPolicy in its Program.cs, not here.
             })
             .AddJsonOptions(options =>
             {

@@ -1,0 +1,51 @@
+<h1 class="auth-form__title">Sign in</h1>
+<p class="auth-form__subtitle">Reading is open to everyone. Sign in to comment and vote.</p>
+
+@if (error(); as message) {
+  <p class="form-error" role="alert">{{ message }}</p>
+}
+
+<form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="field">
+    <label class="field__label" for="login-email">Email</label>
+    <input
+      id="login-email"
+      type="email"
+      pInputText
+      autocomplete="email"
+      formControlName="email"
+      [class.field__control--invalid]="form.controls.email.touched && form.controls.email.invalid"
+    />
+    @if (form.controls.email.touched && form.controls.email.invalid) {
+      <span class="field__error">Enter a valid email address.</span>
+    }
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="login-password">Password</label>
+    <input
+      id="login-password"
+      type="password"
+      pInputText
+      autocomplete="current-password"
+      formControlName="password"
+      [class.field__control--invalid]="
+        form.controls.password.touched && form.controls.password.invalid
+      "
+    />
+    @if (form.controls.password.touched && form.controls.password.invalid) {
+      <span class="field__error">Password is required.</span>
+    }
+  </div>
+
+  <p-button
+    type="submit"
+    styleClass="w-full"
+    [label]="isSubmitting() ? 'Signing in…' : 'Sign in'"
+    [disabled]="isSubmitting()"
+  />
+</form>
+
+<p class="auth-form__switch">
+  No account yet? <a routerLink="/auth/register">Create one</a>
+</p>

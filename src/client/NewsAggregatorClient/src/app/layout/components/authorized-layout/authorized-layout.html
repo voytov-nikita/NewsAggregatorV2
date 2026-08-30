@@ -1,8 +1,9 @@
 <div class="shell">
-  <app-sidebar [items]="navItems" [activeId]="activeId()" />
+  <app-sidebar [items]="navItems()" [activeId]="activeId()" />
 
   <main class="main-area">
     <div class="settings-slot">
+      <app-user-menu />
       <app-settings-menu />
     </div>
     <router-outlet></router-outlet>

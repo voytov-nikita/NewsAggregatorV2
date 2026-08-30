@@ -21,4 +21,5 @@ public class NewsEntity
     public int Dislikes { get; set; }
 
     public ICollection<CommentEntity> Comments { get; set; }
+    public ICollection<NewsVoteEntity> Votes { get; set; }
 }

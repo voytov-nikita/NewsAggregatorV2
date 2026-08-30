@@ -11,4 +11,7 @@ public interface ICommentsStore
     public Task CreateAsync(CommentCreateModel model);
     public Task RateAsync(int newsId, int commentId, RateType rateType);
     public Task DeleteAsync(int newsId, int commentId);
-} 
+
+    /// <summary>Returns the comment's author, or null when the comment does not exist.</summary>
+    public Task<Guid?> GetAuthorIdAsync(int newsId, int commentId);
+}

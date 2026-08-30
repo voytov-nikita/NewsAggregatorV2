@@ -26,7 +26,18 @@ namespace NewsService.DAL.PostgreSql.Migrations
             modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.CommentEntity", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AuthorName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -48,6 +59,10 @@ namespace NewsService.DAL.PostgreSql.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("NewsId");
 
                     b.ToTable("Comments", "newsService");
                 });
@@ -122,11 +137,53 @@ namespace NewsService.DAL.PostgreSql.Migrations
                     b.ToTable("News", "newsService");
                 });
 
+            modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.NewsVoteEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("NewsId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<short>("Value")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NewsId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("Votes", "newsService");
+                });
+
             modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.CommentEntity", b =>
                 {
                     b.HasOne("NewsService.DAL.PostgreSql.Entities.NewsEntity", "News")
                         .WithMany("Comments")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("NewsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("News");
+                });
+
+            modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.NewsVoteEntity", b =>
+                {
+                    b.HasOne("NewsService.DAL.PostgreSql.Entities.NewsEntity", "News")
+                        .WithMany("Votes")
+                        .HasForeignKey("NewsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -136,6 +193,8 @@ namespace NewsService.DAL.PostgreSql.Migrations
             modelBuilder.Entity("NewsService.DAL.PostgreSql.Entities.NewsEntity", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Votes");
                 });
 #pragma warning restore 612, 618
         }

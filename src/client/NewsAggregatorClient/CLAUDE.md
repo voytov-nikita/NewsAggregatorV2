@@ -21,23 +21,26 @@ Project-scoped MCP servers are committed in `.mcp.json` (loaded by Claude Code):
 ### Module Structure
 
 - **AppModule** — Root module. Imports `LayoutModule`, configures NgRx store with `uiFeature` + `feedFeature` and effects (`UiEffects`, `FeedEffects`).
-- **NewsModule** (lazy, `/allnews`, `/article/:id`; `/feed` kept as redirect alias) — News list and detail views. Services: `NewsService`, `CommentsService`. Feed list reads/dispatches via NgRx; comments stay service-based.
+- **NewsModule** (lazy, `/allnews`, `/article/:id`; `/feed` kept as redirect alias) — News list and detail views. Services: `NewsService`, `CommentsService`, `NewsVotesService`. Vote buttons in the feed post to `POST /api/v1/news/{id}/vote` and keep the recounted totals in a local overlay signal rather than a reducer; an anonymous click goes to the login page instead. `CommentsService` is written but unused - there is no `/article/:id` screen yet. Feed list reads/dispatches via NgRx; comments stay service-based.
 - **ForYouModule** (lazy, `/foryou`) — Personalized feed; shows category-picker onboarding when `FollowsService` is empty, otherwise ranks articles by followed categories (+3) and sources (+4) with "because you follow …" reasons.
 - **TrendingModule** (lazy, `/trending`) — Live trending list with hour/day/week range tabs, flame icon, live-readers indicator, and "spiking" badge.
 - **SubscriptionsModule** (lazy, `/subscriptions`) — Manage follows across 3 tabs (Categories / Sources / Authors) with search and Follow/Following toggle.
 - **SavedModule** (lazy, `/saved`) — Bookmarked articles grouped by Date / Category / None, backed by `SavedArticlesService` (localStorage).
 - **SettingsModule** (lazy, `/settings/:section?`) — Single-page settings with sticky left nav and scroll-spy across 6 sections.
 - **AdminModule** (lazy, `/admin/sources`, `/admin/stats`) — Sources list with 4-step wizard (URL+validate, crawler config, FieldMapper, review), and Statistics tab (KPIs + per-source breakdown table + bar chart). Mock data only.
+- **AuthModule** (lazy, `/auth/login`, `/auth/register`; `/login` and `/register` redirect there) — Sign-in and sign-up on a centered `AuthShell` card outside `PageShell`. Imports `ReactiveFormsModule` (deliberately not in `SharedModule`, which every lazy chunk pulls in). Its services, guards and interceptor are `providedIn: 'root'` and live outside the module's `providers`, because they must work before the lazy chunk loads.
 - **SharedModule** — Reusable components: `Pager`, `Avatar`, `SourceBadge`, `ImagePlaceholder`, `Skeleton`, `VoteButtons`, `SearchBar`, `CategoryChips`, `Sidebar`, `ToastHost`, `EmptyState`, `ErrorState`, `ErrorBanner`, `NotFound`, **`PageHeader`** (universal 81px page top: title + leading/meta/actions slots), **`PageShell`** (header + scroll content + sticky footer for pagers). Imports/exports PrimeNG modules + `FormsModule` + `CommonModule`. Shared services: `NavigationService`, `ThemeService`, `ToastService`, `SavedArticlesService` (localStorage `na-saved`), `FollowsService` (localStorage `na-follows`). Shared data: `news-catalog.ts` (`CATEGORIES`, `CATEGORY_HUES`, `categoryFor`, `readTimeFor`).
-- **LayoutModule** — `AuthorizedLayout` (sidebar + main + settings-menu shell), `SettingsMenu` (top-right ⚙ dropdown).
+- **LayoutModule** — `AuthorizedLayout` (sidebar + main + top-right slot), `SettingsMenu` (⚙ dropdown), `UserMenu` (avatar + popover with name, email, role badge and Sign out; a Sign in button when anonymous). `AuthorizedLayout.navItems` is a `computed()` over `AuthService`, so the Admin entry and each of its two children appear only for the permissions the account actually holds.
 
 ### Path Aliases (tsconfig.json)
 
-`@shared/*`, `@news/*`, `@layout/*`, `@settings/*` map to `src/app/<module>/*`.
+`@shared/*`, `@news/*`, `@layout/*`, `@settings/*`, `@auth/*` map to `src/app/<module>/*`.
 
 ### API Communication
 
 Services use `HttpClient` with `providedIn: 'root'`. Base URL comes from `src/environments/environment.ts` (`newsApiBaseUrl`); production replacement is configured in `angular.json` `fileReplacements` to `environment.prod.ts`. Feed errors are formatted in `FeedEffects` and surfaced via `feedFeature.selectError` rendered as a dismissable banner above the feed.
+
+**Auth**: `authApiBaseUrl` points at AuthService (`https://localhost:7330/api/v1/auth`). The access token lives in a signal in `TokenStore` and is never persisted — web storage is readable by a XSS, which is the whole reason the refresh token stays in the `na_rt` httpOnly cookie. `provideAppInitializer` calls `AuthService.restore()` at bootstrap, so a valid cookie silently restores the session across a reload. `authInterceptor` (functional, registered via `withInterceptors`) attaches the bearer token only to our own API base URLs, sets `withCredentials` only for AuthService (the other services answer `Access-Control-Allow-Origin: *`, which a browser rejects alongside credentials), and on a 401 performs a single-flight refresh — `AuthService.refresh$()` caches the in-flight observable with `shareReplay`, so N queued 401s trigger one `/refresh` and are then all replayed. `authGuard` and `permissionGuard(permission)` return a `UrlTree` rather than `false` so the block and the redirect are one navigation; a signed-in user lacking a permission goes to `/allnews`, an anonymous one to `/auth/login?returnUrl=…`. Guards only hide screens — the API enforces the same permissions.
 
 ### State (NgRx)
 
@@ -85,13 +88,14 @@ The app follows a documented design system. Authoritative sources, in order:
 
 ## Backend
 
-Microservices backend on .NET 9 / C#. Three services communicate via RabbitMQ:
+Microservices backend on .NET 9 / C#. Four services; three of them communicate via RabbitMQ:
 
 - **NewsService** — Main API for news and comments. PostgreSQL + EF Core.
 - **CrawlerService** — Scheduled RSS crawler (Hangfire). MongoDB.
 - **NotificationService** — Webhook/notification delivery. MongoDB.
+- **AuthService** — Authentication and permission-based authorization. PostgreSQL + ASP.NET Core Identity. Issues RS256 JWTs.
 
-The client communicates with NewsService API (`https://localhost:7300/api/v1/news`).
+The client communicates with NewsService (`https://localhost:7300/api/v1/news`) and AuthService (`https://localhost:7330/api/v1/auth`).
 
 See full details: [`../../CLAUDE.md`](../../../CLAUDE.md)
 

@@ -1,7 +1,11 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { NavigationService } from '@shared/services';
+import { AuthService, Permissions } from '@auth/index';
+import { VoteValue } from '@shared/components';
+import { NewsVotesService } from '../../services/news-votes.service';
 import { NewsResponse, NewsFilterRequest } from '@shared/models';
 import { NewsOrderField, OrderDirection } from '@shared/enums';
 import { categoryFor, readTimeFor } from '@shared/data/news-catalog';
@@ -47,6 +51,14 @@ const SORT_OPTIONS: SortOption[] = [
 export class NewsList implements OnInit {
   private readonly store = inject(Store);
   protected readonly navigation = inject(NavigationService);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly newsVotes = inject(NewsVotesService);
+
+  /** Per-article vote overlay: server-recounted totals for rows this session has voted on. */
+  private readonly votes = signal<Record<number, { likes: number; dislikes: number; myVote: number }>>(
+    {},
+  );
 
   protected readonly sortOptions = SORT_OPTIONS;
 
@@ -120,11 +132,45 @@ export class NewsList implements OnInit {
   protected readTimeFor = (article: NewsResponse): number => readTimeFor(article);
 
   protected likesFor(article: NewsResponse): number {
-    return article.likes ?? 0;
+    return this.votes()[article.id]?.likes ?? article.likes ?? 0;
   }
 
   protected dislikesFor(article: NewsResponse): number {
-    return article.dislikes ?? 0;
+    return this.votes()[article.id]?.dislikes ?? article.dislikes ?? 0;
+  }
+
+  protected voteFor(article: NewsResponse): VoteValue {
+    const value = this.votes()[article.id]?.myVote ?? 0;
+
+    return value > 0 ? 'up' : value < 0 ? 'down' : null;
+  }
+
+  /**
+   * Anonymous visitors are sent to the login page instead of firing a request the API would reject
+   * with a 401 - and a visitor without `news.vote` gets the same treatment, since re-authenticating
+   * is not what they need either.
+   */
+  protected onVote(article: NewsResponse, value: VoteValue): void {
+    if (!this.auth.isAuthenticated()) {
+      void this.router.navigate(['/auth/login'], {
+        queryParams: { returnUrl: this.router.url },
+      });
+
+      return;
+    }
+
+    if (!this.auth.has(Permissions.NewsVote)) {
+      return;
+    }
+
+    const numeric = value === 'up' ? 1 : value === 'down' ? -1 : 0;
+
+    // The feed lives in NgRx, but a vote only changes two counters on one row. Keeping the result in
+    // a local overlay avoids a reducer whose only job is to patch a number, and the next load reads
+    // the recounted values from the server anyway.
+    this.newsVotes.vote(article.id, numeric).subscribe((result) =>
+      this.votes.update((current) => ({ ...current, [article.id]: result })),
+    );
   }
 
   private buildFilter(): NewsFilterRequest {

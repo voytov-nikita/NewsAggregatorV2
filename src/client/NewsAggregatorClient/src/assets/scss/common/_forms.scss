@@ -1,1 +1,101 @@
-// Forms — pending Phase 2 redesign.
+@use '../general/mixins' as *;
+
+// Form tokens shared by every form in the app. Sign-in is the first real one, so the vocabulary
+// lands here rather than inside login.scss - the next form should not have to reinvent it.
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+
+  &__label {
+    @include uppercase-label;
+  }
+
+  &__hint {
+    font-size: var(--t-11);
+    color: var(--text-muted);
+  }
+
+  &__error {
+    font-size: var(--t-11);
+    color: var(--danger);
+  }
+
+  // Inputs are styled through PrimeNG, so only the shared geometry is set here.
+  input,
+  textarea,
+  select {
+    width: 100%;
+    font-family: var(--font-sans);
+    font-size: var(--t-13);
+    border-radius: var(--r-sm);
+
+    &:focus {
+      @include focus-ring;
+    }
+  }
+
+  input,
+  select {
+    height: 36px;
+  }
+
+  &__control--invalid {
+    border-color: var(--danger) !important;
+  }
+}
+
+// Form-level failure: what the server said, above the fields rather than beside one of them.
+.form-error {
+  margin: 0 0 var(--s-5);
+  padding: var(--s-4);
+  border: 1px solid var(--danger);
+  border-radius: var(--r-sm);
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: var(--t-12);
+
+  p {
+    margin: 0;
+
+    + p {
+      margin-top: var(--s-2);
+    }
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+
+  &__title {
+    margin: 0 0 var(--s-2);
+    font-size: var(--t-22);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  &__subtitle {
+    margin: 0 0 var(--s-6);
+    font-size: var(--t-12);
+    color: var(--text-muted);
+  }
+
+  &__switch {
+    margin: var(--s-6) 0 0;
+    font-size: var(--t-12);
+    color: var(--text-muted);
+    text-align: center;
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

@@ -21,6 +21,7 @@
       <ProjectReference Include="..\..\common\MessageQueue\MessageQueue.csproj" />
       <ProjectReference Include="..\NewsService.BLL\NewsService.BLL.csproj" />
       <ProjectReference Include="..\NewsService.DAL.PostgreSql\NewsService.DAL.PostgreSql.csproj" />
+      <ProjectReference Include="..\..\common\Common.Auth\Common.Auth.csproj" />
     </ItemGroup>
 
 </Project>
